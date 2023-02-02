@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "435102304565",
+    "project_id": "okoto-dev",
+    "storage_bucket": "okoto-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435102304565:android:5ecca3f028cda5a7a2a47c",
+        "android_client_info": {
+          "package_name": "com.okoto.okoto_dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435102304565-3bp10v76qlhrnpvthjkvia0ee0pjf5sh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbxPylZNDZMFrTbALxVI_H72Yv_6zkKew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435102304565-3bp10v76qlhrnpvthjkvia0ee0pjf5sh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "435102304565-9toaqg2if8lrrut11jsdttht64sk3jpb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.okoto.okotoDev"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
