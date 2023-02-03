@@ -16,6 +16,14 @@ class FirestoreExceptionCodes {
   static const String notFound = "not-found";
 }
 
+class UserGender {
+  static const String male = "Male";
+  static const String female = "Female";
+  static const String other = "Other";
+
+  static const List<String> values = [male, female, other];
+}
+
 class FirebaseNodes {
   //region Admin
   static const String adminCollection = "admin";
@@ -30,12 +38,25 @@ class FirebaseNodes {
   );
 
   //region Property Document
-  static const String propertyDocument = "property";
+  static const String propertyDocument = "properties";
 
   static MyFirestoreDocumentReference get adminPropertyDocumentReference => adminDocumentReference(
     documentId: propertyDocument,
   );
   //endregion
+  //endregion
+
+  //region Users Collection
+  static const String usersCollection = 'users';
+
+  static MyFirestoreCollectionReference get usersCollectionReference => FirestoreController.collectionReference(
+    collectionName: FirebaseNodes.usersCollection,
+  );
+
+  static MyFirestoreDocumentReference userDocumentReference({String? userId}) => FirestoreController.documentReference(
+    collectionName: FirebaseNodes.usersCollection,
+    documentId: userId,
+  );
   //endregion
 
   //region Timestamp Collection
@@ -49,8 +70,7 @@ class FirebaseNodes {
 
 //Shared Preference Keys
 class SharePreferenceKeys {
-  static const String appThemeMode = "themeMode";
-  static const String loggedInUser = "loggedInUser";
+  static const String isUserLoggedIn = "isUserLoggedIn";
 }
 
 class UIConstants {

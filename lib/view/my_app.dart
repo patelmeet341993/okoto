@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:okoto/backend/user/user_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../backend/app_theme/app_theme_provider.dart';
 import '../backend/common/app_controller.dart';
 import '../backend/connection/connection_provider.dart';
+import '../backend/data/data_provider.dart';
 import '../backend/navigation/navigation_controller.dart';
 import '../configs/app_theme.dart';
 import '../configs/constants.dart';
@@ -21,6 +23,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AppThemeProvider>(create: (_) => AppThemeProvider(), lazy: false),
         ChangeNotifierProvider<ConnectionProvider>(create: (_) => ConnectionProvider(), lazy: false),
+        ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider(), lazy: false),
+        ChangeNotifierProvider<DataProvider>(create: (_) => DataProvider(), lazy: false),
       ],
       child: MainApp(),
     );

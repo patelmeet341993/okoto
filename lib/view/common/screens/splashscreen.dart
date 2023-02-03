@@ -1,12 +1,17 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:okoto/backend/common/app_controller.dart';
+import 'package:okoto/view/common/components/common_loader.dart';
+import 'package:provider/provider.dart';
 
+import '../../../backend/authentication/authentication_controller.dart';
+import '../../../backend/data/data_controller.dart';
+import '../../../backend/data/data_provider.dart';
 import '../../../backend/navigation/navigation_controller.dart';
 import '../../../backend/navigation/navigation_operation_parameters.dart';
 import '../../../backend/navigation/navigation_type.dart';
+import '../../../backend/user/user_controller.dart';
+import '../../../backend/user/user_provider.dart';
+import '../../../utils/my_print.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String routeName = "/SplashScreen";
@@ -21,36 +26,47 @@ class _SplashScreenState extends State<SplashScreen> {
   late ThemeData themeData;
 
   Future<void> checkLogin() async {
-    /*AdminUserProvider adminUserProvider = Provider.of<AdminUserProvider>(context, listen: false);
-    DataProvider dataProvider = Provider.of<DataProvider>(context, listen: false);
-
-    MyDataController(provider: dataProvider).getPropertyData();
-
-    await Future.delayed(const Duration(milliseconds: 600));
-
-    AdminUserModel? user = await AuthenticationController(adminUserProvider: adminUserProvider).isAdminUserLoggedIn();
-    MyPrint.printOnConsole("User From isUserLoggedIn:$user");*/
+    NavigationController.isFirst = false;
 
     await Future.delayed(const Duration(seconds: 3));
 
-    // bool isUserLoggedIn = user != null;
-    bool isUserLoggedIn = Random().nextBool();
+    //region Get Property Data
+    DataProvider dataProvider = Provider.of<DataProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
+    await DataController(dataProvider: dataProvider).getPropertyData();
+    //endregion
 
-    NavigationController.isFirst = false;
-    if(mounted) {
-      if(isUserLoggedIn) {
-        /*AdminUserProvider adminUserProvider = Provider.of<AdminUserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
-        VisitProvider visitProvider = Provider.of<VisitProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
-        MyAdminUserController(provider: adminUserProvider).startAdminUserSubscription(visitProvider: visitProvider);*/
+    UserProvider userProvider = Provider.of<UserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
 
-        NavigationController.navigateToHomeScreen(
-          navigationOperationParameters: NavigationOperationParameters(
+    bool isUserLoggedIn = await AuthenticationController(userProvider: userProvider).isUserLoggedIn(initializeUserid: true);
+
+    if(isUserLoggedIn) {
+      bool isExist = await UserController(userProvider: userProvider,).checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: userProvider.getUserId());
+      MyPrint.printOnConsole("isExist:$isExist");
+
+      if (isExist && (userProvider.getUserModel()?.isHavingNecessaryInformation() ?? false)) {
+        MyPrint.printOnConsole("User Exist");
+
+        if(context.mounted) {
+          NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
             context: context,
             navigationType: NavigationType.pushNamedAndRemoveUntil,
-          ),
-        );
+          ));
+        }
       }
       else {
+        MyPrint.printOnConsole("User Not Exist");
+        MyPrint.logOnConsole("Created:${userProvider.getUserModel()}");
+
+        if(context.mounted) {
+          NavigationController.navigateToSignUpScreen(navigationOperationParameters: NavigationOperationParameters(
+            context: context,
+            navigationType: NavigationType.pushNamedAndRemoveUntil,
+          ));
+        }
+      }
+    }
+    else {
+      if(context.mounted) {
         NavigationController.navigateToLoginScreen(
           navigationOperationParameters: NavigationOperationParameters(
             context: context,
@@ -88,8 +104,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: Image.asset("assets/images/${AppController.isDev ? "okoto-dev-logo.png" : "okoto-prod-logo.png"}"),
                 ),
               ),
-              Center(
-                child: LoadingAnimationWidget.inkDrop(color: themeData.primaryColor, size: 40),
+              const Center(
+                child: CommonLoader(),
               ),
             ],
           ),
