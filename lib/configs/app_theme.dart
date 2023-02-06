@@ -61,11 +61,78 @@ class AppTheme {
 
   static TextStyle getTextStyleWithFontFamily({TextStyle? textStyle}) {
     // return (textStyle ?? TextStyle()).copyWith(fontFamily: "Mono");
-    return GoogleFonts.catamaran(textStyle: textStyle);
+    return GoogleFonts.lato(textStyle: textStyle);
   }
 
   //App Bar Text
   static final TextTheme lightAppBarTextTheme = TextTheme(
+    displayLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 102, color: Styles.lightTextColor)),
+    displayMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 64, color: Styles.lightTextColor)),
+    displaySmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 51, color: Styles.lightTextColor)),
+    headlineLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 43, color: Styles.lightTextColor)),
+    headlineMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 36, color: Styles.lightTextColor)),
+    headlineSmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 25, color: Styles.lightTextColor)),
+    titleLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 18, color: Styles.lightTextColor)),
+    titleMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 17, color: Styles.lightTextColor)),
+    titleSmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 15, color: Styles.lightTextColor)),
+    bodyLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 16, color: Styles.lightTextColor)),
+    bodyMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 14, color: Styles.lightTextColor)),
+    bodySmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 12, color: Styles.lightTextColor)),
+    labelLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 15, color: Styles.lightTextColor)),
+    labelMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 13, color: Styles.lightTextColor)),
+    labelSmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 11, color: Styles.lightTextColor)),
+  );
+
+  static final TextTheme darkAppBarTextTheme = TextTheme(
+    displayLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 102, color: Styles.darkTextColor)),
+    displayMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 64, color: Styles.darkTextColor)),
+    displaySmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 51, color: Styles.darkTextColor)),
+    headlineLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 42, color: Styles.darkTextColor)),
+    headlineMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 36, color: Styles.darkTextColor)),
+    headlineSmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 25, color: Styles.darkTextColor)),
+    titleLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 20, color: Styles.darkTextColor)),
+    titleMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 17, color: Styles.darkTextColor)),
+    titleSmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 15, color: Styles.darkTextColor)),
+    bodyLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 16, color: Styles.darkTextColor)),
+    bodyMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 14, color: Styles.darkTextColor)),
+    bodySmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 13, color: Styles.darkTextColor)),
+    labelLarge: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 15, color: Styles.darkTextColor)),
+    labelMedium: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 13, color: Styles.darkTextColor)),
+    labelSmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 11, color: Styles.darkTextColor)),
+  );
+
+  //Text Themes
+  static final TextTheme lightTextTheme = TextTheme(
     displayLarge: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 102, color: Styles.lightTextColor)),
     displayMedium: getTextStyleWithFontFamily(
@@ -86,15 +153,17 @@ class AppTheme {
         textStyle: const TextStyle(fontSize: 16, color: Styles.lightTextColor)),
     bodyMedium: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 14, color: Styles.lightTextColor)),
+    bodySmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 13, color: Styles.lightTextColor)),
     labelLarge: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 15, color: Styles.lightTextColor)),
-    bodySmall: getTextStyleWithFontFamily(
+    labelMedium: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 13, color: Styles.lightTextColor)),
     labelSmall: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 11, color: Styles.lightTextColor)),
   );
 
-  static final TextTheme darkAppBarTextTheme = TextTheme(
+  static final TextTheme darkTextTheme = TextTheme(
     displayLarge: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 102, color: Styles.darkTextColor)),
     displayMedium: getTextStyleWithFontFamily(
@@ -106,7 +175,7 @@ class AppTheme {
     headlineSmall: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 25, color: Styles.darkTextColor)),
     titleLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 20, color: Styles.darkTextColor)),
+        textStyle: const TextStyle(fontSize: 18, color: Styles.darkTextColor)),
     titleMedium: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 17, color: Styles.darkTextColor)),
     titleSmall: getTextStyleWithFontFamily(
@@ -115,71 +184,14 @@ class AppTheme {
         textStyle: const TextStyle(fontSize: 16, color: Styles.darkTextColor)),
     bodyMedium: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 14, color: Styles.darkTextColor)),
+    bodySmall: getTextStyleWithFontFamily(
+        textStyle: const TextStyle(fontSize: 13, color: Styles.darkTextColor)),
     labelLarge: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 15, color: Styles.darkTextColor)),
-    bodySmall: getTextStyleWithFontFamily(
+    labelMedium: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 13, color: Styles.darkTextColor)),
     labelSmall: getTextStyleWithFontFamily(
         textStyle: const TextStyle(fontSize: 11, color: Styles.darkTextColor)),
-  );
-
-  //Text Themes
-  static final TextTheme lightTextTheme = TextTheme(
-    displayLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 102, color: Color(0xff4a4c4f))),
-    displayMedium: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 64, color: Color(0xff4a4c4f))),
-    displaySmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 51, color: Color(0xff4a4c4f))),
-    headlineMedium: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 36, color: Color(0xff4a4c4f))),
-    headlineSmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 25, color: Color(0xff4a4c4f))),
-    titleLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 18, color: Color(0xff4a4c4f))),
-    titleMedium: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 17, color: Color(0xff4a4c4f))),
-    titleSmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 15, color: Color(0xff4a4c4f))),
-    bodyLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 16, color: Color(0xff4a4c4f))),
-    bodyMedium: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 14, color: Color(0xff4a4c4f))),
-    labelLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 15, color: Color(0xff4a4c4f))),
-    bodySmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 13, color: Color(0xff4a4c4f))),
-    labelSmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 11, color: Color(0xff4a4c4f))),
-  );
-
-  static final TextTheme darkTextTheme = TextTheme(
-    displayLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 102, color: Colors.white)),
-    displayMedium: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 64, color: Colors.white)),
-    displaySmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 51, color: Colors.white)),
-    headlineMedium: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 36, color: Colors.white)),
-    headlineSmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 25, color: Colors.white)),
-    titleLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 18, color: Colors.white)),
-    titleMedium: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 17, color: Colors.white)),
-    titleSmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 15, color: Colors.white)),
-    bodyLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 16, color: Colors.white)),
-    bodyMedium: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 14, color: Colors.white)),
-    labelLarge: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 15, color: Colors.white)),
-    bodySmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 13, color: Colors.white)),
-    labelSmall: getTextStyleWithFontFamily(
-        textStyle: const TextStyle(fontSize: 11, color: Colors.white)),
   );
 
   //Color Themes
@@ -278,15 +290,15 @@ class AppTheme {
         color: Colors.white,
       ),
     ),
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
         primary: Styles.lightPrimaryColor,
         onPrimary: Colors.white,
         primaryContainer: Styles.lightPrimaryVariant,
         secondary: Styles.lightSecondaryColor,
         secondaryContainer: Styles.lightSecondaryVariant,
         onSecondary: Colors.white,
-        surface: const Color(0xffe2e7f1),
-        background: const Color(0xfff3f4f7),
+        surface: Color(0xffe2e7f1),
+        background: Color(0xfff3f4f7),
         onBackground: Styles.lightTextColor,
     ).copyWith(error: const Color(0xfff0323c)).copyWith(secondary: Styles.lightPrimaryColor).copyWith(background: Colors.white),
   );
@@ -296,19 +308,14 @@ class AppTheme {
       canvasColor: Colors.transparent,
       primaryColor: Styles.darkPrimaryColor,
       scaffoldBackgroundColor: Styles.darkBackgroundColor,
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         // textTheme: darkAppBarTextTheme,
-        titleTextStyle: TextStyle(
-          color: Styles.darkTextColor,
-        ),
-        toolbarTextStyle: TextStyle(
-          color: Styles.darkTextColor,
-        ),
-        actionsIconTheme: IconThemeData(
+        titleTextStyle: darkAppBarTextTheme.bodyLarge,
+        actionsIconTheme: const IconThemeData(
           color: Styles.darkTextColor,
         ),
         color: Styles.darkAppBarColor,
-        iconTheme: IconThemeData(color: Styles.darkTextColor, size: 24),
+        iconTheme: const IconThemeData(color: Styles.darkTextColor, size: 24),
       ),
       cardTheme: const CardTheme(
         color: Color(0xff37404a),
@@ -323,16 +330,19 @@ class AppTheme {
       indicatorColor: Colors.white,
       disabledColor: const Color(0xffa3a3a3),
       highlightColor: Colors.white,
-      inputDecorationTheme: const InputDecorationTheme(
-        focusedBorder: OutlineInputBorder(
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: darkTextTheme.labelMedium?.copyWith(
+          // color: ,
+        ),
+        focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(4)),
           borderSide: BorderSide(width: 1, color: Color(0xff10bbf0)),
         ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(4)),
           borderSide: BorderSide(width: 1, color: Colors.white70),
         ),
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(4)),
             borderSide: BorderSide(width: 1, color: Colors.white70)),
       ),
@@ -376,7 +386,7 @@ class AppTheme {
           color: Colors.white,
         ),
       ),
-      cupertinoOverrideTheme: const CupertinoThemeData(), colorScheme: ColorScheme.dark(
+      cupertinoOverrideTheme: const CupertinoThemeData(), colorScheme: const ColorScheme.dark(
         primary: Styles.darkPrimaryColor,
         primaryContainer: Styles.darkPrimaryVariant,
         secondary: Styles.darkSecondaryColor,
@@ -385,7 +395,7 @@ class AppTheme {
         onPrimary: Colors.white,
         onBackground: Colors.white,
         onSecondary: Colors.white,
-        surface: const Color(0xff585e63),
+        surface: Color(0xff585e63),
       ).copyWith(background: Colors.black).copyWith(error: Colors.orange).copyWith(secondary: Styles.darkPrimaryColor));
 
   static ThemeData getThemeFromThemeMode(int themeMode) {
