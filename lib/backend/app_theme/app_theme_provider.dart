@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:okoto/configs/app_theme.dart';
 
-import '../../configs/constants.dart';
 import '../../utils/shared_pref_manager.dart';
 
 class AppThemeProvider extends ChangeNotifier {
@@ -11,6 +10,8 @@ class AppThemeProvider extends ChangeNotifier {
   static bool kIsWindow = Platform.isWindows;
   static bool kIsLinux = Platform.isLinux;
   static bool kIsMac = Platform.isMacOS;
+
+  static const String _appThemeModeKey = "themeMode";
 
   static bool kIsFullScreen = kIsLinux || kIsWeb || kIsWindow || kIsMac;
 
@@ -21,7 +22,7 @@ class AppThemeProvider extends ChangeNotifier {
   }
 
   init() async {
-    int? data =  await SharedPrefManager().getInt(SharePreferenceKeys.appThemeMode);
+    int? data =  await SharedPrefManager().getInt(_appThemeModeKey);
     if(data==null) {
       _themeMode = AppTheme.themeDark;
     }
@@ -37,6 +38,6 @@ class AppThemeProvider extends ChangeNotifier {
     _themeMode = themeMode;
     notifyListeners();
 
-    SharedPrefManager().setInt("themeMode", themeMode);
+    SharedPrefManager().setInt(_appThemeModeKey, themeMode);
   }
 }

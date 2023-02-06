@@ -31,7 +31,7 @@ Future<void>? runErrorSafeApp({bool isDev = false}) {
 
       // await Future.delayed(const Duration(seconds: 5));
 
-      print("Hiding Splash Screen");
+      MyPrint.printOnConsole("Hiding Splash Screen");
       // Remove splash screen when bootstrap is complete
       FlutterNativeSplash.remove();
     },
