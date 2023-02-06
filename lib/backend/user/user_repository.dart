@@ -59,4 +59,31 @@ class UserRepository {
 
     return isUserCreated;
   }
+
+  Future<bool> updateUserDataFromMap({required String userId, required Map<String, dynamic> data}) async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+
+    MyPrint.printOnConsole("UserRepository().updateUserDataFromMap() called with userId:'$userId', data:'$data'", tag: tag);
+
+    bool isUserUpdated = false;
+
+    if(userId.isEmpty || data.isEmpty) {
+      return isUserUpdated;
+    }
+
+    try {
+      await FirebaseNodes.userDocumentReference(userId: userId).update(data);
+
+      MyPrint.printOnConsole("User Data Updated from UserRepository().updateUserDataFromMap() with userId:'$userId'", tag: tag);
+      isUserUpdated = true;
+    }
+    catch(e,s) {
+      MyPrint.printOnConsole("Error in UserRepository().updateUserDataFromMap():'$e'", tag: tag);
+      MyPrint.printOnConsole(s ,tag: tag);
+    }
+
+    MyPrint.printOnConsole("Final isUserUpdated:$isUserUpdated", tag: tag);
+
+    return isUserUpdated;
+  }
 }
