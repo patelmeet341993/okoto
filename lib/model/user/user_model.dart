@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../utils/my_utils.dart';
 import '../../utils/parsing_helper.dart';
+import 'user_subscription_model.dart';
 
 class UserModel {
   String id = "", name = "", userName = "", gender = "", mobileNumber = "";
   Timestamp? createdDate, dateOfBirth;
+  bool adminEnabled = true;
+  UserSubscriptionModel? userSubscriptionModel;
 
   UserModel({
     this.id = "",
@@ -14,6 +18,7 @@ class UserModel {
     this.mobileNumber = "",
     this.createdDate,
     this.dateOfBirth,
+    this.adminEnabled = true,
   });
 
   UserModel.fromMap(Map<String, dynamic> map) {
@@ -32,6 +37,14 @@ class UserModel {
     mobileNumber = ParsingHelper.parseStringMethod(map['mobileNumber']);
     createdDate = ParsingHelper.parseTimestampMethod(map['createdDate']);
     dateOfBirth = ParsingHelper.parseTimestampMethod(map['dateOfBirth']);
+    adminEnabled = ParsingHelper.parseBoolMethod(map['adminEnabled']);
+
+    Map<String, dynamic> userSubscriptionModelMap = ParsingHelper.parseMapMethod(map['userSubscriptionModel']).map<String, dynamic>((key, value) {
+      return MapEntry(ParsingHelper.parseStringMethod(key), value);
+    });
+    if(userSubscriptionModelMap.isNotEmpty) {
+      userSubscriptionModel = UserSubscriptionModel.fromMap(userSubscriptionModelMap);
+    }
   }
 
   bool isHavingNecessaryInformation() {
@@ -52,11 +65,12 @@ class UserModel {
       "mobileNumber" : mobileNumber,
       "createdDate" : toJson ? createdDate?.toDate().toIso8601String() : createdDate,
       "dateOfBirth" : toJson ? dateOfBirth?.toDate().toIso8601String() : dateOfBirth,
+      "adminEnabled" : adminEnabled,
     };
   }
 
   @override
-  String toString() {
-    return "UserModel(${toMap()})";
+  String toString({bool toJson = true}) {
+    return toJson ? MyUtils.encodeJson(toMap(toJson: true)) : "UserModel(${toMap(toJson: false)})";
   }
 }

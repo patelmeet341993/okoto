@@ -15,6 +15,14 @@ class PropertyModel {
   });
 
   PropertyModel.fromMap(Map<String, dynamic> map) {
+    _initializeFromMap(map);
+  }
+
+  void updateFromMap(Map<String, dynamic> map) {
+    _initializeFromMap(map);
+  }
+
+  void _initializeFromMap(Map<String, dynamic> map) {
     aboutDescription = ParsingHelper.parseStringMethod(map['aboutDescription']);
     contactNumber = ParsingHelper.parseStringMethod(map['contactNumber']);
     whatsApp = ParsingHelper.parseStringMethod(map['whatsApp']);
