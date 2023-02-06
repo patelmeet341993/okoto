@@ -1,0 +1,7 @@
+//For App Launcher Icons
+flutter pub get
+flutter pub run flutter_launcher_icons:main   //Without Flavor
+flutter pub run flutter_launcher_icons -f <your config file name here>     //With Flavor
+
+//For Native Splash Screen
+flutter pub run flutter_native_splash:create
