@@ -9,6 +9,7 @@ class UserModel {
   Timestamp? createdDate, dateOfBirth;
   bool adminEnabled = true;
   UserSubscriptionModel? userSubscriptionModel;
+  List<String> deviceIds = <String>[];
 
   UserModel({
     this.id = "",
@@ -19,7 +20,10 @@ class UserModel {
     this.createdDate,
     this.dateOfBirth,
     this.adminEnabled = true,
-  });
+    List<String>? deviceIds,
+  }) {
+    this.deviceIds = deviceIds ?? <String>[];
+  }
 
   UserModel.fromMap(Map<String, dynamic> map) {
     _initializeFroMap(map);
@@ -45,6 +49,14 @@ class UserModel {
     if(userSubscriptionModelMap.isNotEmpty) {
       userSubscriptionModel = UserSubscriptionModel.fromMap(userSubscriptionModelMap);
     }
+
+    List<String> deviceIdsList = ParsingHelper.parseListMethod(map['deviceIds']).map((value) {
+      return ParsingHelper.parseStringMethod(value);
+    }).toSet().toList();
+    deviceIdsList.removeWhere((element) => element.isEmpty);
+    if(deviceIdsList.isNotEmpty) {
+      deviceIds = deviceIdsList;
+    }
   }
 
   bool isHavingNecessaryInformation() {
@@ -66,6 +78,7 @@ class UserModel {
       "createdDate" : toJson ? createdDate?.toDate().toIso8601String() : createdDate,
       "dateOfBirth" : toJson ? dateOfBirth?.toDate().toIso8601String() : dateOfBirth,
       "adminEnabled" : adminEnabled,
+      "deviceIds" : deviceIds,
     };
   }
 
