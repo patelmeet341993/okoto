@@ -24,6 +24,13 @@ class UserGender {
   static const List<String> values = [male, female, other];
 }
 
+class OrderType {
+  static const String subscription = "Subscription";
+  static const String product = "Product";
+
+  static const List<String> values = [subscription, product];
+}
+
 class FirebaseNodes {
   //region Admin
   static const String adminCollection = "admin";
@@ -76,3 +83,4 @@ class SharePreferenceKeys {
 class UIConstants {
   static const String noUserImageUrl = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 }
+
