@@ -53,6 +53,71 @@ class FirebaseNodes {
   //endregion
   //endregion
 
+  //region Devices Collection
+  static const String devicesCollection = 'devices';
+
+  static MyFirestoreCollectionReference get devicesCollectionReference => FirestoreController.collectionReference(
+    collectionName: FirebaseNodes.devicesCollection,
+  );
+
+  static MyFirestoreDocumentReference deviceDocumentReference({String? deviceId}) => FirestoreController.documentReference(
+    collectionName: FirebaseNodes.devicesCollection,
+    documentId: deviceId,
+  );
+  //endregion
+
+  //region Games Collection
+  static const String gamesCollection = 'games';
+
+  static MyFirestoreCollectionReference get gamesCollectionReference => FirestoreController.collectionReference(
+    collectionName: FirebaseNodes.gamesCollection,
+  );
+
+  static MyFirestoreDocumentReference gameDocumentReference({String? gameId}) => FirestoreController.documentReference(
+    collectionName: FirebaseNodes.gamesCollection,
+    documentId: gameId,
+  );
+  //endregion
+
+  //region Orders Collection
+  static const String ordersCollection = 'orders';
+
+  static MyFirestoreCollectionReference get ordersCollectionReference => FirestoreController.collectionReference(
+    collectionName: FirebaseNodes.ordersCollection,
+  );
+
+  static MyFirestoreDocumentReference orderDocumentReference({String? orderId}) => FirestoreController.documentReference(
+    collectionName: FirebaseNodes.ordersCollection,
+    documentId: orderId,
+  );
+  //endregion
+
+  //region Products Collection
+  static const String productsCollection = 'products';
+
+  static MyFirestoreCollectionReference get productsCollectionReference => FirestoreController.collectionReference(
+    collectionName: FirebaseNodes.productsCollection,
+  );
+
+  static MyFirestoreDocumentReference productDocumentReference({String? productId}) => FirestoreController.documentReference(
+    collectionName: FirebaseNodes.productsCollection,
+    documentId: productId,
+  );
+  //endregion
+
+  //region Subscriptions Collection
+  static const String subscriptionsCollection = 'subscriptions';
+
+  static MyFirestoreCollectionReference get subscriptionsCollectionReference => FirestoreController.collectionReference(
+    collectionName: FirebaseNodes.subscriptionsCollection,
+  );
+
+  static MyFirestoreDocumentReference subscriptionDocumentReference({String? subscriptionId}) => FirestoreController.documentReference(
+    collectionName: FirebaseNodes.subscriptionsCollection,
+    documentId: subscriptionId,
+  );
+  //endregion
+
   //region Users Collection
   static const String usersCollection = 'users';
 

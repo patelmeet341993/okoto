@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:okoto/view/home/screens/devices_screen.dart';
+import 'package:okoto/view/device/screens/devices_screen.dart';
 import 'package:okoto/view/profile_screen/screens/profile_screen.dart';
 
 import '../../../utils/my_print.dart';

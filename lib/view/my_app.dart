@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:okoto/backend/device/device_provider.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<ConnectionProvider>(create: (_) => ConnectionProvider(), lazy: false),
         ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider(), lazy: false),
         ChangeNotifierProvider<DataProvider>(create: (_) => DataProvider(), lazy: false),
+        ChangeNotifierProvider<DeviceProvider>(create: (_) => DeviceProvider(), lazy: false),
       ],
       child: MainApp(),
     );
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MainApp extends StatelessWidget {
-  MainApp({Key? key}) : super(key: key);
+  const MainApp({Key? key}) : super(key: key);
   // final FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
 
   @override
