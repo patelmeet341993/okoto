@@ -6,6 +6,7 @@ import '../../../utils/my_print.dart';
 import '../../common/components/common_loader.dart';
 import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
+import '../../subscription/screens/subscription_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = "/HomeScreen";
@@ -51,6 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
         return const DevicesScreen();
       }
       case 1:{
+        return const SubscriptionScreen();
+      }
+      case 2:{
         return const ProfileScreen();
       }
       default:{
@@ -80,7 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           getBottomBarIcon(title: 'Devices',icon: Icons.house_outlined,index: 0,),
-          getBottomBarIcon(title: 'Profile',icon: Icons.person_outline_rounded,index: 1,),
+          getBottomBarIcon(title: 'Subscriptions',icon: Icons.person_outline_rounded,index: 1,),
+          getBottomBarIcon(title: 'Profile',icon: Icons.person_outline_rounded,index: 2,),
         ],
       ),
     );
