@@ -78,6 +78,7 @@ class UserModel {
       "createdDate" : toJson ? createdDate?.toDate().toIso8601String() : createdDate,
       "dateOfBirth" : toJson ? dateOfBirth?.toDate().toIso8601String() : dateOfBirth,
       "adminEnabled" : adminEnabled,
+      "userSubscriptionModel" : userSubscriptionModel?.toMap(),
       "deviceIds" : deviceIds,
     };
   }
