@@ -45,6 +45,30 @@ class DataController {
     return dataProvider.propertyModel;
   }
 
+  static Future<PaymentCredentialsModel?> getPaymentCredentialsData() async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+    MyPrint.printOnConsole("DataController.getPaymentCredentialsData() called", tag: tag);
+
+    PaymentCredentialsModel? paymentCredentialsModel;
+
+    try {
+      MyFirestoreDocumentSnapshot snapshot = await FirebaseNodes.adminPaymentDocumentReference.get();
+      MyPrint.printOnConsole("Payment Snapshot Data:'${snapshot.data()}'", tag: tag);
+
+      if(snapshot.data()?.isNotEmpty ?? false) {
+        paymentCredentialsModel = PaymentCredentialsModel.fromMap(snapshot.data()!);
+      }
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in Getting PaymentCredentials Data in AdminController.getPaymentCredentialsData():$e", tag: tag);
+      MyPrint.printOnConsole(s, tag: tag);
+    }
+
+    MyPrint.printOnConsole("Final paymentCredentialsModel:$paymentCredentialsModel");
+
+    return paymentCredentialsModel;
+  }
+
   void showTermsAndConditionBottomSheet({required BuildContext context}){
     String termsAndConditionsUrl = dataProvider.propertyModel.termsAndConditionsUrl;
 
