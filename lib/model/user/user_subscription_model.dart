@@ -47,8 +47,8 @@ class UserSubscriptionModel {
 
   Map<String, dynamic> toMap({bool toJson = false}) {
     return <String, dynamic>{
-      "mySubscription" : mySubscription?.userSubscriptionModelToMap(),
-      "advancedSubscription" : advancedSubscription?.userSubscriptionModelToMap(),
+      "mySubscription" : mySubscription?.userSubscriptionModelToMap(toJson: toJson),
+      "advancedSubscription" : advancedSubscription?.userSubscriptionModelToMap(toJson: toJson),
       "isActive" : isActive,
       "activatedDate" : toJson ? activatedDate?.toDate().toIso8601String() : activatedDate,
       "expiryDate" : toJson ? expiryDate?.toDate().toIso8601String() : expiryDate,
