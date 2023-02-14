@@ -51,6 +51,14 @@ class FirebaseNodes {
     documentId: propertyDocument,
   );
   //endregion
+
+  //region Payment Document
+  static const String paymentDocument = "payment";
+
+  static MyFirestoreDocumentReference get adminPaymentDocumentReference => adminDocumentReference(
+    documentId: paymentDocument,
+  );
+  //endregion
   //endregion
 
   //region Devices Collection
