@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:okoto/configs/typedefs.dart';
 
 import '../../configs/constants.dart';
-import '../../model/property/property_model.dart';
+import '../../model/admin/payment_credentials_model.dart';
+import '../../model/admin/property_model.dart';
 import '../../utils/my_print.dart';
 import '../../utils/my_utils.dart';
 import '../navigation/navigation.dart';
