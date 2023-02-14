@@ -10,6 +10,7 @@ import '../../utils/parsing_helper.dart';
 
 class OrderModel {
   String id = "", type = "", paymentMode = "", paymentId = "", paymentStatus = "";
+  double amount = 0;
   Timestamp? createdTime;
   SubscriptionModel? subscriptionOrderDataModel;
   ProductModel? productOrderDataModel;
@@ -20,7 +21,10 @@ class OrderModel {
     this.paymentMode = "",
     this.paymentId = "",
     this.paymentStatus = "",
+    this.amount = 0,
     this.createdTime,
+    this.subscriptionOrderDataModel,
+    this.productOrderDataModel,
   });
 
   OrderModel.fromMap(Map<String, dynamic> map) {
@@ -37,6 +41,7 @@ class OrderModel {
     paymentMode = ParsingHelper.parseStringMethod(map['paymentMode']);
     paymentId = ParsingHelper.parseStringMethod(map['paymentId']);
     paymentStatus = ParsingHelper.parseStringMethod(map['paymentStatus']);
+    amount = ParsingHelper.parseDoubleMethod(map['amount']);
     createdTime = ParsingHelper.parseTimestampMethod(map['createdTime']);
 
     Map<String, dynamic> subscriptionOrderDataModelMap = ParsingHelper.parseMapMethod(map['subscriptionOrderDataModel']).map<String, dynamic>((key, value) {
@@ -61,9 +66,10 @@ class OrderModel {
       "paymentMode" : paymentMode,
       "paymentId" : paymentId,
       "paymentStatus" : paymentStatus,
+      "amount" : amount,
+      "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
       "subscriptionOrderDataModel" : subscriptionOrderDataModel?.orderModelToMap(toJson: toJson),
       "productOrderDataModel" : productOrderDataModel?.orderModelToMap(toJson: toJson),
-      "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
     };
   }
 
