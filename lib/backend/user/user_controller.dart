@@ -106,6 +106,25 @@ class UserController {
     return userModel;
   }
 
+  Future<void> getUserDataAndStoreInProvider({required String userId}) async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+
+    MyPrint.printOnConsole("UserController().getUserDataAndStoreInProvider() called with userId:'$userId'", tag: tag);
+
+    try {
+      UserModel? userModel = await userRepository.getUserModelFromId(userId: userId);
+      MyPrint.printOnConsole("userModel:'$userModel'", tag: tag);
+
+      if(userModel != null) {
+        userProvider.setUserModel(userModel: userModel, isNotify: false);
+      }
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in UserController().getUserDataAndStoreInProvider():'$e'", tag: tag);
+      MyPrint.printOnConsole(s, tag: tag);
+    }
+  }
+
   Future<bool> updateUserData({required UserModel userModel}) async {
     String tag = MyUtils.getUniqueIdFromUuid();
 
