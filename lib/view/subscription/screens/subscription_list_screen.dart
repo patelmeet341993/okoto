@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:okoto/backend/subscription/subscription_controller.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
-import 'package:okoto/view/common/components/common_button1.dart';
+import 'package:okoto/utils/my_toast.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
 import 'package:okoto/view/common/components/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 
 import '../../../backend/subscription/subscription_provider.dart';
+import '../components/subscription_card.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({Key? key}) : super(key: key);
@@ -30,15 +31,36 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   Future<void> buySubscription({required SubscriptionModel subscriptionModel}) async {
+    String userId = userProvider.getUserId();
+
+    if(userId.isEmpty) {
+      MyToast.showError(context: context, msg: "User Data Not Available");
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
 
+    bool isSubscriptionBuySuccessful = await subscriptionController.buySubscription(
+      context: context,
+      userId: userId,
+      subscriptionModel: subscriptionModel,
+      userProvider: userProvider,
+    );
 
+    if(context.mounted) {
+      setState(() {
+        isLoading = false;
+      });
 
-    setState(() {
-      isLoading = false;
-    });
+      if(isSubscriptionBuySuccessful) {
+        // MyToast.showSuccess(context: context, msg: "New Subscription Activated");
+      }
+      /*else {
+        MyToast.showError(context: context, msg: "Couldn't Buy Subscription");
+      }*/
+    }
   }
 
   @override
@@ -76,7 +98,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ),
               ),
               body: SafeArea(
-                child: getMainBody(subscriptionProvider: subscriptionProvider),
+                child: getMainBody(
+                  subscriptionProvider: subscriptionProvider,
+                  userProvider: userProvider,
+                ),
               ),
             ),
           );
@@ -85,7 +110,43 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     );
   }
 
-  Widget getMainBody({required SubscriptionProvider subscriptionProvider}) {
+  Widget getMainBody({required SubscriptionProvider subscriptionProvider, required UserProvider userProvider}) {
+    SubscriptionModel? activeSubscriptionModel = userProvider.getUserModel()?.userSubscriptionModel?.mySubscription;
+
+    return Column(
+      children: [
+        // getActiveSubscriptionWidget(activeSubscriptionModel: activeSubscriptionModel),
+        Expanded(
+          child: getSubscriptionsListView(
+            subscriptionProvider: subscriptionProvider,
+            activeSubscriptionModel: activeSubscriptionModel,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget getActiveSubscriptionWidget({required SubscriptionModel? activeSubscriptionModel,}) {
+    if(activeSubscriptionModel == null) {
+      return const SizedBox();
+    }
+
+    return Container(
+      decoration: const BoxDecoration(
+
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text("Active Subscription"),
+          const SizedBox(height: 10,),
+          SubscriptionCard(subscriptionModel: activeSubscriptionModel, showBuyButton: false),
+        ],
+      ),
+    );
+  }
+
+  Widget getSubscriptionsListView({required SubscriptionProvider subscriptionProvider, required SubscriptionModel? activeSubscriptionModel,}) {
     if(subscriptionProvider.isAllSubscriptionsLoading) {
       return const Center(
         child: CommonLoader(isCenter: true),
@@ -118,30 +179,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         itemBuilder: (BuildContext context, int index) {
           SubscriptionModel subscriptionModel = subscriptions[index];
 
-          return getSubscriptionCard(subscriptionModel: subscriptionModel);
-        },
-      ),
-    );
-  }
+          bool isActiveSubscription = activeSubscriptionModel?.id == subscriptionModel.id;
 
-  Widget getSubscriptionCard({required SubscriptionModel subscriptionModel}) {
-    return Card(
-      child: Column(
-        children: [
-          Text(subscriptionModel.id),
-          Text(subscriptionModel.name),
-          Text("Price: \$${subscriptionModel.price}"),
-          Text("Validity: ${subscriptionModel.validityInDays} Days"),
-          Text("Games: ${subscriptionModel.gamesList}"),
-          const SizedBox(height: 10,),
-          CommonButton1(
-            onTap: () {
-              buySubscription(subscriptionModel: subscriptionModel);
-            },
-            text: "Buy",
-          ),
-          const SizedBox(height: 10,),
-        ],
+          // return getSubscriptionCard(subscriptionModel: subscriptionModel);
+          return SubscriptionCard(
+            subscriptionModel: subscriptionModel,
+            showBuyButton: !isActiveSubscription,
+            isActiveSubscription: isActiveSubscription,
+            buySubscriptionCallback: buySubscription,
+          );
+        },
       ),
     );
   }
