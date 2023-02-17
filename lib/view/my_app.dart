@@ -8,6 +8,7 @@ import '../backend/common/app_controller.dart';
 import '../backend/connection/connection_provider.dart';
 import '../backend/data/data_provider.dart';
 import '../backend/navigation/navigation_controller.dart';
+import '../backend/order/order_provider.dart';
 import '../backend/subscription/subscription_provider.dart';
 import '../configs/app_theme.dart';
 import '../configs/constants.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<DataProvider>(create: (_) => DataProvider(), lazy: false),
         ChangeNotifierProvider<DeviceProvider>(create: (_) => DeviceProvider(), lazy: false),
         ChangeNotifierProvider<SubscriptionProvider>(create: (_) => SubscriptionProvider(), lazy: false),
+        ChangeNotifierProvider<OrderProvider>(create: (_) => OrderProvider(), lazy: false),
       ],
       child: const MainApp(),
     );
