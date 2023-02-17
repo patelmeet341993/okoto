@@ -9,7 +9,7 @@ import '../../utils/parsing_helper.dart';
 /// types of Order are defined in [OrderType]
 
 class OrderModel {
-  String id = "", type = "", paymentMode = "", paymentId = "", paymentStatus = "";
+  String id = "", type = "", paymentMode = "", paymentId = "", paymentStatus = "", userId = "";
   double amount = 0;
   Timestamp? createdTime;
   SubscriptionModel? subscriptionOrderDataModel;
@@ -21,6 +21,7 @@ class OrderModel {
     this.paymentMode = "",
     this.paymentId = "",
     this.paymentStatus = "",
+    this.userId = "",
     this.amount = 0,
     this.createdTime,
     this.subscriptionOrderDataModel,
@@ -41,6 +42,7 @@ class OrderModel {
     paymentMode = ParsingHelper.parseStringMethod(map['paymentMode']);
     paymentId = ParsingHelper.parseStringMethod(map['paymentId']);
     paymentStatus = ParsingHelper.parseStringMethod(map['paymentStatus']);
+    userId = ParsingHelper.parseStringMethod(map['userId']);
     amount = ParsingHelper.parseDoubleMethod(map['amount']);
     createdTime = ParsingHelper.parseTimestampMethod(map['createdTime']);
 
@@ -66,6 +68,7 @@ class OrderModel {
       "paymentMode" : paymentMode,
       "paymentId" : paymentId,
       "paymentStatus" : paymentStatus,
+      "userId" : userId,
       "amount" : amount,
       "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
       "subscriptionOrderDataModel" : subscriptionOrderDataModel?.orderModelToMap(toJson: toJson),
