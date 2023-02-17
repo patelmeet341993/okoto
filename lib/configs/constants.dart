@@ -12,6 +12,11 @@ class AppConstants {
   }
 }
 
+class AppConfigurations {
+  static const int ordersDocumentLimit = 5;
+  static const int ordersRefreshLimit = 2;
+}
+
 class FirestoreExceptionCodes {
   static const String notFound = "not-found";
 }
