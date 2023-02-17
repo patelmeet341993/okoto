@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:provider/provider.dart';
 
 import '../../../backend/authentication/authentication_controller.dart';
@@ -47,6 +48,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    singleOption1(
+                      iconData: Icons.list,
+                      option: "Orders",
+                      ontap: () async {
+                        NavigationController.navigateToOrderListScreen(navigationOperationParameters: NavigationOperationParameters(
+                          context: context,
+                          navigationType: NavigationType.pushNamed,
+                        ));
+                      },
+                    ),
                     singleOption1(
                       iconData: Icons.logout,
                       option: "Logout",
