@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:okoto/utils/extensions.dart';
 
 import '../../configs/constants.dart';
 import '../../model/common/new_document_data_model.dart';
@@ -9,12 +10,17 @@ import 'user_provider.dart';
 import 'user_repository.dart';
 
 class UserController {
-  late UserProvider userProvider;
-  late UserRepository userRepository;
+  late UserProvider _userProvider;
+  late UserRepository _userRepository;
 
-  UserController({required this.userProvider, UserRepository? repository}) {
-    userRepository = repository ?? UserRepository();
+  UserController({required UserProvider? userProvider, UserRepository? repository}) {
+    _userProvider = userProvider ?? UserProvider();
+    _userRepository = repository ?? UserRepository();
   }
+
+  UserProvider get userProvider => _userProvider;
+
+  UserRepository get userRepository => _userRepository;
 
   Future<bool> checkUserWithIdExistOrNot({required String userId}) async {
     String tag = MyUtils.getUniqueIdFromUuid();
@@ -184,5 +190,27 @@ class UserController {
       MyPrint.printOnConsole("Error in UserController().updateUserData():'$e'", tag: tag);
       MyPrint.printOnConsole(s, tag: tag);
     }
+  }
+
+  Future<bool> checkUserHavingDevices({required String userId}) async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+    MyPrint.printOnConsole("UserController().checkUserHavingDevices() called with userId:$userId", tag: tag);
+
+    bool isUserHavingDevices = false;
+
+    try {
+      UserModel? userModel = await userRepository.getUserModelFromId(userId: userId);
+      MyPrint.printOnConsole("userModel:$userModel", tag: tag);
+
+      isUserHavingDevices = (userModel?.deviceIds).checkNotEmpty;
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in UserController().checkUserHavingDevices():$e", tag: tag);
+      MyPrint.printOnConsole(s, tag: tag);
+    }
+
+    MyPrint.printOnConsole("isUserHavingDevices:$isUserHavingDevices", tag: tag);
+
+    return isUserHavingDevices;
   }
 }
