@@ -54,9 +54,22 @@ class SubscriptionController {
 
   Future<bool> buySubscription({required BuildContext context, required SubscriptionModel subscriptionModel, required String userId,
     required UserProvider userProvider}) async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+    MyPrint.printOnConsole("SubscriptionController().buySubscription() called with context:$context, subscriptionModel:$subscriptionModel, userId:$userId", tag: tag);
+
     bool isBuySuccessful = false;
 
     if(userId.isEmpty) {
+      MyPrint.printOnConsole("Returning from buySubscription because userId is empty", tag: tag);
+      return isBuySuccessful;
+    }
+
+    bool isUserHavingDevices = await UserController(userProvider: null).checkUserHavingDevices(userId: userId);
+    MyPrint.printOnConsole("isUserHavingDevices:$isUserHavingDevices", tag: tag);
+
+    if(!isUserHavingDevices) {
+      MyPrint.printOnConsole("Returning from buySubscription because user is not having any device.", tag: tag);
+      if(context.mounted) MyToast.showError(context: context, msg: "You don't have any devices. Please Add a device first.");
       return isBuySuccessful;
     }
 
@@ -93,6 +106,9 @@ class SubscriptionController {
     );*/
     //endregion
 
+    MyPrint.printOnConsole("isPaymentSuccess:$isPaymentSuccess", tag: tag);
+    MyPrint.printOnConsole("paymentId:$paymentId", tag: tag);
+
     if(isPaymentSuccess == true) {
       bool isOrderCreated = await OrderController(orderProvider: null).createOrderForSubscription(
         subscriptionModel: subscriptionModel,
@@ -101,8 +117,10 @@ class SubscriptionController {
         paymentStatus: "Completed",
         amount: amount,
       );
+      MyPrint.printOnConsole("isOrderCreated:$isOrderCreated", tag: tag);
 
       if(!isOrderCreated) {
+        MyPrint.printOnConsole("Returning from buySubscription because Order Couldn't create in Firestore", tag: tag);
         if(context.mounted) {
           MyToast.showError(context: context, msg: "Couldn't Place Order for Subscription");
         }
@@ -110,6 +128,7 @@ class SubscriptionController {
       }
 
       bool isSubscriptionActivated = await _subscriptionRepository.activateSubscriptionForUser(subscriptionModel: subscriptionModel, userId: userId);
+      MyPrint.printOnConsole("isSubscriptionActivated:$isSubscriptionActivated", tag: tag);
 
       if(isSubscriptionActivated) {
         isBuySuccessful = true;
@@ -121,11 +140,14 @@ class SubscriptionController {
         }
       }
       else {
+        MyPrint.printOnConsole("Couldn't Activate Subscription for user", tag: tag);
         if(context.mounted) {
-          MyToast.showError(context: context, msg: "Couldn't Place Order for Subscription");
+          MyToast.showError(context: context, msg: "Couldn't Activate Subscription");
         }
       }
     }
+
+    MyPrint.printOnConsole("isBuySuccessful:$isBuySuccessful", tag: tag);
 
     return isBuySuccessful;
   }
