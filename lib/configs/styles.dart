@@ -43,4 +43,15 @@ class Styles {
   static Color shimmerBaseColor = const Color(0xffb6b6b6);
   static Color shimmerContainerColor = const Color(0xffc2c2c2);
   //endregion
+
+  //myCustomColors
+
+  static Color myDarkVioletColor = const Color(0xff31144B);
+  static Color myPinkShade = const Color(0xffA154F1);
+  static Color myLightPinkShade = const Color(0xffFFAAD4);
+
+  //endregion
+
+
+
 }

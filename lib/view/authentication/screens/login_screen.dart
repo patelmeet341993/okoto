@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
 
 import '../../../backend/navigation/navigation.dart';
+import '../../../configs/styles.dart';
 import '../../../utils/my_print.dart';
 import '../../common/components/common_primary_button.dart';
 import '../../common/components/modal_progress_hud.dart';
@@ -17,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   late ThemeData themeData;
 
   bool isFirst = true, isLoading = false;
@@ -69,6 +71,51 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: Scaffold(
         body: Container(
+
+          color:  Styles.myDarkVioletColor,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        getTopShapeAndIllustrate(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+
+
+      ModalProgressHUD(
+      inAsyncCall: isLoading,
+      color: Colors.black,
+      progressIndicator: Container(
+        padding: const EdgeInsets.all(100),
+        child: Center(
+          child: Container(
+            height: 90,
+            width: 90,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            child: const CommonLoader(),
+          ),
+        ),
+      ),
+      child: Scaffold(
+        body: Container(
           padding: const EdgeInsets.only(top: 0),
           child: Column(
             children: <Widget>[
@@ -99,6 +146,35 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget getTopShapeAndIllustrate(){
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        CustomPaint(
+          size: Size(double.maxFinite,320),
+          painter: TopCustomShape(),
+        ),
+        Positioned(
+          bottom: -50,
+          left: 0,
+          right: 0,
+          child: Container(
+            width: 280,
+            height: 280,
+            child: Image.asset(
+               "assets/images/login_illu.png",
+            ),
+          ),),
+      ],
+    );
+  }
+
+
+
+
+
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
   Widget getLogo() {
     double width = MediaQuery.of(context).size.width * 0.7;
 
@@ -276,4 +352,66 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );*/
   }
+
+
+
 }
+
+
+class TopCustomShape extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint();
+    paint.color =Styles.myPinkShade;
+    paint.shader = LinearGradient(
+      colors: [
+        Styles.myLightPinkShade,
+        Styles.myPinkShade,
+      ],
+    ).createShader(Rect.fromLTWH(
+      0,0,size.width,size.height
+    ));
+    paint.style = PaintingStyle.fill;
+    paint.strokeWidth =  6.0;
+
+    var path = Path();
+    path.conicTo(0,  size.height, size.width, size.height/2, 180);
+    path.moveTo(size.width, size.height/2);
+    path.lineTo(size.width, 0);
+    path.lineTo(0, 0);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+
+class MYCustomShape extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint();
+
+    paint.color = Colors.red;
+    paint.style = PaintingStyle.stroke;
+    paint.strokeWidth =  6.0;
+
+    var path = Path();
+    //path.conicTo(0,  size.height, size.width, size.height/2, 180);
+      // path.lineTo(0,size.height);
+      // path.lineTo(size.height,size.width);
+    //path.lineTo(15, 85);
+
+     path.lineTo(50, 50);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
