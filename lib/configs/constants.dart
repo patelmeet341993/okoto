@@ -12,6 +12,11 @@ class AppConstants {
   }
 }
 
+class AppConfigurations {
+  static const int ordersDocumentLimit = 5;
+  static const int ordersRefreshLimit = 2;
+}
+
 class FirestoreExceptionCodes {
   static const String notFound = "not-found";
 }
@@ -49,6 +54,14 @@ class FirebaseNodes {
 
   static MyFirestoreDocumentReference get adminPropertyDocumentReference => adminDocumentReference(
     documentId: propertyDocument,
+  );
+  //endregion
+
+  //region Payment Document
+  static const String paymentDocument = "payment";
+
+  static MyFirestoreDocumentReference get adminPaymentDocumentReference => adminDocumentReference(
+    documentId: paymentDocument,
   );
   //endregion
   //endregion

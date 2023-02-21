@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../model/property/property_model.dart';
+import '../../model/admin/property_model.dart';
 
 class DataProvider extends ChangeNotifier {
   //region PropertyModel

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:okoto/configs/typedefs.dart';
 
 import '../../configs/constants.dart';
-import '../../model/property/property_model.dart';
+import '../../model/admin/payment_credentials_model.dart';
+import '../../model/admin/property_model.dart';
 import '../../utils/my_print.dart';
 import '../../utils/my_utils.dart';
 import '../navigation/navigation.dart';
@@ -42,6 +43,30 @@ class DataController {
     MyPrint.printOnConsole("Final propertyModel:${dataProvider.propertyModel}", tag: tag);
 
     return dataProvider.propertyModel;
+  }
+
+  static Future<PaymentCredentialsModel?> getPaymentCredentialsData() async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+    MyPrint.printOnConsole("DataController.getPaymentCredentialsData() called", tag: tag);
+
+    PaymentCredentialsModel? paymentCredentialsModel;
+
+    try {
+      MyFirestoreDocumentSnapshot snapshot = await FirebaseNodes.adminPaymentDocumentReference.get();
+      MyPrint.printOnConsole("Payment Snapshot Data:'${snapshot.data()}'", tag: tag);
+
+      if(snapshot.data()?.isNotEmpty ?? false) {
+        paymentCredentialsModel = PaymentCredentialsModel.fromMap(snapshot.data()!);
+      }
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in Getting PaymentCredentials Data in AdminController.getPaymentCredentialsData():$e", tag: tag);
+      MyPrint.printOnConsole(s, tag: tag);
+    }
+
+    MyPrint.printOnConsole("Final paymentCredentialsModel:$paymentCredentialsModel");
+
+    return paymentCredentialsModel;
   }
 
   void showTermsAndConditionBottomSheet({required BuildContext context}){

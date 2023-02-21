@@ -10,6 +10,7 @@ import '../../view/common/screens/about_app_screen.dart';
 import '../../view/common/screens/splashscreen.dart';
 import '../../view/common/screens/terms_and_conditions_screen.dart';
 import '../../view/home/screens/home_screen.dart';
+import '../../view/order/screens/order_list_screen.dart';
 import 'navigation_arguments.dart';
 import 'navigation_operation.dart';
 import 'navigation_operation_parameters.dart';
@@ -107,6 +108,10 @@ class NavigationController {
         page = parseAboutAppScreen(settings: settings);
         break;
       }
+      case OrderListScreen.routeName: {
+        page = parseOrderListScreen(settings: settings);
+        break;
+      }
     }
 
     if (page != null) {
@@ -170,6 +175,10 @@ class NavigationController {
       return null;
     }
   }
+
+  static Widget? parseOrderListScreen({required RouteSettings settings}) {
+    return const OrderListScreen();
+  }
   //endregion
 
   //region Navigation Methods
@@ -209,6 +218,12 @@ class NavigationController {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: AboutAppScreen.routeName,
       arguments: arguments,
+    ));
+  }
+
+  static Future<dynamic> navigateToOrderListScreen({required NavigationOperationParameters navigationOperationParameters}) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: OrderListScreen.routeName,
     ));
   }
   //endregion
