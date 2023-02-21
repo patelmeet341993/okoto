@@ -4,7 +4,7 @@ import '../../utils/my_utils.dart';
 import '../../utils/parsing_helper.dart';
 
 class GameModel {
-  String id = "", name = "", thumbnailImage = "";
+  String id = "", name = "", thumbnailImage = "" , description = "";
   List<String> gameImages = <String>[];
   bool enabled = true;
   Timestamp? createdTime;
@@ -12,6 +12,7 @@ class GameModel {
   GameModel({
     required this.id,
     this.name = "",
+    this.description = '',
     this.thumbnailImage = "",
     List<String>? gameImages,
     this.enabled = true,
@@ -31,6 +32,7 @@ class GameModel {
   void _initializeFromMap(Map<String, dynamic> map) {
     id = ParsingHelper.parseStringMethod(map['id']);
     name = ParsingHelper.parseStringMethod(map['name']);
+    description = ParsingHelper.parseStringMethod(map['description']);
     thumbnailImage = ParsingHelper.parseStringMethod(map['thumbnailImage']);
     gameImages = ParsingHelper.parseListMethod<dynamic, String>(map['gameImages']);
     enabled = ParsingHelper.parseBoolMethod(map['enabled'], defaultValue: true);
@@ -41,6 +43,7 @@ class GameModel {
     return {
       "id" : id,
       "name" : name,
+      "description" : description,
       "thumbnailImage" : thumbnailImage,
       "gameImages" : gameImages,
       "enabled" : enabled,

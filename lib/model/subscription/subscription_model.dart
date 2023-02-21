@@ -3,7 +3,7 @@ import 'package:okoto/utils/my_utils.dart';
 import 'package:okoto/utils/parsing_helper.dart';
 
 class SubscriptionModel {
-  String id = "", name = "", image = "";
+  String id = "", name = "", image = "",description = "";
   double price = 0, discountedPrice = -1;
   List<String> gamesList = <String>[];
   bool enabled = true;
@@ -15,6 +15,7 @@ class SubscriptionModel {
     this.name = "",
     this.image = "",
     this.price = 0,
+    this.description = "",
     this.discountedPrice = -1,
     List<String>? gamesList,
     this.enabled = true,
@@ -36,6 +37,7 @@ class SubscriptionModel {
     id = ParsingHelper.parseStringMethod(map['id']);
     name = ParsingHelper.parseStringMethod(map['name']);
     image = ParsingHelper.parseStringMethod(map['image']);
+    description = ParsingHelper.parseStringMethod(map['description']);
     price = ParsingHelper.parseDoubleMethod(map['price']);
     discountedPrice = ParsingHelper.parseDoubleMethod(map['discountedPrice'], defaultValue: -1);
     gamesList = ParsingHelper.parseListMethod<dynamic, String>(map['gamesList']);
@@ -49,6 +51,7 @@ class SubscriptionModel {
       "id" : id,
       "name" : name,
       "image" : image,
+      "description" : description,
       "price" : price,
       "discountedPrice" : discountedPrice,
       "gamesList" : gamesList,
@@ -63,6 +66,7 @@ class SubscriptionModel {
       "id" : id,
       "name" : name,
       "image" : image,
+      "description" : description,
       "price" : price,
       "discountedPrice" : discountedPrice,
       "gamesList" : gamesList,
@@ -77,6 +81,7 @@ class SubscriptionModel {
       "id" : id,
       "name" : name,
       "image" : image,
+      "description" : description,
       "price" : price,
       "discountedPrice" : discountedPrice,
       "gamesList" : gamesList,
