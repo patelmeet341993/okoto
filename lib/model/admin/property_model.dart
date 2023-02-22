@@ -3,7 +3,7 @@ import '../../utils/parsing_helper.dart';
 
 class PropertyModel {
   String aboutDescription = "", contactNumber = "", whatsApp = "", termsAndConditionsUrl = "", privacyAndPolicyUrl = "";
-  bool notificationsEnabled = false;
+  bool notificationsEnabled = false, subscriptionDeleteEnabled = false;
 
   PropertyModel({
     this.aboutDescription = "",
@@ -12,6 +12,7 @@ class PropertyModel {
     this.termsAndConditionsUrl = "",
     this.privacyAndPolicyUrl = "",
     this.notificationsEnabled = false,
+    this.subscriptionDeleteEnabled = false,
   });
 
   PropertyModel.fromMap(Map<String, dynamic> map) {
@@ -29,6 +30,7 @@ class PropertyModel {
     termsAndConditionsUrl = ParsingHelper.parseStringMethod(map['termsAndConditionsUrl']);
     privacyAndPolicyUrl = ParsingHelper.parseStringMethod(map['privacyAndPolicyUrl']);
     notificationsEnabled = ParsingHelper.parseBoolMethod(map['notificationsEnabled']);
+    subscriptionDeleteEnabled = ParsingHelper.parseBoolMethod(map['subscriptionDeleteEnabled']);
   }
 
   Map<String, dynamic> toMap() {
@@ -39,6 +41,7 @@ class PropertyModel {
       "termsAndConditionsUrl": termsAndConditionsUrl,
       "privacyAndPolicyUrl": privacyAndPolicyUrl,
       "notificationsEnabled": notificationsEnabled,
+      "subscriptionDeleteEnabled": subscriptionDeleteEnabled,
     };
   }
 
