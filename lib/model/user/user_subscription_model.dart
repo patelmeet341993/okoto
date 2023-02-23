@@ -8,6 +8,7 @@ class UserSubscriptionModel {
   SubscriptionModel? mySubscription, advancedSubscription;
   bool isActive = false;
   Timestamp? activatedDate, expiryDate;
+  List<String> selectedGames = <String>[];
 
   UserSubscriptionModel({
     this.mySubscription,
@@ -15,7 +16,10 @@ class UserSubscriptionModel {
     this.isActive = false,
     this.activatedDate,
     this.expiryDate,
-  });
+    List<String>? selectedGames,
+  }) {
+    this.selectedGames = selectedGames ?? <String>[];
+  }
 
   UserSubscriptionModel.fromMap(Map<String, dynamic> map) {
     _initializeFroMap(map);
@@ -43,6 +47,8 @@ class UserSubscriptionModel {
     isActive = ParsingHelper.parseBoolMethod(map['isActive'], defaultValue: false);
     activatedDate = ParsingHelper.parseTimestampMethod(map['activatedDate']);
     expiryDate = ParsingHelper.parseTimestampMethod(map['expiryDate']);
+
+    selectedGames = ParsingHelper.parseListMethod<dynamic, String>(map['selectedGames']);
   }
 
   Map<String, dynamic> toMap({bool toJson = false}) {
@@ -52,6 +58,7 @@ class UserSubscriptionModel {
       "isActive" : isActive,
       "activatedDate" : toJson ? activatedDate?.toDate().toIso8601String() : activatedDate,
       "expiryDate" : toJson ? expiryDate?.toDate().toIso8601String() : expiryDate,
+      "selectedGames" : selectedGames,
     };
   }
 
