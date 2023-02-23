@@ -7,7 +7,7 @@ class SubscriptionModel {
   double price = 0, discountedPrice = -1;
   List<String> gamesList = <String>[];
   bool enabled = true;
-  int validityInDays = 28;
+  int validityInDays = 28, requiredGamesCount = 0;
   Timestamp? createdTime;
 
   SubscriptionModel({
@@ -20,6 +20,7 @@ class SubscriptionModel {
     List<String>? gamesList,
     this.enabled = true,
     this.validityInDays = 28,
+    this.requiredGamesCount = 0,
     this.createdTime,
   }) {
     this.gamesList = gamesList ?? <String>[];
@@ -43,6 +44,7 @@ class SubscriptionModel {
     gamesList = ParsingHelper.parseListMethod<dynamic, String>(map['gamesList']);
     enabled = ParsingHelper.parseBoolMethod(map['enabled'], defaultValue: true);
     validityInDays = ParsingHelper.parseIntMethod(map['validityInDays'], defaultValue: 28);
+    requiredGamesCount = ParsingHelper.parseIntMethod(map['requiredGamesCount'], defaultValue: 0);
     createdTime = ParsingHelper.parseTimestampMethod(map['createdTime']);
   }
 
@@ -72,6 +74,7 @@ class SubscriptionModel {
       "gamesList" : gamesList,
       "enabled" : enabled,
       "validityInDays" : validityInDays,
+      "requiredGamesCount" : requiredGamesCount,
       "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
     };
   }
@@ -87,6 +90,7 @@ class SubscriptionModel {
       "gamesList" : gamesList,
       "enabled" : enabled,
       "validityInDays" : validityInDays,
+      "requiredGamesCount" : requiredGamesCount,
       "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
     };
   }
