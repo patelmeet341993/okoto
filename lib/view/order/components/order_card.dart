@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:okoto/model/order/order_model.dart';
 import 'package:okoto/model/product/product_model.dart';
-import 'package:okoto/model/subscription/subscription_model.dart';
+
+import '../../../model/order/subscription_order_data_model.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderModel orderModel;
@@ -23,7 +24,7 @@ class OrderCard extends StatelessWidget {
             Text("paymentStatus: ${orderModel.paymentStatus}"),
             Text("paymentMode: ${orderModel.paymentMode}"),
             Text("paymentId: ${orderModel.paymentId}"),
-            getSubscriptionWidget(subscriptionModel: orderModel.subscriptionOrderDataModel),
+            getSubscriptionWidget(subscriptionOrderDataModel: orderModel.subscriptionOrderDataModel),
             getProductWidget(productModel: orderModel.productOrderDataModel),
           ],
         ),
@@ -31,12 +32,12 @@ class OrderCard extends StatelessWidget {
     );
   }
 
-  Widget getSubscriptionWidget({required SubscriptionModel? subscriptionModel}) {
-    if(subscriptionModel == null) {
+  Widget getSubscriptionWidget({required SubscriptionOrderDataModel? subscriptionOrderDataModel}) {
+    if(subscriptionOrderDataModel?.subscriptionModel == null) {
       return const SizedBox();
     }
 
-    return Text("Subscription:${subscriptionModel.name}");
+    return Text("Subscription:${subscriptionOrderDataModel?.subscriptionModel?.name}");
   }
 
   Widget getProductWidget({required ProductModel? productModel}) {
