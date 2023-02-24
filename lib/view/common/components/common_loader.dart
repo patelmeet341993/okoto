@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../../../configs/styles.dart';
+
 class CommonLoader extends StatelessWidget {
   final double size;
   final Color? backgroundColor, ringColor;
@@ -34,11 +36,13 @@ class CommonLoader extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: backgroundColor ?? themeData.colorScheme.primary,
+        color:Styles.myVioletColor.withOpacity(.95) ,
+        //  color:Styles.myLightVioletShade2 ,
         borderRadius: BorderRadius.circular(size * 0.2),
       ),
       child: SpinKitDualRing(
-        color: ringColor ?? themeData.colorScheme.onPrimary,
+        //  color:Styles.myLightPinkShade,
+        color:Colors.white,
         duration: const Duration(milliseconds: 500),
         size: size * 0.9,
         lineWidth: size * 0.03,

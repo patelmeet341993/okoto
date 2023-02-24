@@ -46,6 +46,7 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   material_design_icons_flutter: ^6.0.7096
   shimmer: ^2.0.0
+  timer_count_down: ^2.2.2
 
 dev_dependencies:
   flutter_test:

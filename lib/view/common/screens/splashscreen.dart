@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:okoto/backend/common/app_controller.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
+import 'package:okoto/view/common/components/common_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../../backend/authentication/authentication_controller.dart';
 import '../../../backend/data/data_controller.dart';
 import '../../../backend/data/data_provider.dart';
+import '../../../backend/navigation/navigation_arguments.dart';
 import '../../../backend/navigation/navigation_controller.dart';
 import '../../../backend/navigation/navigation_operation_parameters.dart';
 import '../../../backend/navigation/navigation_type.dart';
 import '../../../backend/user/user_controller.dart';
 import '../../../backend/user/user_provider.dart';
+import '../../../configs/styles.dart';
 import '../../../utils/my_print.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -28,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> checkLogin() async {
     NavigationController.isFirst = false;
 
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     //region Get Property Data
     DataProvider dataProvider = Provider.of<DataProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
@@ -67,12 +71,14 @@ class _SplashScreenState extends State<SplashScreen> {
     }
     else {
       if(context.mounted) {
+
         NavigationController.navigateToLoginScreen(
           navigationOperationParameters: NavigationOperationParameters(
             context: context,
             navigationType: NavigationType.pushNamedAndRemoveUntil,
           ),
         );
+
       }
     }
   }
@@ -100,17 +106,38 @@ class _SplashScreenState extends State<SplashScreen> {
                 child: LoadingAnimationWidget.inkDrop(color: themeData.backgroundColor, size: 40),
               ),*/
               Expanded(
-                child: Center(
-                  child: Image.asset("assets/images/${AppController.isDev ? "okoto-dev-logo.png" : "okoto-prod-logo.png"}"),
-                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CommonText(
+                      text: 'OKOTO',
+                      //color: Styles.myLightPinkShade.withOpacity(.4),
+                      color: Styles.myVioletShade4.withOpacity(.8),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 60,
+                    ),
+                  ],
+                )
+
+                // Center(
+                //   child: Image.asset("assets/images/${AppController.isDev ? "okoto-dev-logo.png" : "okoto-prod-logo.png"}"),
+                // ),
               ),
               const Center(
-                child: CommonLoader(),
+                child: SpinKitDualRing(
+                  //  color:Styles.myLightPinkShade,
+                  color:Colors.white,
+                  duration: const Duration(milliseconds: 500),
+                  size: 50,
+                  lineWidth: 5,
+                ),
               ),
+              SizedBox(height: 15,)
             ],
           ),
         ),
       ),
     );
   }
+
 }
