@@ -79,8 +79,10 @@ class OrderRepository {
     }
 
     try {
-      NewDocumentDataModel newDocumentDataModel = await MyUtils.getNewDocIdAndTimeStamp(isGetTimeStamp: true);
-      orderModel.createdTime = newDocumentDataModel.timestamp;
+      if(orderModel.createdTime == null) {
+        NewDocumentDataModel newDocumentDataModel = await MyUtils.getNewDocIdAndTimeStamp(isGetTimeStamp: true);
+        orderModel.createdTime = newDocumentDataModel.timestamp;
+      }
 
       await FirebaseNodes.orderDocumentReference(orderId: orderModel.id).set(orderModel.toMap());
       isCreated = true;
