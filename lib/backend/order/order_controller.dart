@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:okoto/backend/notification/notification_controller.dart';
 import 'package:okoto/configs/constants.dart';
 import 'package:okoto/model/order/order_model.dart';
 import 'package:okoto/model/order/orders_response_model.dart';
@@ -114,6 +115,13 @@ class OrderController {
     isOrderForSubscriptionCreated = await _orderRepository.createOrderInFirestoreFromOrderModel(orderModel: orderModel);
 
     MyPrint.printOnConsole("isOrderForSubscriptionCreated:'$isOrderForSubscriptionCreated'", tag: tag);
+
+    if(isOrderForSubscriptionCreated) {
+      NotificationController(notificationProvider: null,).createSubscriptionOrderNotification(
+        userId: userId,
+        orderModel: orderModel
+      );
+    }
 
     return isOrderForSubscriptionCreated;
   }

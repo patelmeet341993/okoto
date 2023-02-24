@@ -213,4 +213,43 @@ class UserController {
 
     return isUserHavingDevices;
   }
+
+  Future<void> checkSubscriptionActivatedOrNot() async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+    MyPrint.printOnConsole("UserController().checkSubscription called", tag: tag);
+
+    UserModel? userModel = userProvider.getUserModel();
+
+    if(userModel == null) {
+      MyPrint.printOnConsole("userModel in userProvider is null", tag: tag);
+      return;
+    }
+
+    NewDocumentDataModel newDocumentDataModel = await MyUtils.getNewDocIdAndTimeStamp(isGetTimeStamp: true);
+    MyPrint.printOnConsole("Current Time:${newDocumentDataModel.timestamp.toDate().toString()}", tag: tag);
+
+    MyPrint.printOnConsole("User Subscription isActive:${userModel.userSubscriptionModel?.isActive}", tag: tag);
+    MyPrint.printOnConsole("User Subscription expiryDate:${userModel.userSubscriptionModel?.expiryDate?.toDate().toString()}", tag: tag);
+
+
+    if(
+        (userModel.userSubscriptionModel?.isActive ?? true) &&
+        userModel.userSubscriptionModel!.expiryDate != null &&
+        userModel.userSubscriptionModel!.expiryDate!.toDate().isBefore(newDocumentDataModel.timestamp.toDate())
+    ) {
+      MyPrint.printOnConsole("Subscription Expired", tag: tag);
+
+      bool isUpdated = await userRepository.updateUserDataFromMap(userId: userModel.id, data: {
+        "userSubscriptionModel.isActive" : false,
+      });
+      MyPrint.printOnConsole("isUpdatedUserData:$isUpdated", tag: tag);
+
+      if(isUpdated) {
+        userModel.userSubscriptionModel!.isActive = false;
+      }
+    }
+    else {
+      MyPrint.printOnConsole("Subscription Active", tag: tag);
+    }
+  }
 }
