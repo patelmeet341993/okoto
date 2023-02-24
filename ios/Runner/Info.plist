@@ -48,6 +48,10 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+	  <true/>
+	  <key>NSCalendarsUsageDescription</key>
+    <string>We will use calender to show you alerts</string>
+    <key>NSContactsUsageDescription</key>
+    <string>We will use contacts to show you alerts</string>
 </dict>
 </plist>

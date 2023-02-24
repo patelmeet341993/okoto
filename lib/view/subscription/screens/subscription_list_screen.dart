@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:okoto/backend/subscription/subscription_controller.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
@@ -11,6 +12,8 @@ import '../../../backend/subscription/subscription_provider.dart';
 import '../components/subscription_card.dart';
 
 class SubscriptionScreen extends StatefulWidget {
+  static const String routeName = "/SubscriptionScreen";
+
   const SubscriptionScreen({Key? key}) : super(key: key);
 
   @override
@@ -46,6 +49,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       context: context,
       userId: userId,
       subscriptionModel: subscriptionModel,
+      selectedGamesList: subscriptionModel.gamesList,
       userProvider: userProvider,
     );
 
@@ -55,6 +59,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       });
 
       if(isSubscriptionBuySuccessful) {
+        subscriptionController.getAllSubscriptionsList(isRefresh: true, isNotify: true);
         // MyToast.showSuccess(context: context, msg: "New Subscription Activated");
       }
       /*else {
@@ -186,7 +191,20 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             subscriptionModel: subscriptionModel,
             showBuyButton: !isActiveSubscription,
             isActiveSubscription: isActiveSubscription,
-            buySubscriptionCallback: buySubscription,
+            buySubscriptionCallback: ({required SubscriptionModel subscriptionModel}) async {
+              await NavigationController.navigateToSubscriptionCheckoutScreen(
+                navigationOperationParameters: NavigationOperationParameters(
+                  context: context,
+                  navigationType: NavigationType.pushNamed,
+                ),
+                arguments: SubscriptionCheckoutScreenNavigationArguments(
+                  subscriptionId: subscriptionModel.id,
+                  subscriptionModel: subscriptionModel,
+                ),
+              );
+
+              subscriptionController.getAllSubscriptionsList(isRefresh: true, isNotify: true);
+            },
           );
         },
       ),

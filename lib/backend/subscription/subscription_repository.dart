@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
+import 'package:okoto/utils/extensions.dart';
 
 import '../../configs/constants.dart';
 import '../../configs/typedefs.dart';
@@ -41,7 +42,14 @@ class SubscriptionRepository {
     return subscriptions;
   }
 
-  Future<bool> activateSubscriptionForUser({required SubscriptionModel subscriptionModel, required String userId, bool isAdvanced = false}) async {
+  Future<bool> activateSubscriptionForUser({
+    required SubscriptionModel subscriptionModel,
+    required List<String> selectedGamesList,
+    required String userId,
+    bool isAdvanced = false,
+    Timestamp? activatedDate,
+    Timestamp? expiryDate,
+  }) async {
     String tag = MyUtils.getUniqueIdFromUuid();
     MyPrint.printOnConsole("SubscriptionRepository().activateSubscriptionForUser() called with subscription id:${subscriptionModel.id}, userId:$userId, isAdvanced:$isAdvanced", tag: tag);
 
@@ -51,9 +59,6 @@ class SubscriptionRepository {
       return isActivated;
     }
 
-    NewDocumentDataModel newDocumentDataModel = await MyUtils.getNewDocIdAndTimeStamp(isGetTimeStamp: true);
-    MyPrint.printOnConsole("Timestamp:${newDocumentDataModel.timestamp.toDate().toIso8601String()}", tag: tag);
-
     Map<String, dynamic> data = <String, dynamic>{};
 
     if(isAdvanced) {
@@ -62,11 +67,20 @@ class SubscriptionRepository {
       });
     }
     else {
+      if(activatedDate == null) {
+        NewDocumentDataModel newDocumentDataModel = await MyUtils.getNewDocIdAndTimeStamp(isGetTimeStamp: true);
+        MyPrint.printOnConsole("Timestamp:${newDocumentDataModel.timestamp.toDate().toIso8601String()}", tag: tag);
+
+        activatedDate = newDocumentDataModel.timestamp;
+        expiryDate = Timestamp.fromDate(activatedDate.toDate().add(Duration(days: subscriptionModel.validityInDays)));
+      }
+
       data.addAll({
         "userSubscriptionModel.mySubscription" : subscriptionModel.userSubscriptionModelToMap(),
         "userSubscriptionModel.isActive" : true,
-        "userSubscriptionModel.activatedDate" : newDocumentDataModel.timestamp,
-        "userSubscriptionModel.expiryDate" : Timestamp.fromDate(newDocumentDataModel.timestamp.toDate().add(Duration(days: subscriptionModel.validityInDays))),
+        "userSubscriptionModel.activatedDate" : activatedDate,
+        "userSubscriptionModel.expiryDate" : expiryDate,
+        "userSubscriptionModel.selectedGamesList" : selectedGamesList,
       });
     }
 
@@ -94,5 +108,29 @@ class SubscriptionRepository {
     MyPrint.printOnConsole("isSubscriptionCreated:$isSubscriptionCreated", tag: tag);
 
     return isSubscriptionCreated;
+  }
+
+  Future<SubscriptionModel?> getSubscriptionModelFromId({required String subscriptionId}) async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+    MyPrint.printOnConsole("SubscriptionRepository().getSubscriptionModelFromId() called with subscriptionId:'$subscriptionId'", tag: tag);
+
+    SubscriptionModel? subscriptionModel;
+
+    try {
+      MyFirestoreDocumentSnapshot snapshot = await FirebaseNodes.subscriptionDocumentReference(subscriptionId: subscriptionId).get();
+      MyPrint.printOnConsole("Subscription Snapshot Exist:${snapshot.exists}", tag: tag);
+      MyPrint.printOnConsole("Subscription Snapshot Data:${snapshot.data()}", tag: tag);
+      if(snapshot.exists && snapshot.data().checkNotEmpty) {
+        subscriptionModel = SubscriptionModel.fromMap(snapshot.data()!);
+      }
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in Getting Subscription From Id:$e", tag: tag);
+      MyPrint.printOnConsole(s, tag: tag);
+    }
+
+    MyPrint.printOnConsole("Final subscriptionModel:$subscriptionModel", tag: tag);
+
+    return subscriptionModel;
   }
 }

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:okoto/backend/common/app_controller.dart';
-import 'package:okoto/view/common/components/common_loader.dart';
 import 'package:okoto/view/common/components/common_text.dart';
 import 'package:provider/provider.dart';
 
 import '../../../backend/authentication/authentication_controller.dart';
 import '../../../backend/data/data_controller.dart';
 import '../../../backend/data/data_provider.dart';
-import '../../../backend/navigation/navigation_arguments.dart';
 import '../../../backend/navigation/navigation_controller.dart';
 import '../../../backend/navigation/navigation_operation_parameters.dart';
 import '../../../backend/navigation/navigation_type.dart';
@@ -40,15 +37,18 @@ class _SplashScreenState extends State<SplashScreen> {
     //endregion
 
     UserProvider userProvider = Provider.of<UserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
+    UserController userController = UserController(userProvider: userProvider,);
 
     bool isUserLoggedIn = await AuthenticationController(userProvider: userProvider).isUserLoggedIn(initializeUserid: true);
 
     if(isUserLoggedIn) {
-      bool isExist = await UserController(userProvider: userProvider,).checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: userProvider.getUserId());
+      bool isExist = await userController.checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: userProvider.getUserId());
       MyPrint.printOnConsole("isExist:$isExist");
 
       if (isExist && (userProvider.getUserModel()?.isHavingNecessaryInformation() ?? false)) {
         MyPrint.printOnConsole("User Exist");
+
+        await userController.checkSubscriptionActivatedOrNot();
 
         if(context.mounted) {
           NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(

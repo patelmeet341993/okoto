@@ -22,7 +22,6 @@ import '../../../utils/my_toast.dart';
 import '../../common/components/common_loader.dart';
 import '../../common/components/common_primary_button.dart';
 import '../../common/components/common_text.dart';
-import '../../common/components/common_textfield.dart';
 import '../../common/components/modal_progress_hud.dart';
 import '../../common/components/my_common_textfield.dart';
 import '../../common/components/my_screen_background.dart';
@@ -111,10 +110,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if(isUpdated) {
         userProvider.setUserModel(userModel: newUserModel, isNotify: false);
 
-        NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
-          context: context,
-          navigationType: NavigationType.pushNamedAndRemoveUntil,
-        ));
+        await userController.checkSubscriptionActivatedOrNot();
+
+        if(context.mounted) {
+          NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
+            context: context,
+            navigationType: NavigationType.pushNamedAndRemoveUntil,
+          ));
+        }
       }
       else {
         if(context.mounted) {

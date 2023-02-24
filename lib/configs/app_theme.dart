@@ -291,16 +291,17 @@ class AppTheme {
       ),
     ),
     colorScheme: const ColorScheme.light(
-        primary: Styles.lightPrimaryColor,
-        onPrimary: Colors.white,
-        primaryContainer: Styles.lightPrimaryVariant,
-        secondary: Styles.lightSecondaryColor,
-        secondaryContainer: Styles.lightSecondaryVariant,
-        onSecondary: Colors.white,
-        surface: Color(0xffe2e7f1),
-        background: Color(0xfff3f4f7),
-        onBackground: Styles.lightTextColor,
-    ).copyWith(error: const Color(0xfff0323c)).copyWith(secondary: Styles.lightPrimaryColor).copyWith(background: Colors.white),
+      primary: Styles.lightPrimaryColor,
+      onPrimary: Colors.white,
+      primaryContainer: Styles.lightPrimaryVariant,
+      secondary: Styles.lightSecondaryColor,
+      secondaryContainer: Styles.lightSecondaryVariant,
+      onSecondary: Colors.white,
+      surface: Color(0xffe2e7f1),
+      background: Color(0xfff3f4f7),
+      onBackground: Styles.lightTextColor,
+      error: Color(0xfff0323c),
+    ),
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -386,7 +387,8 @@ class AppTheme {
           color: Colors.white,
         ),
       ),
-      cupertinoOverrideTheme: const CupertinoThemeData(), colorScheme: const ColorScheme.dark(
+      cupertinoOverrideTheme: const CupertinoThemeData(),
+      colorScheme: const ColorScheme.dark(
         primary: Styles.darkPrimaryColor,
         primaryContainer: Styles.darkPrimaryVariant,
         secondary: Styles.darkSecondaryColor,
@@ -396,7 +398,9 @@ class AppTheme {
         onBackground: Colors.white,
         onSecondary: Colors.white,
         surface: Color(0xff585e63),
-      ).copyWith(background: Colors.black).copyWith(error: Colors.orange).copyWith(secondary: Styles.darkPrimaryColor));
+        error: Colors.orange,
+      ),
+  );
 
   static ThemeData getThemeFromThemeMode(int themeMode) {
     if (themeMode == themeLight) {

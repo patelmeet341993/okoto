@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:okoto/backend/notification/notification_controller.dart';
 import 'package:okoto/configs/constants.dart';
 import 'package:okoto/model/order/order_model.dart';
 import 'package:okoto/model/order/orders_response_model.dart';
+import 'package:okoto/model/order/subscription_order_data_model.dart';
 import 'package:okoto/model/product/product_model.dart';
-import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/utils/my_print.dart';
 import 'package:okoto/utils/my_utils.dart';
 
@@ -83,10 +85,17 @@ class OrderController {
     MyPrint.printOnConsole("OrderController().getOrdersList() Finished", tag: tag);
   }
 
-  Future<bool> createOrderForSubscription({required SubscriptionModel subscriptionModel, required String paymentId, required String paymentMode,
-    required String paymentStatus, required double amount}) async {
+  Future<bool> createOrderForSubscription({
+    required SubscriptionOrderDataModel subscriptionOrderDataModel,
+    required String userId,
+    required String paymentId,
+    required String paymentMode,
+    required String paymentStatus,
+    required double amount,
+    Timestamp? createdTime,
+  }) async {
     String tag = MyUtils.getUniqueIdFromUuid();
-    MyPrint.printOnConsole("OrderController().createOrderForSubscription() called with subscriptionModel:'$subscriptionModel', paymentId:'$paymentId', "
+    MyPrint.printOnConsole("OrderController().createOrderForSubscription() called with subscriptionOrderDataModel:'$subscriptionOrderDataModel', paymentId:'$paymentId', "
         "paymentMode:'$paymentMode', paymentStatus:'$paymentStatus', amount:'$amount'", tag: tag);
 
     bool isOrderForSubscriptionCreated = false;
@@ -98,18 +107,33 @@ class OrderController {
       paymentMode: paymentMode,
       paymentStatus: paymentStatus,
       amount: amount,
-      subscriptionOrderDataModel: subscriptionModel,
+      subscriptionOrderDataModel: subscriptionOrderDataModel,
+      userId: userId,
+      createdTime: createdTime,
     );
 
     isOrderForSubscriptionCreated = await _orderRepository.createOrderInFirestoreFromOrderModel(orderModel: orderModel);
 
     MyPrint.printOnConsole("isOrderForSubscriptionCreated:'$isOrderForSubscriptionCreated'", tag: tag);
 
+    if(isOrderForSubscriptionCreated) {
+      NotificationController(notificationProvider: null,).createSubscriptionOrderNotification(
+        userId: userId,
+        orderModel: orderModel
+      );
+    }
+
     return isOrderForSubscriptionCreated;
   }
 
-  Future<bool> createOrderForProduct({required ProductModel productModel, required String paymentId, required String paymentMode,
-    required String paymentStatus, required double amount}) async {
+  Future<bool> createOrderForProduct({
+    required ProductModel productModel,
+    required String userId,
+    required String paymentId,
+    required String paymentMode,
+    required String paymentStatus,
+    required double amount,
+  }) async {
     String tag = MyUtils.getUniqueIdFromUuid();
     MyPrint.printOnConsole("OrderController().createOrderForProduct() called with productModel:'$productModel', paymentId:'$paymentId', "
         "paymentMode:'$paymentMode', paymentStatus:'$paymentStatus', amount:'$amount'", tag: tag);
@@ -124,6 +148,7 @@ class OrderController {
       paymentStatus: paymentStatus,
       amount: amount,
       productOrderDataModel: productModel,
+      userId: userId,
     );
 
     isOrderForProductCreated = await _orderRepository.createOrderInFirestoreFromOrderModel(orderModel: orderModel);
