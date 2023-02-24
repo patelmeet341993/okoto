@@ -54,6 +54,7 @@ class Styles {
   static Color myVioletShade1 = const Color(0xff8F4FCB);
   static Color myVioletShade2 = const Color(0xffA154F1);
   static Color myLightPinkShade = const Color(0xffFFAAD4);
+  static Color myLightPinkShade1 = const Color(0xffD883E5);
   static Color myVioletShade3 = const Color(0xff6E1FAC);
   static Color myDarkVioletShade2 = const Color(0xff530577);
   static Color myDarkVioletShade1 = const Color(0xff370D52);
@@ -64,6 +65,7 @@ class Styles {
   static Color myBackgroundShade1 = const Color(0xff5D2097);
   static Color myBackgroundShade2 = const Color(0xff70279F);
   static Color myBackgroundShade3 = const Color(0xffB01BD8);
+  static Color myDialogBackground = const Color(0xff5A208E);
 
   //endregion
 

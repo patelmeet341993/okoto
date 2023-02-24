@@ -67,6 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
             navigationType: NavigationType.pushNamedAndRemoveUntil,
           ));
         }
+
       }
     }
     else {
@@ -78,6 +79,11 @@ class _SplashScreenState extends State<SplashScreen> {
             navigationType: NavigationType.pushNamedAndRemoveUntil,
           ),
         );
+
+        // NavigationController.navigateToSignUpScreen(navigationOperationParameters: NavigationOperationParameters(
+        //   context: context,
+        //   navigationType: NavigationType.pushNamed,
+        // ));
 
       }
     }
