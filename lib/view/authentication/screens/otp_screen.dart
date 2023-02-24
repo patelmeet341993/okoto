@@ -1,18 +1,28 @@
+import 'dart:async';
+
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:okoto/view/common/components/common_back_button.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../../backend/navigation/navigation.dart';
 import '../../../backend/user/user_controller.dart';
 import '../../../backend/user/user_provider.dart';
+import '../../../configs/styles.dart';
 import '../../../utils/my_print.dart';
 import '../../../utils/my_toast.dart';
+import '../../../utils/parsing_helper.dart';
 import '../../common/components/common_loader.dart';
 import '../../common/components/common_primary_button.dart';
+import '../../common/components/common_submit_button.dart';
+import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
 import '../../common/components/pin_put.dart';
+import 'login_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   static const String routeName = "/OtpScreen";
@@ -223,9 +233,10 @@ class _OtpScreenState extends State<OtpScreen> {
       MyPrint.logOnConsole("Created:${userProvider.getUserModel()}");
 
       if(context.mounted) {
+
         NavigationController.navigateToSignUpScreen(navigationOperationParameters: NavigationOperationParameters(
           context: context,
-          navigationType: NavigationType.pushNamedAndRemoveUntil,
+          navigationType: NavigationType.pushNamed,
         ));
       }
     }
@@ -275,60 +286,290 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
-    
-    return Container(
-      color: themeData.colorScheme.background,
-      child: SafeArea(
-        child: Scaffold(
-          body: ModalProgressHUD(
-            inAsyncCall: isLoading,
-            // progressIndicator: const SpinKitFadingCircle(color: Colors.blue,),
-            progressIndicator: const CommonLoader(),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: 16,
-                horizontal: 20,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    getAppBar(),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    getLogo(),
-                    getOTPVerificationText(),
-                    getLoginText2(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        getOtpWidget(),
-                        const SizedBox(
-                          height: 20,
+    double size = 80;
+    return ModalProgressHUD(
+      inAsyncCall: isLoading,
+      // progressIndicator: const SpinKitFadingCircle(color: Colors.blue,),
+      progressIndicator: CommonLoader(),
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Styles.myDarkVioletColor,
+                Styles.myDarkVioletShade1,
+              ],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: [0.8,.99],
+            ),),
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child:Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        getTopShapeAndIllustrate(),
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5).copyWith(top: 65),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              getTopPageDetails(),
+                              SizedBox(height: 35,),
+                              getOTPFillTextField(),
+                              getSendingOTP(),
+                              getRemainTime(),
+                              getResendCode(),
+                              SizedBox(height: 40,),
+                              submitButton(),
+                            ],
+                          ),
                         ),
-                        getResendLinkWidget(),
                       ],
                     ),
-                    /*SizedBox(
-                      height: 40!,
-                    ),
-                    getMessageText(msg),*/
-                    getOtpSendingWidget(),
-                    getTimer(),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    getSubmitButton(),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
       ),
     );
   }
+
+  Widget getTopShapeAndIllustrate() {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        CustomPaint(
+          size: Size(double.maxFinite, 320),
+          painter: TopCustomShape(),
+        ),
+        Positioned(
+          bottom: -50,
+          left: 0,
+          right: 0,
+          child: Container(
+            width: 280,
+            height: 280,
+            child: Image.asset(
+              "assets/images/login_illu.png",
+            ),
+          ),
+        ),
+        Positioned(
+          top: 60,
+          left: 25,
+          child: CommonBackButton(),
+        )
+      ],
+    );
+  }
+
+  Widget getTopPageDetails() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CommonText(
+          text: "Enter the OTP",
+          fontSize: 26,
+          textAlign: TextAlign.center,
+          fontWeight: FontWeight.bold,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        CommonText(
+          text: "Enter the OTP code we just sent you on your given Phone Number",
+          fontSize: 15.5,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget getOTPFillTextField(){
+    BoxDecoration generalDecoration = BoxDecoration(
+      border: Border(bottom: BorderSide(color: Styles.myLightVioletShade3,width: 1.8),),
+    );
+    BoxDecoration selectedFieldDecoration = BoxDecoration(
+      border: Border(bottom: BorderSide(color: Styles.myLightPinkShade,width: 1.8),),
+    );
+    return PinPut(
+      fieldsCount: 6,
+      onSubmit: (String pin) {
+        MyPrint.printOnConsole("Submitted:$pin");
+        _otpFocusNode!.unfocus();
+      },
+      checkClipboard: true,
+      onClipboardFound: (String? string) {
+        _otpController!.text = string ?? "";
+      },
+      enabled: true,
+      focusNode: _otpFocusNode,
+      controller: _otpController,
+      eachFieldWidth: 45,
+     // eachFieldHeight: 50,
+      inputDecoration: const InputDecoration(
+        contentPadding: EdgeInsets.zero,
+        border: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        counterText: '',
+      ),
+      submittedFieldDecoration:generalDecoration,
+      selectedFieldDecoration: selectedFieldDecoration,
+      followingFieldDecoration:generalDecoration,
+      textStyle: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
+  Widget getRemainTime(){
+    if (!isTimerOn) return const SizedBox.shrink();
+    formatedTime({required double timeInSecond}) {
+      int time = ParsingHelper.parseIntMethod(timeInSecond);
+      int sec = time % 60;
+      int min = (time / 60).floor();
+      String minute = min.toString().length <= 1 ? "0$min" : "$min";
+      String second = sec.toString().length <= 1 ? "0$sec" : "$sec";
+      return "$minute:$second";
+    }
+    return Padding(
+      padding:  EdgeInsets.only(top: 40.0,bottom: 0),
+      child: Row(
+         children: [
+           Countdown(
+             // controller: _controller,
+             seconds: otpDuration.toInt(),
+             build: (_, double time) => CommonText(
+              text: formatedTime(timeInSecond: time),
+               //color: Styles.myLightVioletShade3,
+               color: Styles.myLightPinkShade,
+               fontSize: 19,
+               fontWeight: FontWeight.w700,
+             ),
+             interval: Duration(seconds: 1),
+             onFinished: () {
+
+               },
+           ),
+         ],
+       ),
+    );
+  }
+
+  Widget getSendingOTP() {
+    if(!isOtpSending) return const SizedBox();
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20).copyWith(top: 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SpinKitDualRing(
+            color: Styles.myLightPinkShade,
+            duration: const Duration(milliseconds: 500),
+            size: 25,
+            lineWidth: 1,
+          ),
+          SizedBox(height: 10,),
+          CommonText(
+            text: 'Sending OTP....',
+           // color: Styles.myLightVioletShade3,
+            color: Styles.myLightPinkShade,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getResendCode(){
+  //  if (!isOTPTimeout) return const SizedBox.shrink();
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: (){
+              registerUser(widget.mobile);
+            },
+            child: Text(
+              "Didn't receive code? Resend",
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: Styles.myLightVioletShade3,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.1,
+                fontSize: 18,
+                decoration: TextDecoration.underline,
+
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget submitButton(){
+    return  CommonSubmitButton(
+      text: 'Submit',
+      onTap: () async {
+        FocusScope.of(context).requestFocus(FocusNode());
+
+        if (isOTPSent) {
+          if (!checkEnabledVerifyButton()) {
+            MyPrint.printOnConsole("Invalid Otp");
+            setState(() {
+              isShowOtpErrorMsg = true;
+              otpErrorMsg = "OTP should be of 6 digits";
+            });
+          }
+          else {
+            MyPrint.printOnConsole("Valid OTP");
+            setState(() {
+              isShowOtpErrorMsg = false;
+              otpErrorMsg = "";
+            });
+
+            if (verificationId != null) {
+              String? otp = _otpController?.text;
+
+              /*bool result = */await verifyOTP(otp: otp, verificationId: verificationId);
+            }
+            else {
+              MyToast.showError(context: context, msg: "OTP Expired, Please Resend");
+            }
+          }
+        }
+        else {
+          MyPrint.printOnConsole("Otp Not Sent");
+          MyToast.showError(context: context, msg: 'OTP not found');
+        }
+      },
+    );
+  }
+
+
+//region Garbage--------------------------------------------------------------------------------------------------------------------------------------------
 
   Widget getAppBar() {
     return Row(
@@ -547,36 +788,6 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  Widget getMobileNumberText(String mobile) {
-    return Text(
-      "+91-$mobile",
-      style: const TextStyle(
-        fontWeight: FontWeight.w500,
-        color: Colors.red,
-      ),
-    );
-  }
-
-  Widget getLoadingWidget(bool isLoading) {
-    return Column(
-      children: [
-        Visibility(
-          visible: isLoading,
-          child: const CircularProgressIndicator(
-            color: Colors.red,
-            strokeWidth: 4,
-          ),
-        ),
-        Visibility(
-          visible: isLoading,
-          child: const SizedBox(
-            height: 30,
-          ),
-        )
-      ],
-    );
-  }
-
   Widget getMessageText(String text) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -607,32 +818,31 @@ class _OtpScreenState extends State<OtpScreen> {
   Widget getTimer() {
     if (!isTimerOn) return const SizedBox.shrink();
 
-    return Container(
-      margin: const EdgeInsets.only(top: 20),
-      child: CircularCountDownTimer(
-        controller: controller,
-        width: 100,
-        height: 100,
-        duration: otpDuration.toInt(),
-        initialDuration: 0,
-        ringColor: isTimerOn ? themeData.primaryColor.withAlpha(100) : Colors.white,
-        fillColor: themeData.primaryColor,
-        isReverse: true,
-        isReverseAnimation: true,
-        textStyle: const TextStyle(
-          color: Colors.blue,
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-          // fontFamily: Styles.SulSans_Bold,
-        ),
-        strokeWidth: 5,
-        textFormat: "mm:ss",
-        strokeCap: StrokeCap.round,
-        onComplete: () {
-          /*isTimerOn = false;
-          if (mounted) setState(() {});*/
-        },
+    return CircularCountDownTimer(
+      controller: controller,
+      width: 100,
+      height: 100,
+      duration: otpDuration.toInt(),
+      initialDuration: 0,
+      //ringColor: isTimerOn ? themeData.primaryColor.withAlpha(100) : Colors.white,
+      ringColor: Colors.transparent,
+      //fillColor: themeData.primaryColor,
+      fillColor: Colors.transparent,
+      isReverse: true,
+      isReverseAnimation: true,
+      textStyle: const TextStyle(
+        color: Colors.blue,
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        // fontFamily: Styles.SulSans_Bold,
       ),
+      strokeWidth: 5,
+      textFormat: "mm:ss",
+      strokeCap: StrokeCap.round,
+      onComplete: () {
+        /*isTimerOn = false;
+        if (mounted) setState(() {});*/
+      },
     );
   }
 
@@ -649,17 +859,47 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
+  Widget getMobileNumberText(String mobile) {
+    return Text(
+      "+91-$mobile",
+      style: const TextStyle(
+        fontWeight: FontWeight.w500,
+        color: Colors.red,
+      ),
+    );
+  }
+
+  Widget getLoadingWidget(bool isLoading) {
+    return Column(
+      children: [
+        Visibility(
+          visible: isLoading,
+          child: const CircularProgressIndicator(
+            color: Colors.red,
+            strokeWidth: 4,
+          ),
+        ),
+        Visibility(
+          visible: isLoading,
+          child: const SizedBox(
+            height: 30,
+          ),
+        )
+      ],
+    );
+  }
+
   Widget getOtp1Widget() {
     return Container(
-      height: 48,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      color: Colors.transparent,
-      child: TextFormField(
-        /*controller: _otpController,
+        height: 48,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+    color: Colors.transparent,
+    child: TextFormField(
+    controller: _otpController,
         focusNode: _otpFocusNode,
         onChanged: (val) {
           if(val.length == 6) _otpFocusNode?.unfocus(disposition: UnfocusDisposition.scope);
-        },*/
+        },
         enabled: isOtpEnabled,
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
@@ -771,7 +1011,7 @@ class _OtpScreenState extends State<OtpScreen> {
               if (verificationId != null) {
                 String? otp = ""; //_otpController?.text;
 
-                /*bool result = */await verifyOTP(otp: otp, verificationId: verificationId);
+                bool result = await verifyOTP(otp: otp, verificationId: verificationId);
               }
             }
           }
@@ -798,4 +1038,9 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
     );
   }
+
+//endregion
+
 }
+
+
