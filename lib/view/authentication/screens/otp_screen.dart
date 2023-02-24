@@ -209,17 +209,21 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Future onSuccess(User user) async {
     UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserController userController = UserController(userProvider: userProvider);
+
     userProvider.setUserId(userId: user.uid, isNotify: false);
     userProvider.setFirebaseUser(user: user, isNotify: false);
 
     MyPrint.printOnConsole("Email:${user.email}");
     MyPrint.printOnConsole("Mobile:${user.phoneNumber}");
 
-    bool isExist = await UserController(userProvider: userProvider).checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: user.uid);
+    bool isExist = await userController.checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: user.uid);
     MyPrint.printOnConsole("isExist:$isExist");
 
     if (isExist && (userProvider.getUserModel()?.isHavingNecessaryInformation() ?? false)) {
       MyPrint.printOnConsole("User Exist");
+
+      await userController.checkSubscriptionActivatedOrNot();
 
       if(context.mounted) {
         NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
@@ -286,7 +290,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
-    double size = 80;
+    // double size = 80;
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       // progressIndicator: const SpinKitFadingCircle(color: Colors.blue,),
@@ -1011,7 +1015,7 @@ class _OtpScreenState extends State<OtpScreen> {
               if (verificationId != null) {
                 String? otp = ""; //_otpController?.text;
 
-                bool result = await verifyOTP(otp: otp, verificationId: verificationId);
+                /*bool result = */await verifyOTP(otp: otp, verificationId: verificationId);
               }
             }
           }
