@@ -15,7 +15,7 @@ class CommonText extends StatelessWidget {
     required this.text,
     this.fontSize = 13,
     this.fontWeight = FontWeight.normal,
-    this.color,
+    this.color =  Colors.white,
     this.textAlign,
     this.maxLines,
     this.textDecoration,
@@ -31,6 +31,8 @@ class CommonText extends StatelessWidget {
       overflow: textOverFlow,
       style: TextStyle(
         //height: 1,
+        letterSpacing: 1.1,
+        wordSpacing: 1,
         decoration: textDecoration,
         fontSize: fontSize,
         fontWeight: fontWeight,

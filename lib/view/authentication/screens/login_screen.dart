@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
+import 'package:okoto/view/common/components/common_submit_button.dart';
+import 'package:okoto/view/common/components/my_common_textfield.dart';
 
 import '../../../backend/navigation/navigation.dart';
 import '../../../configs/styles.dart';
 import '../../../utils/my_print.dart';
 import '../../common/components/common_primary_button.dart';
+import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,7 +21,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   late ThemeData themeData;
 
   bool isFirst = true, isLoading = false;
@@ -34,9 +36,11 @@ class _LoginScreenState extends State<LoginScreen> {
       NavigationController.navigateToOtpScreen(
         navigationOperationParameters: NavigationOperationParameters(
           context: context,
-          navigationType: NavigationType.pushNamedAndRemoveUntil,
+          navigationType: NavigationType.pushNamed,
         ),
-        arguments: OtpScreenNavigationArguments(mobileNumber: "+91${mobileController!.text}"),
+        arguments: OtpScreenNavigationArguments(
+          mobileNumber: "+91${mobileController!.text}",
+        ),
       );
     }
   }
@@ -71,87 +75,77 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: Scaffold(
         body: Container(
-
-          color:  Styles.myDarkVioletColor,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        getTopShapeAndIllustrate(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+            colors: [
+              Styles.myDarkVioletColor,
+              Styles.myDarkVioletShade1,
             ],
-          ),
-        ),
-      ),
-    );
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            stops: [0.8,.99 ,],
 
-
-
-      ModalProgressHUD(
-      inAsyncCall: isLoading,
-      color: Colors.black,
-      progressIndicator: Container(
-        padding: const EdgeInsets.all(100),
-        child: Center(
-          child: Container(
-            height: 90,
-            width: 90,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-            ),
-            child: const CommonLoader(),
-          ),
-        ),
-      ),
-      child: Scaffold(
-        body: Container(
-          padding: const EdgeInsets.only(top: 0),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Center(
+          ),),
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Column(
+              children: <Widget>[
+                Expanded(
                   child: Form(
                     key: _formKey,
                     child: SingleChildScrollView(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          getLogo(),
-                          getLoginText(),
-                          getLoginText2(),
-                          getMobileTextField(),
-                          getContinueButton(),
-                          const SizedBox(height: 10,),
+                          getTopShapeAndIllustrate(),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5).copyWith(top: 65),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                getTopPageDetails(),
+                                SizedBox(
+                                  height: 60,
+                                ),
+                                getMobileNumberTextField(),
+                                SizedBox(
+                                  height: 60,
+                                ),
+                                CommonSubmitButton(
+                                  text: 'Get OTP',
+                                  onTap: () {
+                                    sendOtp();
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget getTopShapeAndIllustrate(){
+  Widget getTopShapeAndIllustrate() {
     return Stack(
       clipBehavior: Clip.none,
       children: [
         CustomPaint(
-          size: Size(double.maxFinite,320),
+          size: Size(double.maxFinite, 320),
           painter: TopCustomShape(),
         ),
         Positioned(
@@ -162,19 +156,89 @@ class _LoginScreenState extends State<LoginScreen> {
             width: 280,
             height: 280,
             child: Image.asset(
-               "assets/images/login_illu.png",
+              "assets/images/login_illu.png",
             ),
-          ),),
+          ),
+        ),
       ],
     );
   }
 
+  Widget getTopPageDetails() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CommonText(
+          text: "Welcome  Gamer !",
+          fontSize: 26,
+          textAlign: TextAlign.center,
+          fontWeight: FontWeight.bold,
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        CommonText(
+          text: "Login/Signup to start your VR Gaming Journey",
+          fontSize: 15.5,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
 
+  Widget getMobileNumberTextField() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        children: [
+          CommonText(
+            text: "Enter Mobile Number",
+            fontSize: 14,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: 2,
+          ),
+          MyCommonTextField(
+            controller: mobileController,
+            prefixText: "+91    ",
+            cursorColor: Colors.white,
+            prefix: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Image.asset(
+                "assets/images/indian_flag.png",
+                height: 20,
+                width: 26,
+                fit: BoxFit.fill,
+              ),
+            ),
+              validator: (val) {
+                if(val == null || val.isEmpty) {
+                  return "Mobile Number Cannot be empty";
+                }
+                else {
+                  if (RegExp(r"^\d{10}").hasMatch(val)) {
+                    return null;
+                  }
+                  else {
+                    return "Invalid Mobile Number";
+                  }
+                }
+              },
+            textInputType: TextInputType.number,
+            textInputFormatter: [
+              LengthLimitingTextInputFormatter(10),
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
-
-
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//region Garbage-----------------------------------------------------------------------------------------------------------------------------------------
+/*
   Widget getLogo() {
     double width = MediaQuery.of(context).size.width * 0.7;
 
@@ -189,9 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget getLoginText() {
     return InkWell(
-      onTap: ()async{
-
-      },
+      onTap: () async {},
       child: Container(
         margin: const EdgeInsets.only(left: 16, right: 16),
         child: Center(
@@ -214,9 +276,9 @@ class _LoginScreenState extends State<LoginScreen> {
         "We will send  you a one time password to your registered mobile number",
         softWrap: true,
         style: themeData.textTheme.bodySmall?.copyWith(
-            fontWeight: FontWeight.w500,
-            height: 1.2,
-            color: themeData.colorScheme.onBackground.withAlpha(200),
+          fontWeight: FontWeight.w500,
+          height: 1.2,
+          color: themeData.colorScheme.onBackground.withAlpha(200),
         ),
         textAlign: TextAlign.center,
       ),
@@ -229,7 +291,9 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Column(
         children: [
           // const Text("Enter Mobile Number"),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           TextFormField(
             controller: mobileController,
             style: themeData.textTheme.titleLarge?.copyWith(
@@ -243,19 +307,25 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               prefixText: "+91 ",
               prefixStyle: themeData.textTheme.titleMedium?.copyWith(
-                // color: themeData.colorScheme.onPrimary.withOpacity(0.5),
-              ),
+                  // color: themeData.colorScheme.onPrimary.withOpacity(0.5),
+                  ),
               border: UnderlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(8.0),),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8.0),
+                ),
                 borderSide: BorderSide(color: themeData.colorScheme.secondary),
                 // borderSide: BorderSide(color: Styles.onBackground),
               ),
               enabledBorder: UnderlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(8.0),),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8.0),
+                ),
                 borderSide: BorderSide(color: themeData.colorScheme.secondary),
               ),
               focusedBorder: UnderlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(8.0),),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8.0),
+                ),
                 borderSide: BorderSide(color: themeData.colorScheme.secondary),
               ),
               prefixIcon: const Icon(
@@ -274,14 +344,12 @@ class _LoginScreenState extends State<LoginScreen> {
               FilteringTextInputFormatter.digitsOnly,
             ],
             validator: (val) {
-              if(val == null || val.isEmpty) {
+              if (val == null || val.isEmpty) {
                 return "Mobile Number Cannot be empty";
-              }
-              else {
+              } else {
                 if (RegExp(r"^\d{10}").hasMatch(val)) {
                   return null;
-                }
-                else {
+                } else {
                   return "Invalid Mobile Number";
                 }
               }
@@ -300,112 +368,39 @@ class _LoginScreenState extends State<LoginScreen> {
       text: "Get OTP",
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20).copyWith(bottom: 10),
     );
-
-    /*return Container(
-      margin: const EdgeInsets.only(left: 24, right: 24, top: 24),
-      decoration: const BoxDecoration(
-        borderRadius:
-        BorderRadius.all(Radius.circular(48)),
-      ),
-      child: FlatButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        color: themeData.primaryColor,
-        highlightColor: themeData.primaryColor,
-        splashColor: Colors.white.withAlpha(100),
-        padding: const EdgeInsets.only(top: 16, bottom: 16),
-        onPressed: sendOtp,
-        child: Stack(
-          //overflow: Overflow.visible,
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: <Widget>[
-            const Align(
-              alignment: Alignment.center,
-              child: Text(
-                "CONTINUE",
-                style: TextStyle(
-                    color: Colors.white,
-                    letterSpacing: 0.8,
-                    fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Positioned(
-              right: 16,
-              child: ClipOval(
-                child: Container(
-                  color: Colors.white,
-                  // button color
-                  child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: themeData.primaryColor,
-                        size: 18,
-                      )),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );*/
   }
 
-
+  */
+//endregion------------------------------------------------------------------------------------------------
 
 }
-
 
 class TopCustomShape extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint();
-    paint.color =Styles.myPinkShade;
+    paint.color = Styles.myVioletShade2;
     paint.shader = LinearGradient(
       colors: [
-        Styles.myLightPinkShade,
-        Styles.myPinkShade,
+        Styles.myBlueColor.withAlpha(-85),
+        Styles.myBorderVioletColor,
+        //Styles.myVioletShade1,
+        Styles.myVioletColor,
+        Styles.myLightVioletShade1,
       ],
-    ).createShader(Rect.fromLTWH(
-      0,0,size.width,size.height
-    ));
+      begin: Alignment.topRight,
+      end: Alignment.bottomLeft,
+      //stops: [0.0,0.2,0.8, 30,],
+      stops: [0.001,0.25,0.8,1,],
+    ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     paint.style = PaintingStyle.fill;
-    paint.strokeWidth =  6.0;
+    paint.strokeWidth = 6.0;
 
     var path = Path();
-    path.conicTo(0,  size.height, size.width, size.height/2, 180);
-    path.moveTo(size.width, size.height/2);
+    path.conicTo(0, size.height, size.width, size.height / 2, 180);
+    path.moveTo(size.width, size.height / 2);
     path.lineTo(size.width, 0);
     path.lineTo(0, 0);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
-
-class MYCustomShape extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint();
-
-    paint.color = Colors.red;
-    paint.style = PaintingStyle.stroke;
-    paint.strokeWidth =  6.0;
-
-    var path = Path();
-    //path.conicTo(0,  size.height, size.width, size.height/2, 180);
-      // path.lineTo(0,size.height);
-      // path.lineTo(size.height,size.width);
-    //path.lineTo(15, 85);
-
-     path.lineTo(50, 50);
-
     canvas.drawPath(path, paint);
   }
 

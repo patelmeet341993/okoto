@@ -47,8 +47,23 @@ class Styles {
   //myCustomColors
 
   static Color myDarkVioletColor = const Color(0xff31144B);
-  static Color myPinkShade = const Color(0xffA154F1);
+  static Color myBlueColor = const Color(0xff4BB6FF);
+  static Color myBorderVioletColor = const Color(0xff702DA4);
+  static Color myLightVioletShade1 = const Color(0xffB527DB);
+  static Color myVioletColor = const Color(0xff883DB8);
+  static Color myVioletShade1 = const Color(0xff8F4FCB);
+  static Color myVioletShade2 = const Color(0xffA154F1);
   static Color myLightPinkShade = const Color(0xffFFAAD4);
+  static Color myVioletShade3 = const Color(0xff6E1FAC);
+  static Color myDarkVioletShade2 = const Color(0xff530577);
+  static Color myDarkVioletShade1 = const Color(0xff370D52);
+  static Color myLightVioletShade2 = const Color(0xffBF3EE2);
+  static Color myVioletShade4 = const Color(0xff9B4BEF);
+  static Color myButtonBlack = const Color(0xff0B0A0A);
+  static Color myLightVioletShade3 = const Color(0xffA154F1);
+  static Color myBackgroundShade1 = const Color(0xff5D2097);
+  static Color myBackgroundShade2 = const Color(0xff70279F);
+  static Color myBackgroundShade3 = const Color(0xffB01BD8);
 
   //endregion
 
