@@ -1,3 +1,5 @@
+import '../../model/subscription/subscription_model.dart';
+
 class NavigationArguments {
   const NavigationArguments();
 }
@@ -25,5 +27,15 @@ class AboutAppScreenNavigationArguments extends NavigationArguments {
     required this.aboutDescription,
     required this.contact,
     required this.whatsapp,
+  });
+}
+
+class SubscriptionCheckoutScreenNavigationArguments extends NavigationArguments {
+  final String subscriptionId;
+  final SubscriptionModel? subscriptionModel;
+
+  const SubscriptionCheckoutScreenNavigationArguments({
+    required this.subscriptionId,
+    this.subscriptionModel,
   });
 }

@@ -7,6 +7,7 @@ import '../backend/app_theme/app_theme_provider.dart';
 import '../backend/common/app_controller.dart';
 import '../backend/connection/connection_provider.dart';
 import '../backend/data/data_provider.dart';
+import '../backend/game/game_provider.dart';
 import '../backend/navigation/navigation_controller.dart';
 import '../backend/order/order_provider.dart';
 import '../backend/subscription/subscription_provider.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<DeviceProvider>(create: (_) => DeviceProvider(), lazy: false),
         ChangeNotifierProvider<SubscriptionProvider>(create: (_) => SubscriptionProvider(), lazy: false),
         ChangeNotifierProvider<OrderProvider>(create: (_) => OrderProvider(), lazy: false),
+        ChangeNotifierProvider<GameProvider>(create: (_) => GameProvider(), lazy: false),
       ],
       child: const MainApp(),
     );

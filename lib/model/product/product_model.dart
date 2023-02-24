@@ -4,7 +4,7 @@ import '../../utils/my_utils.dart';
 import '../../utils/parsing_helper.dart';
 
 class ProductModel {
-  String id = "", name = "", thumbnailImage = "";
+  String id = "", name = "", thumbnailImage = "",description = "";
   List<String> productImages = <String>[];
   bool enabled = true;
   Timestamp? createdTime;
@@ -13,6 +13,7 @@ class ProductModel {
     required this.id,
     this.name = "",
     this.thumbnailImage = "",
+    this.description = "",
     List<String>? productImages,
     this.enabled = true,
     this.createdTime,
@@ -31,6 +32,7 @@ class ProductModel {
   void _initializeFromMap(Map<String, dynamic> map) {
     id = ParsingHelper.parseStringMethod(map['id']);
     name = ParsingHelper.parseStringMethod(map['name']);
+    description = ParsingHelper.parseStringMethod(map['description']);
     thumbnailImage = ParsingHelper.parseStringMethod(map['thumbnailImage']);
     productImages = ParsingHelper.parseListMethod<dynamic, String>(map['productImages']);
     enabled = ParsingHelper.parseBoolMethod(map['enabled'], defaultValue: true);
@@ -41,6 +43,7 @@ class ProductModel {
     return {
       "id" : id,
       "name" : name,
+      "description" : description,
       "thumbnailImage" : thumbnailImage,
       "productImages" : productImages,
       "enabled" : enabled,
@@ -52,6 +55,7 @@ class ProductModel {
     return {
       "id" : id,
       "name" : name,
+      "description" : description,
       "thumbnailImage" : thumbnailImage,
       "productImages" : productImages,
       "enabled" : enabled,

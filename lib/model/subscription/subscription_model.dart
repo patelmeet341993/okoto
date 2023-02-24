@@ -3,11 +3,11 @@ import 'package:okoto/utils/my_utils.dart';
 import 'package:okoto/utils/parsing_helper.dart';
 
 class SubscriptionModel {
-  String id = "", name = "", image = "";
+  String id = "", name = "", image = "",description = "";
   double price = 0, discountedPrice = -1;
   List<String> gamesList = <String>[];
   bool enabled = true;
-  int validityInDays = 28;
+  int validityInDays = 28, requiredGamesCount = 0;
   Timestamp? createdTime;
 
   SubscriptionModel({
@@ -15,10 +15,12 @@ class SubscriptionModel {
     this.name = "",
     this.image = "",
     this.price = 0,
+    this.description = "",
     this.discountedPrice = -1,
     List<String>? gamesList,
     this.enabled = true,
     this.validityInDays = 28,
+    this.requiredGamesCount = 0,
     this.createdTime,
   }) {
     this.gamesList = gamesList ?? <String>[];
@@ -36,11 +38,13 @@ class SubscriptionModel {
     id = ParsingHelper.parseStringMethod(map['id']);
     name = ParsingHelper.parseStringMethod(map['name']);
     image = ParsingHelper.parseStringMethod(map['image']);
+    description = ParsingHelper.parseStringMethod(map['description']);
     price = ParsingHelper.parseDoubleMethod(map['price']);
     discountedPrice = ParsingHelper.parseDoubleMethod(map['discountedPrice'], defaultValue: -1);
     gamesList = ParsingHelper.parseListMethod<dynamic, String>(map['gamesList']);
     enabled = ParsingHelper.parseBoolMethod(map['enabled'], defaultValue: true);
     validityInDays = ParsingHelper.parseIntMethod(map['validityInDays'], defaultValue: 28);
+    requiredGamesCount = ParsingHelper.parseIntMethod(map['requiredGamesCount'], defaultValue: 0);
     createdTime = ParsingHelper.parseTimestampMethod(map['createdTime']);
   }
 
@@ -49,6 +53,7 @@ class SubscriptionModel {
       "id" : id,
       "name" : name,
       "image" : image,
+      "description" : description,
       "price" : price,
       "discountedPrice" : discountedPrice,
       "gamesList" : gamesList,
@@ -63,11 +68,13 @@ class SubscriptionModel {
       "id" : id,
       "name" : name,
       "image" : image,
+      "description" : description,
       "price" : price,
       "discountedPrice" : discountedPrice,
       "gamesList" : gamesList,
       "enabled" : enabled,
       "validityInDays" : validityInDays,
+      "requiredGamesCount" : requiredGamesCount,
       "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
     };
   }
@@ -77,11 +84,13 @@ class SubscriptionModel {
       "id" : id,
       "name" : name,
       "image" : image,
+      "description" : description,
       "price" : price,
       "discountedPrice" : discountedPrice,
       "gamesList" : gamesList,
       "enabled" : enabled,
       "validityInDays" : validityInDays,
+      "requiredGamesCount" : requiredGamesCount,
       "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
     };
   }

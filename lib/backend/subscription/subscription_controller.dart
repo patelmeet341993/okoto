@@ -5,9 +5,11 @@ import 'package:okoto/backend/subscription/subscription_provider.dart';
 import 'package:okoto/backend/subscription/subscription_repository.dart';
 import 'package:okoto/backend/user/user_controller.dart';
 import 'package:okoto/backend/user/user_provider.dart';
+import 'package:okoto/model/order/subscription_order_data_model.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/utils/my_toast.dart';
 
+import '../../model/common/new_document_data_model.dart';
 import '../../utils/my_print.dart';
 import '../../utils/my_utils.dart';
 
@@ -21,13 +23,14 @@ class SubscriptionController {
   }
 
   SubscriptionProvider get subscriptionProvider => _subscriptionProvider;
+  SubscriptionRepository get subscriptionRepository => _subscriptionRepository;
 
   Future<void> getAllSubscriptionsList({bool isRefresh = true, bool isNotify = true}) async {
     String tag = MyUtils.getUniqueIdFromUuid();
     MyPrint.printOnConsole("SubscriptionController().getAllSubscriptionsList() called with, isRefresh:$isRefresh, isNotify:$isNotify", tag: tag);
 
     SubscriptionProvider provider = subscriptionProvider;
-    SubscriptionRepository repository = _subscriptionRepository;
+    SubscriptionRepository repository = subscriptionRepository;
 
     MyPrint.printOnConsole("allSubscriptionsLength in SubscriptionProvider:${provider.allSubscriptionsLength}", tag: tag);
     if(isRefresh || provider.allSubscriptionsLength <= 0) {
@@ -52,8 +55,13 @@ class SubscriptionController {
     MyPrint.printOnConsole("SubscriptionController().getAllSubscriptionsList() Finished", tag: tag);
   }
 
-  Future<bool> buySubscription({required BuildContext context, required SubscriptionModel subscriptionModel, required String userId,
-    required UserProvider userProvider}) async {
+  Future<bool> buySubscription({
+    required BuildContext context,
+    required SubscriptionModel subscriptionModel,
+    required List<String> selectedGamesList,
+    required String userId,
+    required UserProvider userProvider,
+  }) async {
     String tag = MyUtils.getUniqueIdFromUuid();
     MyPrint.printOnConsole("SubscriptionController().buySubscription() called with context:$context, subscriptionModel:$subscriptionModel, userId:$userId", tag: tag);
 
@@ -109,13 +117,26 @@ class SubscriptionController {
     MyPrint.printOnConsole("isPaymentSuccess:$isPaymentSuccess", tag: tag);
     MyPrint.printOnConsole("paymentId:$paymentId", tag: tag);
 
+    NewDocumentDataModel newDocumentDataModel = await MyUtils.getNewDocIdAndTimeStamp(isGetTimeStamp: true);
+    MyPrint.printOnConsole("Timestamp:${newDocumentDataModel.timestamp.toDate().toIso8601String()}", tag: tag);
+
+    Timestamp subscriptionActivatedDate = newDocumentDataModel.timestamp;
+    Timestamp subscriptionExpiryDate = Timestamp.fromDate(subscriptionActivatedDate.toDate().add(Duration(days: subscriptionModel.validityInDays)));
+
     if(isPaymentSuccess == true) {
       bool isOrderCreated = await OrderController(orderProvider: null).createOrderForSubscription(
-        subscriptionModel: subscriptionModel,
+        subscriptionOrderDataModel: SubscriptionOrderDataModel(
+          subscriptionModel: subscriptionModel,
+          selectedGamesList: selectedGamesList,
+          activatedDate: subscriptionActivatedDate,
+          expiryDate: Timestamp.fromDate(newDocumentDataModel.timestamp.toDate().add(Duration(days: subscriptionModel.validityInDays))),
+        ),
+        userId: userId,
         paymentId: paymentId,
         paymentMode: "Razorpay",
         paymentStatus: "Completed",
         amount: amount,
+        createdTime: newDocumentDataModel.timestamp,
       );
       MyPrint.printOnConsole("isOrderCreated:$isOrderCreated", tag: tag);
 
@@ -127,7 +148,13 @@ class SubscriptionController {
         return isBuySuccessful;
       }
 
-      bool isSubscriptionActivated = await _subscriptionRepository.activateSubscriptionForUser(subscriptionModel: subscriptionModel, userId: userId);
+      bool isSubscriptionActivated = await subscriptionRepository.activateSubscriptionForUser(
+        subscriptionModel: subscriptionModel,
+        userId: userId,
+        selectedGamesList: selectedGamesList,
+        activatedDate: subscriptionActivatedDate,
+        expiryDate: subscriptionExpiryDate,
+      );
       MyPrint.printOnConsole("isSubscriptionActivated:$isSubscriptionActivated", tag: tag);
 
       if(isSubscriptionActivated) {
@@ -164,7 +191,7 @@ class SubscriptionController {
 
     bool isSubscriptionAdded = false;
 
-    isSubscriptionAdded = await _subscriptionRepository.createSubscriptionInFirestoreFromModel(subscriptionModel: SubscriptionModel(
+    isSubscriptionAdded = await subscriptionRepository.createSubscriptionInFirestoreFromModel(subscriptionModel: SubscriptionModel(
       id: MyUtils.getUniqueIdFromUuid(),
       name: "Plan 3",
       createdTime: Timestamp.now(),
