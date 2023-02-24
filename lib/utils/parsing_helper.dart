@@ -184,4 +184,21 @@ class ParsingHelper {
       return defaultValue;
     }
   }
+
+  static List<Map<K, V>> parseMapsListMethod<K, V>(dynamic value, {List<Map<K, V>>? defaultValue, bool isEmptyMapAllowed = false}) {
+    defaultValue ??= <Map<K, V>>[];
+
+    List list = ParsingHelper.parseListMethod(value);
+    List<Map<K, V>> mapsList = <Map<K, V>>[];
+
+    for (dynamic value in list) {
+      Map<K, V> map = ParsingHelper.parseMapMethod<dynamic, dynamic, K, V>(value);
+
+      if(isEmptyMapAllowed || map.isNotEmpty) {
+        mapsList.add(map);
+      }
+    }
+
+    return mapsList;
+  }
 }
