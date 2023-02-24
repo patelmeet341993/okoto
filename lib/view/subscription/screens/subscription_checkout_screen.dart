@@ -224,28 +224,26 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
     int remainingGamesLength = subscriptionModel.requiredGamesCount - selectedGamesList.length;
     bool isBuyValid = remainingGamesLength == 0;
 
-    return GestureDetector(
-      onTap: () {
-        if(isBuyValid) {
-          buySubscription(subscriptionModel: subscriptionModel);
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        decoration: BoxDecoration(
-          color: themeData.primaryColor,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Rs. ${subscriptionModel.price}"),
-            CommonPrimaryButton(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              text: isBuyValid ? "Buy Now" : "$remainingGamesLength more left",
-              filled: isBuyValid,
-            ),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: themeData.primaryColor,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("Rs. ${subscriptionModel.price}"),
+          CommonPrimaryButton(
+            onTap: () {
+              if(isBuyValid) {
+                buySubscription(subscriptionModel: subscriptionModel);
+              }
+            },
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            text: isBuyValid ? "Buy Now" : "$remainingGamesLength more left",
+            filled: isBuyValid,
+          ),
+        ],
       ),
     );
   }
