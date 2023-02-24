@@ -228,8 +228,6 @@ class SubscriptionController {
 
   }
 
-
-
   Future<bool> addDummySubscription() async {
     String tag = MyUtils.getUniqueIdFromUuid();
     MyPrint.printOnConsole("SubscriptionController().addDummySubscription() called", tag: tag);
