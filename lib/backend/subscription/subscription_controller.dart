@@ -1,5 +1,7 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:okoto/backend/order/order_controller.dart';
 import 'package:okoto/backend/subscription/subscription_provider.dart';
 import 'package:okoto/backend/subscription/subscription_repository.dart';
@@ -8,6 +10,7 @@ import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/model/order/subscription_order_data_model.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/utils/my_toast.dart';
+import 'package:okoto/view/common/components/common_popup.dart';
 
 import '../../model/common/new_document_data_model.dart';
 import '../../utils/my_print.dart';
@@ -164,6 +167,48 @@ class SubscriptionController {
 
         if(context.mounted) {
           MyToast.showSuccess(context: context, msg: "Subscription Activated Successfully");
+        }
+
+        if(!kIsWeb) {
+          if(context.mounted) {
+            dynamic value = await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CommonPopUp(
+                  text: "Do you want to add alert for Expiry of Subscription in your calender?",
+                  rightText: "Yes",
+                  leftText: "No",
+                  rightOnTap: () {
+                    Navigator.pop(context, true);
+                  },
+                  leftOnTap: () {
+                    Navigator.pop(context, false);
+                  },
+                );
+              },
+            );
+
+            if(value == true) {
+              MyPrint.printOnConsole("Adding Event For Date:${subscriptionExpiryDate.toDate().toString()}");
+
+              final Event event = Event(
+                title: 'Okoto Subscription Expiry',
+                description: 'Your subscription in OKOTO is Going to be expire today',
+                // location: 'Event location',
+                startDate: subscriptionExpiryDate.toDate(),
+                endDate: subscriptionExpiryDate.toDate(),
+                allDay: true,
+                iosParams: const IOSParams(
+                  reminder: Duration(hours: 10),
+                  url: 'https://www.google.com',
+                ),
+                androidParams: const AndroidParams(
+                  emailInvites: [],
+                ),
+              );
+              Add2Calendar.addEvent2Cal(event);
+            }
+          }
         }
       }
       else {
