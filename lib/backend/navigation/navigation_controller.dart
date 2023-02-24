@@ -11,6 +11,7 @@ import '../../view/common/screens/splashscreen.dart';
 import '../../view/common/screens/terms_and_conditions_screen.dart';
 import '../../view/home/screens/home_screen.dart';
 import '../../view/order/screens/order_list_screen.dart';
+import '../../view/subscription/screens/subscription_checkout_screen.dart';
 import 'navigation_arguments.dart';
 import 'navigation_operation.dart';
 import 'navigation_operation_parameters.dart';
@@ -112,6 +113,10 @@ class NavigationController {
         page = parseOrderListScreen(settings: settings);
         break;
       }
+      case SubscriptionCheckoutScreen.routeName: {
+        page = parseSubscriptionCheckoutScreen(settings: settings);
+        break;
+      }
     }
 
     if (page != null) {
@@ -179,6 +184,19 @@ class NavigationController {
   static Widget? parseOrderListScreen({required RouteSettings settings}) {
     return const OrderListScreen();
   }
+
+  static Widget? parseSubscriptionCheckoutScreen({required RouteSettings settings}) {
+    if(settings.arguments is SubscriptionCheckoutScreenNavigationArguments) {
+      SubscriptionCheckoutScreenNavigationArguments arguments = settings.arguments as SubscriptionCheckoutScreenNavigationArguments;
+
+      return SubscriptionCheckoutScreen(
+        arguments: arguments,
+      );
+    }
+    else {
+      return null;
+    }
+  }
   //endregion
 
   //region Navigation Methods
@@ -188,7 +206,10 @@ class NavigationController {
     ));
   }
 
-  static Future<dynamic> navigateToOtpScreen({required NavigationOperationParameters navigationOperationParameters, required OtpScreenNavigationArguments arguments}) {
+  static Future<dynamic> navigateToOtpScreen({
+    required NavigationOperationParameters navigationOperationParameters, 
+    required OtpScreenNavigationArguments arguments,
+  }) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: OtpScreen.routeName,
       arguments: arguments,
@@ -207,14 +228,20 @@ class NavigationController {
     ));
   }
 
-  static Future<dynamic> navigateToTermsAndConditionsScreen({required NavigationOperationParameters navigationOperationParameters, required TermsAndConditionsScreenNavigationArguments arguments}) {
+  static Future<dynamic> navigateToTermsAndConditionsScreen({
+    required NavigationOperationParameters navigationOperationParameters, 
+    required TermsAndConditionsScreenNavigationArguments arguments,
+  }) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: TermsAndConditionsScreen.routeName,
       arguments: arguments,
     ));
   }
 
-  static Future<dynamic> navigateToAboutAppScreen({required NavigationOperationParameters navigationOperationParameters, required AboutAppScreenNavigationArguments arguments}) {
+  static Future<dynamic> navigateToAboutAppScreen({
+    required NavigationOperationParameters navigationOperationParameters, 
+    required AboutAppScreenNavigationArguments arguments,
+  }) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: AboutAppScreen.routeName,
       arguments: arguments,
@@ -224,6 +251,16 @@ class NavigationController {
   static Future<dynamic> navigateToOrderListScreen({required NavigationOperationParameters navigationOperationParameters}) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: OrderListScreen.routeName,
+    ));
+  }
+  
+  static Future<dynamic> navigateToSubscriptionCheckoutScreen({
+    required NavigationOperationParameters navigationOperationParameters,
+    required SubscriptionCheckoutScreenNavigationArguments arguments,
+  }) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: SubscriptionCheckoutScreen.routeName,
+      arguments: arguments,
     ));
   }
   //endregion
