@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:okoto/configs/constants.dart';
 import 'package:okoto/model/product/product_model.dart';
-import 'package:okoto/model/subscription/subscription_model.dart';
 
 import '../../utils/my_utils.dart';
 import '../../utils/parsing_helper.dart';
+import 'subscription_order_data_model.dart';
 
 /// types of Order are defined in [OrderType]
 
@@ -12,7 +12,7 @@ class OrderModel {
   String id = "", type = "", paymentMode = "", paymentId = "", paymentStatus = "", userId = "";
   double amount = 0;
   Timestamp? createdTime;
-  SubscriptionModel? subscriptionOrderDataModel;
+  SubscriptionOrderDataModel? subscriptionOrderDataModel;
   ProductModel? productOrderDataModel;
 
   OrderModel({
@@ -50,7 +50,7 @@ class OrderModel {
       return MapEntry(ParsingHelper.parseStringMethod(key), value);
     });
     if(subscriptionOrderDataModelMap.isNotEmpty) {
-      subscriptionOrderDataModel = SubscriptionModel.fromMap(subscriptionOrderDataModelMap);
+      subscriptionOrderDataModel = SubscriptionOrderDataModel.fromMap(subscriptionOrderDataModelMap);
     }
 
     Map<String, dynamic> productOrderDataModelMap = ParsingHelper.parseMapMethod(map['productOrderDataModel']).map<String, dynamic>((key, value) {
@@ -71,7 +71,7 @@ class OrderModel {
       "userId" : userId,
       "amount" : amount,
       "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
-      "subscriptionOrderDataModel" : subscriptionOrderDataModel?.orderModelToMap(toJson: toJson),
+      "subscriptionOrderDataModel" : subscriptionOrderDataModel?.toMap(toJson: toJson),
       "productOrderDataModel" : productOrderDataModel?.orderModelToMap(toJson: toJson),
     };
   }
