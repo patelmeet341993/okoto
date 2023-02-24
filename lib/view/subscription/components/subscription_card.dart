@@ -57,7 +57,7 @@ class SubscriptionCard extends StatelessWidget {
                   await buySubscriptionCallback!(subscriptionModel: subscriptionModel);
                 }
               },
-              text: "Buy",
+              text: "Choose",
             ),
           ),
         ],
