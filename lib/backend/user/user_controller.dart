@@ -248,7 +248,7 @@ class UserController {
 
     if(
         (userModel.userSubscriptionModel?.isActive ?? true) &&
-        userModel.userSubscriptionModel!.expiryDate != null &&
+        userModel.userSubscriptionModel?.expiryDate != null &&
         userModel.userSubscriptionModel!.expiryDate!.toDate().isBefore(newDocumentDataModel.timestamp.toDate())
     ) {
       MyPrint.printOnConsole("Subscription Expired", tag: tag);
