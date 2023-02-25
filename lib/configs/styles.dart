@@ -64,6 +64,10 @@ class Styles {
   static Color myBackgroundShade1 = const Color(0xff5D2097);
   static Color myBackgroundShade2 = const Color(0xff70279F);
   static Color myBackgroundShade3 = const Color(0xffB01BD8);
+  static Color cardGradient1 = const Color(0xff4F167A);
+  static Color cardGradient2 = const Color(0xff370850);
+  static Color discountCardColor = const Color(0xffA765DB);
+  static Color discountTextColor = const Color(0xff3F134C);
 
   //endregion
 
