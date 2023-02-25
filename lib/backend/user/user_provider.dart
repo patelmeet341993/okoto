@@ -63,4 +63,11 @@ class UserProvider extends CommonProvider {
     notify(isNotify: isNotify);
   }
   //endregion
+
+  void resetAllData() {
+    setFirebaseUser(user: null, isNotify: false);
+    setUserModel(userModel: null, isNotify: false);
+    setUserId(userId: "", isNotify: false);
+    stopUserListeningStreamSubscription(isNotify: false);
+  }
 }

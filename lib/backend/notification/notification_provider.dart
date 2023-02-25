@@ -13,4 +13,8 @@ class NotificationProvider extends CommonProvider {
   }
 
   late final CommonProviderPrimitiveParameter<String?> notificationToken;
+
+  void resetAllData() {
+
+  }
 }
