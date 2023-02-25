@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:okoto/backend/notification/notification_provider.dart';
 import 'package:okoto/view/common/components/common_text.dart';
 import 'package:provider/provider.dart';
 
@@ -37,18 +38,26 @@ class _SplashScreenState extends State<SplashScreen> {
     //endregion
 
     UserProvider userProvider = Provider.of<UserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
+    NotificationProvider notificationProvider = Provider.of<NotificationProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
     UserController userController = UserController(userProvider: userProvider,);
 
     bool isUserLoggedIn = await AuthenticationController(userProvider: userProvider).isUserLoggedIn(initializeUserid: true);
 
     if(isUserLoggedIn) {
-      bool isExist = await userController.checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: userProvider.getUserId());
-      MyPrint.printOnConsole("isExist:$isExist");
+      String userId = userProvider.getUserId();
+
+      bool isExist = await userController.checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: userId);
+      MyPrint.printOnConsole("isExist for userId '$userId':$isExist");
 
       if (isExist && (userProvider.getUserModel()?.isHavingNecessaryInformation() ?? false)) {
         MyPrint.printOnConsole("User Exist");
 
         await userController.checkSubscriptionActivatedOrNot();
+
+        userController.startUserListening(
+          userId: userId,
+          notificationProvider: notificationProvider,
+        );
 
         if(context.mounted) {
           NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
