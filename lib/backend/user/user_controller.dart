@@ -331,6 +331,7 @@ class UserController {
         isForceLogout: true,
         forceLogoutMessage: "Logging out because Logged In in Another Device",
       );
+      isValid = false;
       return isValid;
     }
 

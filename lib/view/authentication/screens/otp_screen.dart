@@ -132,7 +132,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
         //startTimer();
 
-        _otpFocusNode?.requestFocus();
+        // _otpFocusNode?.requestFocus();
 
         //_smsReceiver.startListening();
 
