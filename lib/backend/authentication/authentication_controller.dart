@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:okoto/backend/user/user_controller.dart';
 import 'package:okoto/backend/user/user_provider.dart';
+import 'package:okoto/utils/my_toast.dart';
 
 import '../../configs/constants.dart';
 import '../../utils/my_print.dart';
 import '../../utils/shared_pref_manager.dart';
 import '../../view/common/components/common_popup.dart';
+import '../data/data_controller.dart';
 import '../navigation/navigation_controller.dart';
 import '../navigation/navigation_operation_parameters.dart';
 import '../navigation/navigation_type.dart';
@@ -50,8 +53,13 @@ class AuthenticationController {
   }
 
   //Will logout from system and remove data from UserProvider and local memory
-  Future<bool> logout({BuildContext? context, bool isShowConfirmDialog = true}) async {
-    if(context != null && isShowConfirmDialog) {
+  Future<bool> logout({
+    BuildContext? context,
+    bool isShowConfirmDialog = true,
+    bool isForceLogout = false,
+    String forceLogoutMessage = "",
+  }) async {
+    if(!isForceLogout && context != null && isShowConfirmDialog) {
       dynamic value = await showDialog(context: context, builder: (context){
         return CommonPopUp(
           text: 'Are you sure you want to Logout?',
@@ -70,14 +78,29 @@ class AuthenticationController {
     context ??= NavigationController.mainScreenNavigator.currentContext!;
 
     UserProvider provider = userProvider;
+    UserController userController = UserController(userProvider: provider);
 
-    provider.setFirebaseUser(user: null, isNotify: false);
-    provider.setUserId(userId: "", isNotify: false);
-    provider.setUserModel(userModel: null, isNotify: false);
-
-    await FirebaseAuth.instance.signOut();
+    await userController.stopUserListening();
 
     if(context.mounted) {
+      DataController(dataProvider: null).clearAllAppProviderData(context);
+    }
+
+    try {
+      await FirebaseAuth.instance.signOut();
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in Firebase SignOut:$e");
+      MyPrint.printOnConsole(s);
+    }
+
+    if(context.mounted) {
+      if(isForceLogout) {
+        if(context.mounted) {
+          MyToast.showError(context: context, msg: forceLogoutMessage);
+        }
+      }
+
       NavigationController.navigateToLoginScreen(
         navigationOperationParameters: NavigationOperationParameters(
           context: context,
