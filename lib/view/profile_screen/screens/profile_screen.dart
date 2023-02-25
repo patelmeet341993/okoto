@@ -76,41 +76,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget getProfileDetails() {
-    UserModel? userModel = userProvider.getUserModel();
+    return Consumer<UserProvider>(
+      builder: (BuildContext context, UserProvider userProvider, Widget? child) {
+        UserModel? userModel = userProvider.getUserModel();
 
-    if(userModel == null) {
-      return const Text("Profile Details Not Available");
-    }
+        if(userModel == null) {
+          return const Text("Profile Details Not Available");
+        }
 
-    String imageUrl = '';
+        String imageUrl = '';
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 250),
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: const EdgeInsets.only(bottom: 8),
-            width: 120,
-            height: 120,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-            ),
-            padding: const EdgeInsets.all(10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(300),
-              child: imageUrl.isNotEmpty
-                  ? CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.fill,)
-                  : Image.asset("assets/images/male profile vector.png", fit: BoxFit.fill,),
-            ),
+        return Container(
+          margin: const EdgeInsets.only(bottom: 250),
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                width: 120,
+                height: 120,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(300),
+                  child: imageUrl.isNotEmpty
+                      ? CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.fill,)
+                      : Image.asset("assets/images/male profile vector.png", fit: BoxFit.fill,),
+                ),
+              ),
+              Text(userModel.name),
+              Text(userModel.userName),
+              Visibility(
+                visible: (userModel.mobileNumber).isNotEmpty,
+                child: Text(userModel.mobileNumber),
+              ),
+            ],
           ),
-          Text(userModel.name),
-          Text(userModel.userName),
-          Visibility(
-            visible: (userModel.mobileNumber).isNotEmpty,
-            child: Text(userModel.mobileNumber),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

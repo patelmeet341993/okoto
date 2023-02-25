@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:okoto/backend/notification/notification_provider.dart';
 import 'package:okoto/view/common/components/common_back_button.dart';
 import 'package:okoto/view/common/components/common_submit_button.dart';
 import 'package:provider/provider.dart';
@@ -94,6 +95,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       isLoading = true;
       setState(() {});
 
+      NotificationProvider notificationProvider = context.read<NotificationProvider>();
+
       UserModel newUserModel = UserModel.fromMap(existingUserModel.toMap());
 
       newUserModel.name = nameController.text;
@@ -110,7 +113,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if(isUpdated) {
         userProvider.setUserModel(userModel: newUserModel, isNotify: false);
 
+        await userController.updateNotificationTokenForUserAndStoreInProvider(
+          userId: newUserModel.id,
+          notificationProvider: notificationProvider,
+        );
+
         await userController.checkSubscriptionActivatedOrNot();
+
+        userController.startUserListening(
+          userId: newUserModel.id,
+          notificationProvider: notificationProvider,
+        );
 
         if(context.mounted) {
           NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(

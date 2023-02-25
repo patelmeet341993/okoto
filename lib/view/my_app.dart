@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_popup_snakbar/my_popup_snakbar.dart';
 import 'package:okoto/backend/device/device_provider.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ import '../backend/connection/connection_provider.dart';
 import '../backend/data/data_provider.dart';
 import '../backend/game/game_provider.dart';
 import '../backend/navigation/navigation_controller.dart';
+import '../backend/notification/notification_provider.dart';
 import '../backend/order/order_provider.dart';
 import '../backend/subscription/subscription_provider.dart';
 import '../configs/app_theme.dart';
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SubscriptionProvider>(create: (_) => SubscriptionProvider(), lazy: false),
         ChangeNotifierProvider<OrderProvider>(create: (_) => OrderProvider(), lazy: false),
         ChangeNotifierProvider<GameProvider>(create: (_) => GameProvider(), lazy: false),
+        ChangeNotifierProvider<NotificationProvider>(create: (_) => NotificationProvider(), lazy: false),
       ],
       child: const MainApp(),
     );
@@ -51,15 +54,17 @@ class MainApp extends StatelessWidget {
       builder: (BuildContext context, AppThemeProvider appThemeProvider, Widget? child) {
         //MyPrint.printOnConsole("ThemeMode:${appThemeProvider.themeMode}");
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          navigatorKey: NavigationController.mainScreenNavigator,
-          title: AppConstants.getAppNameFromAppType(isDev: AppController.isDev),
-          theme: AppTheme.getThemeFromThemeMode(appThemeProvider.themeMode),
-          onGenerateRoute: NavigationController.onMainAppGeneratedRoutes,
-          navigatorObservers: const [
-            // FirebaseAnalyticsObserver(analytics: firebaseAnalytics),
-          ],
+        return OverlaySupport.global(
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: NavigationController.mainScreenNavigator,
+            title: AppConstants.getAppNameFromAppType(isDev: AppController.isDev),
+            theme: AppTheme.getThemeFromThemeMode(appThemeProvider.themeMode),
+            onGenerateRoute: NavigationController.onMainAppGeneratedRoutes,
+            navigatorObservers: const [
+              // FirebaseAnalyticsObserver(analytics: firebaseAnalytics),
+            ],
+          ),
         );
       },
     );

@@ -30,8 +30,6 @@ class NavigationController {
   NavigationController._();
 
   static final GlobalKey<NavigatorState> mainScreenNavigator = GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> pharmaDashboardScreenNavigator = GlobalKey<NavigatorState>();
-  static GlobalKey<NavigatorState> historyScreenNavigator = GlobalKey<NavigatorState>();
 
   static bool isUserProfileTabInitialized = false;
 

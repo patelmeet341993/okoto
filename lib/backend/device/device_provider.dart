@@ -37,4 +37,9 @@ class DeviceProvider extends CommonProvider {
   }
   //endregion
   //endregion
+
+  void resetAllData() {
+    setUserDevices(devices: [], isNotify: false);
+    setIsUserDevicesLoading(value: false, isNotify: false);
+  }
 }

@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../../backend/navigation/navigation.dart';
+import '../../../backend/notification/notification_provider.dart';
 import '../../../backend/user/user_controller.dart';
 import '../../../backend/user/user_provider.dart';
 import '../../../configs/styles.dart';
@@ -131,7 +132,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
         //startTimer();
 
-        _otpFocusNode?.requestFocus();
+        // _otpFocusNode?.requestFocus();
 
         //_smsReceiver.startListening();
 
@@ -211,19 +212,33 @@ class _OtpScreenState extends State<OtpScreen> {
     UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
     UserController userController = UserController(userProvider: userProvider);
 
+    NotificationProvider notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+
     userProvider.setUserId(userId: user.uid, isNotify: false);
     userProvider.setFirebaseUser(user: user, isNotify: false);
 
     MyPrint.printOnConsole("Email:${user.email}");
     MyPrint.printOnConsole("Mobile:${user.phoneNumber}");
 
-    bool isExist = await userController.checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: user.uid);
+    bool isExist = await userController.checkUserWithIdExistOrNotAndIfNotExistThenCreate(
+      userId: user.uid,
+    );
     MyPrint.printOnConsole("isExist:$isExist");
 
     if (isExist && (userProvider.getUserModel()?.isHavingNecessaryInformation() ?? false)) {
       MyPrint.printOnConsole("User Exist");
 
+      await userController.updateNotificationTokenForUserAndStoreInProvider(
+        userId: user.uid,
+        notificationProvider: notificationProvider,
+      );
+
       await userController.checkSubscriptionActivatedOrNot();
+
+      userController.startUserListening(
+        userId: user.uid,
+        notificationProvider: notificationProvider,
+      );
 
       if(context.mounted) {
         NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
@@ -237,7 +252,6 @@ class _OtpScreenState extends State<OtpScreen> {
       MyPrint.logOnConsole("Created:${userProvider.getUserModel()}");
 
       if(context.mounted) {
-
         NavigationController.navigateToSignUpScreen(navigationOperationParameters: NavigationOperationParameters(
           context: context,
           navigationType: NavigationType.pushNamed,

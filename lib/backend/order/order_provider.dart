@@ -71,4 +71,12 @@ class OrderProvider extends CommonProvider {
   }
   //endregion
   //endregion
+
+  void resetAllData() {
+    setOrders(orders: [], isNotify: false);
+    setIsOrdersFirstTimeLoading(value: false, isNotify: false);
+    setIsOrdersLoading(value: false, isNotify: false);
+    setHasMoreOrders(value: true, isNotify: false);
+    setLastOrderDocumentSnapshot(snapshot: null, isNotify: false);
+  }
 }

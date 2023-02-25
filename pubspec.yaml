@@ -46,8 +46,14 @@ dependencies:
   google_fonts: ^4.0.1
   loading_animation_widget: ^1.2.0+4
   material_design_icons_flutter: ^6.0.7096
+#  overlay_support: ^2.1.0
   shimmer: ^2.0.0
   timer_count_down: ^2.2.2
+#  top_snackbar_flutter: ^3.0.0+1
+  my_popup_snakbar:
+    git:
+      url: https://github.com/Rockstar95/my_popup_snakbar
+      ref: master
 
 dev_dependencies:
   flutter_test:
