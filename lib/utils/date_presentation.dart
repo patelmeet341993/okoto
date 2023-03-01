@@ -19,6 +19,16 @@ abstract class DatePresentation {
     return DateFormat('MMMM, yyyy').format(dateTime);
   }
 
+  static String showCustomTimemmss(Timestamp timeStamp) {
+    DateTime dateTime = timeStamp.toDate();
+    return DateFormat('mm:ss').format(dateTime);
+  }
+
+  static String getSingleFormat(String format, Timestamp timeStamp) {
+    DateTime dateTime = timeStamp.toDate();
+    return DateFormat(format).format(dateTime);
+  }
+
   static String ddMMyyyyFormatter(String timeStamp) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp));
     return DateFormat('dd/MM/yyyy').format(dateTime);

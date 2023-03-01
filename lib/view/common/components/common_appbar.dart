@@ -1,12 +1,11 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:okoto/view/common/components/common_back_button.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CommonAppBar({Key? key, this.text = "", this.height = kToolbarHeight, this.isBackButtonVisible = true}) : super(key: key);
+  const CommonAppBar({Key? key, this.text = "", this.height = kToolbarHeight, this.isBackButtonVisible = true, this.actions = const []}) : super(key: key);
   final String text;
   final double height;
+  final List<Widget> actions;
   final bool isBackButtonVisible;
 
   @override
@@ -14,21 +13,24 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
       preferredSize: Size(double.infinity, height),
       child: AppBar(
-        // leadingWidth: 55,
+        actions: actions,
         leading: Row(
-        children:  [
+          children: [
             Visibility(
               visible: isBackButtonVisible,
               child: InkWell(
-                onTap: (){
+                onTap: () {
                   Navigator.pop(context);
                 },
                 child: const Padding(
                   padding: EdgeInsets.only(left: 18.0),
                   child: SizedBox(
                     width: 32,
-                      height: 32,
-                      child: CommonBackButton(padding: 0,)),
+                    height: 32,
+                    child: CommonBackButton(
+                      padding: 0,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -37,11 +39,10 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         centerTitle: true,
-        title: Text(text, style: const TextStyle(
-          fontSize: 20,
-          letterSpacing: 0.8,
-          fontWeight: FontWeight.w600
-        ),),
+        title: Text(
+          text,
+          style: const TextStyle(fontSize: 20, letterSpacing: 0.8, fontWeight: FontWeight.w600),
+        ),
       ),
     );
   }
@@ -49,5 +50,3 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(height);
 }
-
-

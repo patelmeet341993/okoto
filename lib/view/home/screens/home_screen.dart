@@ -171,7 +171,11 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
           const SizedBox(width: 14,),
           const Icon(MdiIcons.bell,color: Colors.white,size: 24,),
           const SizedBox(width: 14,),
-          MyProfileAvatar(),
+          InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, ProfileScreen.routeName);
+              },
+              child: MyProfileAvatar()),
         ],
       ),
     );
