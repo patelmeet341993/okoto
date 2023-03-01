@@ -24,21 +24,13 @@ class MyProfileAvatar extends StatelessWidget {
               isMale = false;
             }
           }
-          return InkWell(
-            onTap: () {
-              AuthenticationController(userProvider: userProvider).logout(
-                context: context,
-                isShowConfirmDialog: true,
-              );
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Styles.myDarkVioletColor,width: 1.5)
-              ),
-              child: Image.asset(isMale?'assets/images/male.png':'assets/images/female.png',
-                height: size,width: size,),
+          return Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Styles.myDarkVioletColor,width: 1.5)
             ),
+            child: Image.asset(isMale?'assets/images/male.png':'assets/images/female.png',
+              height: size,width: size,),
           );
         }
     );

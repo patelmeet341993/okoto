@@ -15,6 +15,7 @@ import '../../view/common/screens/terms_and_conditions_screen.dart';
 import '../../view/home/screens/home_screen.dart';
 import '../../view/home/screens/home_temp_screen.dart';
 import '../../view/order/screens/order_list_screen.dart';
+import '../../view/profile_screen/screens/profile_screen.dart';
 import '../../view/subscription/screens/subscription_checkout_screen.dart';
 import '../../view/subscription/screens/subscription_list_screen.dart';
 import 'navigation_arguments.dart';
@@ -139,6 +140,11 @@ class NavigationController {
 
       case OrderDetailScreen.routeName: {
         page = parsePaymentDetailScreen(settings: settings);
+        break;
+      }
+
+      case ProfileScreen.routeName: {
+        page = ProfileScreen();
         break;
       }
     }

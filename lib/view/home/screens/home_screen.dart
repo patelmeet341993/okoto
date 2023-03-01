@@ -11,6 +11,7 @@ import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
+import '../../../backend/authentication/authentication_controller.dart';
 import '../../../configs/styles.dart';
 import '../../../model/user/user_model.dart';
 import '../../../model/user/user_subscription_model.dart';
@@ -21,6 +22,7 @@ import '../../common/components/common_text.dart';
 import '../../common/components/image_slider.dart';
 import '../../common/components/modal_progress_hud.dart';
 import '../../common/components/my_profile_avatar.dart';
+import '../../profile_screen/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = "/HomeScreen";
@@ -81,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          getMyAppBar(),
+                          getMyAppBar(userProvider),
                           const SizedBox(
                             height: 15,
                           ),
@@ -129,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   // child: getImageSlider(bannerImages: bannerImages),
   // ),
 
-  Widget getMyAppBar() {
+  Widget getMyAppBar(UserProvider userProvider) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Row(
@@ -164,18 +166,23 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(
-            width: 14,
-          ),
-          const Icon(
-            MdiIcons.bell,
-            color: Colors.white,
-            size: 24,
-          ),
-          const SizedBox(
-            width: 14,
-          ),
-          MyProfileAvatar(),
+          const SizedBox(width: 14,),
+          // const Icon(MdiIcons.bell,color: Colors.white,size: 24,),
+          // const SizedBox(width: 14,),
+          InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, ProfileScreen.routeName);
+              },
+              child: MyProfileAvatar()),
+          const SizedBox(width: 14,),
+
+          InkWell(
+              onTap: (){
+                AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
+                //
+              },
+              child: const Icon(MdiIcons.logout,color: Colors.white,size: 24,)),
+
         ],
       ),
     );
