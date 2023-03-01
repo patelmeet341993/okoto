@@ -70,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         if (userModel == null) {
           return const SizedBox();
         }
+
         return Scaffold(
           body: MyScreenBackground(
             child: SafeArea(
@@ -245,6 +246,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       }
     }
 
+    int totalDays = userSubscriptionModel?.mySubscription?.validityInDays ?? 28, remainingDays = 20;
+    if(userSubscriptionModel?.activatedDate != null && userSubscriptionModel?.expiryDate != null) {
+      // DateTime activatedDate = userSubscriptionModel!.activatedDate!.toDate();
+      DateTime expiryDate = userSubscriptionModel!.expiryDate!.toDate();
+      DateTime dateTime = DateTime.now();
+
+      remainingDays = expiryDate.difference(dateTime).inDays;
+      if(remainingDays < 0 || remainingDays > totalDays) {
+        remainingDays = totalDays;
+      }
+    }
+
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.all(15),
@@ -291,7 +304,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5.0),
-                              child: MyValidityCircle(),
+                              child: myValidityCircle(
+                                totalDays: totalDays,
+                                remainingDays: remainingDays,
+                              ),
                             ),
                           ),
                         ],
@@ -375,7 +391,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  Widget MyValidityCircle() {
+  Widget myValidityCircle({
+    required int totalDays,
+    required int remainingDays,
+  }) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -385,7 +404,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Transform.scale(
             scaleX: -1,
             child: CircularProgressIndicator(
-              value: 0.9,
+              value: remainingDays/totalDays,
               strokeWidth: 4.5,
               color: Styles.myLightVioletShade1,
             ),
@@ -396,7 +415,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CommonText(text: '26', fontWeight: FontWeight.bold, fontSize: 30),
+              CommonText(text: '$remainingDays', fontWeight: FontWeight.bold, fontSize: 30),
               const SizedBox(
                 height: 2,
               ),
@@ -432,13 +451,28 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               width: spacing,
             ),
             exploreBox(
+              onTap: () {
+                NavigationController.navigateToSubscriptionListScreen(navigationOperationParameters: NavigationOperationParameters(
+                  context: context,
+                  navigationType: NavigationType.pushNamed,
+                ));
+              },
               imageUrl: 'assets/icons/subscriptions.png',
               title: 'Subscription',
             ),
             SizedBox(
               width: spacing,
             ),
-            exploreBox(imageUrl: 'assets/icons/payment.png', title: 'Payment History'),
+            exploreBox(
+              onTap: () {
+                NavigationController.navigateToOrderListScreen(navigationOperationParameters: NavigationOperationParameters(
+                  context: context,
+                  navigationType: NavigationType.pushNamed,
+                ));
+              },
+              imageUrl: 'assets/icons/payment.png',
+              title: 'Payment History',
+            ),
           ],
         ),
         SizedBox(
