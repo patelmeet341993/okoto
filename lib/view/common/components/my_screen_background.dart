@@ -16,7 +16,8 @@ class MyScreenBackground extends StatelessWidget {
 
         image: DecorationImage(
         fit: BoxFit.fitWidth,
-        image: AssetImage('assets/images/mybackground.png',),
+        // image: AssetImage('assets/images/mybackground.png',),
+        image: AssetImage('assets/images/background2.png',),
     ),
         gradient: LinearGradient(
               colors: [

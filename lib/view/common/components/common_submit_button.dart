@@ -8,7 +8,8 @@ class CommonSubmitButton extends StatelessWidget {
   String text;
   double verticalPadding;
   double horizontalPadding;
-  double fontSize;
+  double fontSize, elevation;
+  double? height;
   double borderRadius;
   Widget? icon;
   Widget? suffixIcon;
@@ -16,6 +17,8 @@ class CommonSubmitButton extends StatelessWidget {
   CommonSubmitButton({
     required this.onTap,
     required this.text,
+    this.height,
+    this.elevation = 2,
     this.verticalPadding=13,
     this.fontSize=20,
     this.icon,
@@ -28,17 +31,21 @@ class CommonSubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
+      height: height,
+      elevation:elevation ,
+
       //splashColor: Colors.white,
-      splashColor: Styles.myVioletShade3,
-      highlightColor:Styles.myVioletShade3 ,
-      padding: EdgeInsets.symmetric(horizontal: 3),
+      splashColor: Colors.black26,
+      highlightColor:Colors.black26 ,
+      padding: EdgeInsets.zero  , //
+      // padding: EdgeInsets.symmetric(vertical: verticalPadding,horizontal: horizontalPadding),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18)
+        borderRadius: BorderRadius.circular(borderRadius)
       ),
       onPressed: () {
         onTap();
       },
-      child: Container(
+      child: Ink(
           padding: EdgeInsets.symmetric(vertical: verticalPadding,horizontal: horizontalPadding),
           decoration: BoxDecoration(
             color: Styles.myBorderVioletColor,

@@ -4,12 +4,19 @@ import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:okoto/backend/subscription/subscription_controller.dart';
 import 'package:okoto/model/game/game_model.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
+import 'package:okoto/view/common/components/common_appbar.dart';
 import 'package:okoto/view/common/components/common_primary_button.dart';
+import 'package:okoto/view/common/components/common_submit_button.dart';
+import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 
 import '../../../backend/user/user_provider.dart';
+import '../../../configs/styles.dart';
 import '../../../utils/my_toast.dart';
+import '../../../utils/my_utils.dart';
+import '../../common/components/common_cachednetwork_image.dart';
 import '../../common/components/common_loader.dart';
+import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
 import '../components/subscription_checkout_game_selection_card.dart';
 
@@ -56,11 +63,11 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
   Future<void> getData() async {
     subscriptionModel ??= await subscriptionController.subscriptionRepository.getSubscriptionModelFromId(subscriptionId: subscriptionId);
 
-    if(subscriptionModel != null) {
+    if (subscriptionModel != null) {
       SubscriptionModel model = subscriptionModel!;
 
       int gamesLength = model.gamesList.length;
-      if(gamesLength > 0 && model.requiredGamesCount == gamesLength) {
+      if (gamesLength > 0 && model.requiredGamesCount == gamesLength) {
         selectedGamesList.addAll(model.gamesList);
         isEnableGameSelection = false;
       }
@@ -72,7 +79,7 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
   Future<void> buySubscription({required SubscriptionModel subscriptionModel}) async {
     String userId = userProvider.getUserId();
 
-    if(userId.isEmpty) {
+    if (userId.isEmpty) {
       MyToast.showError(context: context, msg: "User Data Not Available");
       return;
     }
@@ -89,12 +96,12 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
       userProvider: userProvider,
     );
 
-    if(context.mounted) {
+    if (context.mounted) {
       setState(() {
         isLoading = false;
       });
 
-      if(isSubscriptionBuySuccessful) {
+      if (isSubscriptionBuySuccessful) {
         NavigationController.navigateToOrderListScreen(
           navigationOperationParameters: NavigationOperationParameters(
             context: context,
@@ -122,41 +129,36 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       progressIndicator: const CommonLoader(),
-      child: Scaffold(
-        appBar: getAPpBar(),
-        body: SafeArea(
-          child: FutureBuilder(
-            future: future,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if(snapshot.connectionState == ConnectionState.done) {
-                return getMainBody(
-                  subscriptionModel: subscriptionModel,
-                  games: gameModels,
-                );
-              }
-              else {
-                return const CommonLoader(isCenter: true,);
-              }
-            },
+      child: MyScreenBackground(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: const CommonAppBar(
+            text: "Checkout",
+          ),
+          body: SafeArea(
+            child: FutureBuilder(
+              future: future,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return getMainBody(
+                    subscriptionModel: subscriptionModel,
+                    games: gameModels,
+                  );
+                } else {
+                  return const CommonLoader(
+                    isCenter: true,
+                  );
+                }
+              },
+            ),
           ),
         ),
       ),
     );
   }
 
-  PreferredSizeWidget getAPpBar() {
-    return AppBar(
-      title: const Text(
-        "Subscriptions",
-        style: TextStyle(
-          // fontSize: 16,
-        ),
-      ),
-    );
-  }
-
   Widget getMainBody({required SubscriptionModel? subscriptionModel, required List<GameModel> games}) {
-    if(subscriptionModel == null) {
+    if (subscriptionModel == null) {
       return const Center(
         child: Text("Subscription Data Not Available"),
       );
@@ -164,11 +166,32 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
 
     return Column(
       children: [
-        getSubscriptionCard(subscriptionModel: subscriptionModel),
+        Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: getSubscriptionCard(subscriptionModel: subscriptionModel),
+        ),
+        const SizedBox(
+          height: 25,
+        ),
         Expanded(
-          child: getGamesListView(
-            subscriptionModel: subscriptionModel,
-            games: games,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 18.0),
+                child: CommonText(text: "Games", fontWeight: FontWeight.w600, fontSize: 18),
+              ),
+              const SizedBox(
+                height: 0,
+              ),
+              Expanded(
+                child: getGamesListView(
+                  subscriptionModel: subscriptionModel,
+                  games: games,
+                ),
+              ),
+            ],
           ),
         ),
         getPriceAndCheckoutButtonWidget(
@@ -179,29 +202,77 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
   }
 
   Widget getSubscriptionCard({required SubscriptionModel subscriptionModel}) {
-    return Card(
-      child: Center(
-        child: Text("Subscription Data:${subscriptionModel.name}"),
-      ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Card(elevation: 8, child: getImage(url: subscriptionModel.image)),
+        const SizedBox(
+          width: 20,
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CommonText(
+                text: subscriptionModel.name,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                letterSpacing: 0.5,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              CommonText(
+                text: "Validity: ${subscriptionModel.validityInDays} Days",
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.5,
+              ),const SizedBox(
+                height: 5,
+              ),
+              CommonText(
+                text: "You can select ${subscriptionModel.requiredGamesCount} game(s)",
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.5,
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget getImage({String url = "", double borderRadius = 5.0, double height = 76, double width = 76}) {
+    return CommonCachedNetworkImage(
+      imageUrl: MyUtils().getSecureUrl(url),
+      height: height,
+      width: width,
+      borderRadius: borderRadius,
     );
   }
 
   Widget getGamesListView({required SubscriptionModel subscriptionModel, required List<GameModel> games}) {
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
       itemCount: games.length,
+      shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         GameModel gameModel = games[index];
 
         return Container(
-          margin: const EdgeInsets.symmetric(vertical: 10),
+          margin: const EdgeInsets.only(top: 25),
           child: SubscriptionCheckoutGameSelectionCard(
             gameModel: gameModel,
             isGameAdded: selectedGamesList.contains(gameModel.id),
             isShowGameSelectionButton: isEnableGameSelection,
             onGameNotSelectedButtonTap: (GameModel gameModel) {
-              if(selectedGamesList.length < subscriptionModel.requiredGamesCount) {
+              if (selectedGamesList.length < subscriptionModel.requiredGamesCount) {
                 selectedGamesList.add(gameModel.id);
                 setState(() {});
+              } else {
+                MyToast.showSuccess(context: context, msg: "You have already selected ${subscriptionModel.requiredGamesCount} game(s)");
               }
             },
             onGameSelectedButtonTap: (GameModel gameModel) {
@@ -217,7 +288,7 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
   Widget getPriceAndCheckoutButtonWidget({
     required SubscriptionModel subscriptionModel,
   }) {
-    if(selectedGamesList.isEmpty) {
+    if (selectedGamesList.isEmpty) {
       return const SizedBox();
     }
 
@@ -225,24 +296,44 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
     bool isBuyValid = remainingGamesLength == 0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
-        color: themeData.primaryColor,
+        borderRadius: const BorderRadius.only(topRight: Radius.circular(10), topLeft: Radius.circular(10)),
+        color: Styles.checkoutBottomPriceBackground,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Rs. ${subscriptionModel.price}"),
-          CommonPrimaryButton(
-            onTap: () {
-              if(isBuyValid) {
-                buySubscription(subscriptionModel: subscriptionModel);
-              }
-            },
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            text: isBuyValid ? "Buy Now" : "$remainingGamesLength more left",
-            filled: isBuyValid,
+          CommonText(
+            text: "Rs. ${subscriptionModel.price}",
+            fontSize: 18,
+            letterSpacing: 0.2,
           ),
+          !isBuyValid
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 35, vertical: 14),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Styles.moreLeftBackground,
+                  ),
+                  child: CommonText(
+                    text: "$remainingGamesLength more left",
+                    color: Styles.moreLeftTextColor,
+                    letterSpacing: 0.2,
+                    fontSize: 17,
+                  ))
+              : CommonSubmitButton(
+                  elevation: 20,
+                  horizontalPadding: 45,
+                  fontSize: 17,
+                  verticalPadding: 14,
+                  onTap: () {
+                    if (isBuyValid) {
+                      buySubscription(subscriptionModel: subscriptionModel);
+                    }
+                  },
+                  text: "Buy Now",
+                )
         ],
       ),
     );

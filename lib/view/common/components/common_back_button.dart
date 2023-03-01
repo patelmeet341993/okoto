@@ -4,7 +4,8 @@ import '../../../configs/styles.dart';
 
 
 class CommonBackButton extends StatelessWidget {
-  const CommonBackButton({Key? key}) : super(key: key);
+  const CommonBackButton({Key? key, this.padding = 7}) : super(key: key);
+  final double padding;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class CommonBackButton extends StatelessWidget {
         Navigator.pop(context);
       },
       child: Container(
-        padding: EdgeInsets.all(7),
+        padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
             color: Styles.myButtonBlack,
             borderRadius: BorderRadius.circular(8),
@@ -22,7 +23,7 @@ class CommonBackButton extends StatelessWidget {
         child: Icon(
           Icons.arrow_back_outlined,
           color: Styles.myVioletShade4,
-          size: 20,
+          size: 18,
         ),
       ),
     );

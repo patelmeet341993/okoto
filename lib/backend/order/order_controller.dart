@@ -30,15 +30,17 @@ class OrderController {
     OrderRepository repository = _orderRepository;
 
     try {
-      if(isRefresh) {
+      if (isRefresh) {
         provider.setOrders(orders: [], isClear: true, isNotify: false);
         provider.setIsOrdersFirstTimeLoading(value: true, isNotify: false);
         provider.setIsOrdersLoading(value: false, isNotify: false);
         provider.setHasMoreOrders(value: true, isNotify: false);
         provider.setLastOrderDocumentSnapshot(snapshot: null, isNotify: isNotify);
+        provider.setOrdersMapWithMonthYear({}, isClear: true,isNotify: true);
+
       }
 
-      if(userId.isEmpty) {
+      if (userId.isEmpty) {
         MyPrint.printOnConsole("User Id is empty");
         return;
       }
@@ -46,7 +48,7 @@ class OrderController {
       MyPrint.printOnConsole("isOrdersLoading:${orderProvider.isOrdersLoading}");
       MyPrint.printOnConsole("hasMoreOrders:${orderProvider.hasMoreOrders}");
 
-      if(provider.isOrdersLoading || !provider.hasMoreOrders) {
+      if (provider.isOrdersLoading || !provider.hasMoreOrders) {
         return;
       }
 
@@ -70,8 +72,10 @@ class OrderController {
       provider.setOrders(orders: orders, isClear: false, isNotify: false);
       provider.setIsOrdersFirstTimeLoading(value: false, isNotify: true);
       provider.setIsOrdersLoading(value: false, isNotify: true);
-    }
-    catch(e, s) {
+
+      Map<String, String> orderMapWithYearMonth = getMapOfMonthYearFromList(provider.getOrders(isNewInstance: true));
+      provider.setOrdersMapWithMonthYear(orderMapWithYearMonth, isClear: true, isNotify: true);
+    } catch (e, s) {
       MyPrint.printOnConsole("Error in OrderController().getOrdersList():$e", tag: tag);
       MyPrint.printOnConsole(s, tag: tag);
 
@@ -80,9 +84,23 @@ class OrderController {
       provider.setOrders(orders: <OrderModel>[], isClear: true, isNotify: false);
       provider.setIsOrdersFirstTimeLoading(value: false, isNotify: true);
       provider.setIsOrdersLoading(value: false, isNotify: true);
+      provider.setOrdersMapWithMonthYear({}, isClear: true,isNotify: true);
     }
 
     MyPrint.printOnConsole("OrderController().getOrdersList() Finished", tag: tag);
+  }
+
+  Map<String, String> getMapOfMonthYearFromList(List<OrderModel> orders){
+    Map<String, String> orderMapWithYearMonth = {};
+    for (OrderModel item in orders) {
+      if (item.createdTime != null) {
+        String key = "${item.createdTime!.toDate().month}${item.createdTime!.toDate().year}";
+        if(!orderMapWithYearMonth.containsKey(key)) {
+          orderMapWithYearMonth[key] = item.id;
+        }
+      }
+    }
+    return orderMapWithYearMonth;
   }
 
   Future<bool> createOrderForSubscription({
@@ -95,8 +113,10 @@ class OrderController {
     Timestamp? createdTime,
   }) async {
     String tag = MyUtils.getUniqueIdFromUuid();
-    MyPrint.printOnConsole("OrderController().createOrderForSubscription() called with subscriptionOrderDataModel:'$subscriptionOrderDataModel', paymentId:'$paymentId', "
-        "paymentMode:'$paymentMode', paymentStatus:'$paymentStatus', amount:'$amount'", tag: tag);
+    MyPrint.printOnConsole(
+        "OrderController().createOrderForSubscription() called with subscriptionOrderDataModel:'$subscriptionOrderDataModel', paymentId:'$paymentId', "
+        "paymentMode:'$paymentMode', paymentStatus:'$paymentStatus', amount:'$amount'",
+        tag: tag);
 
     bool isOrderForSubscriptionCreated = false;
 
@@ -135,8 +155,10 @@ class OrderController {
     required double amount,
   }) async {
     String tag = MyUtils.getUniqueIdFromUuid();
-    MyPrint.printOnConsole("OrderController().createOrderForProduct() called with productModel:'$productModel', paymentId:'$paymentId', "
-        "paymentMode:'$paymentMode', paymentStatus:'$paymentStatus', amount:'$amount'", tag: tag);
+    MyPrint.printOnConsole(
+        "OrderController().createOrderForProduct() called with productModel:'$productModel', paymentId:'$paymentId', "
+        "paymentMode:'$paymentMode', paymentStatus:'$paymentStatus', amount:'$amount'",
+        tag: tag);
 
     bool isOrderForProductCreated = false;
 

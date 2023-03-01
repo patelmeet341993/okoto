@@ -4,15 +4,21 @@ import 'common_text.dart';
 
 class CommonButton1 extends StatelessWidget {
   final String text;
-  final Color? backgroundColor, textColor;
+  final Color? backgroundColor, textColor, borderColor;
   final Function()? onTap;
   final EdgeInsetsGeometry? padding;
+  final Widget? rowWidget;
   final double textSize;
+  final double? height, width;
 
   const CommonButton1({
     super.key,
     required this.text,
     this.onTap,
+    this.width,
+    this.rowWidget,
+    this.height,
+    this.borderColor,
     this.backgroundColor,
     this.textColor,
     this.padding,
@@ -26,12 +32,16 @@ class CommonButton1 extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+          height: height,
+          width: width,
+
           decoration: BoxDecoration(
             color: backgroundColor ?? themeData.colorScheme.primary,
             borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: borderColor ?? Colors.transparent)
           ),
-          child:CommonText(
+          padding: padding ?? const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
+          child: rowWidget ?? CommonText(
             text: text,
             fontWeight: FontWeight.bold,
             color: textColor,

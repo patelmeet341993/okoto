@@ -2,14 +2,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 abstract class DatePresentation {
+
+
+  static String MMMM(int monthIntValue) {
+    DateTime dateTime = DateTime.now().copyWith(month: monthIntValue);
+    return DateFormat('MMMM').format(dateTime);
+  }
+
   static String hhMMssFormatter(String timeStamp) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp));
     return DateFormat('HH:mm:ss').format(dateTime);
   }
 
+  static String MMyyyy(Timestamp timeStamp) {
+    DateTime dateTime = timeStamp.toDate();
+    return DateFormat('MMMM, yyyy').format(dateTime);
+  }
+
   static String ddMMyyyyFormatter(String timeStamp) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp));
     return DateFormat('dd/MM/yyyy').format(dateTime);
+  }
+  static String ddMMyyyySlashFormatter(Timestamp timeStamp) {
+    DateTime dateTime = timeStamp.toDate();
+    return DateFormat('dd MMM yyyy').format(dateTime);
   }
 
   static String yMMMdFormatter(String timeStamp) {

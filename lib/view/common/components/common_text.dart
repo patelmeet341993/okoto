@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 
 class CommonText extends StatelessWidget {
   final String text;
-  final double fontSize;
+  final double fontSize, letterSpacing;
   final FontWeight fontWeight;
   final Color? color;
   final TextAlign? textAlign;
   final int? maxLines;
   final TextOverflow? textOverFlow;
   final TextDecoration? textDecoration;
+  final FontStyle fontStyle;
 
   const CommonText({
     super.key,
     required this.text,
     this.fontSize = 13,
+    this.fontStyle = FontStyle.normal,
+    this.letterSpacing = 1.1,
     this.fontWeight = FontWeight.normal,
     this.color =  Colors.white,
     this.textAlign,
@@ -31,7 +34,8 @@ class CommonText extends StatelessWidget {
       overflow: textOverFlow,
       style: TextStyle(
         //height: 1,
-        letterSpacing: 1.1,
+        fontStyle: fontStyle,
+        letterSpacing: letterSpacing,
         wordSpacing: 1,
         decoration: textDecoration,
         fontSize: fontSize,

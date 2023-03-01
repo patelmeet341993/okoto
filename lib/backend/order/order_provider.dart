@@ -72,6 +72,20 @@ class OrderProvider extends CommonProvider {
   //endregion
   //endregion
 
+  //region to show the list month wise
+    final Map<String, String> _ordersMapWithMonthYear = {};
+
+    void setOrdersMapWithMonthYear(Map<String, String> ordersMapWithMonthYear, {bool isClear = true, bool isNotify = true}){
+      if(isClear) _ordersMapWithMonthYear.clear();
+      _ordersMapWithMonthYear.addAll(ordersMapWithMonthYear);
+      if(isNotify){
+        notifyListeners();
+      }
+    }
+
+    Map<String,String> get ordersMapWithMonthYear => _ordersMapWithMonthYear;
+  //endregion
+
   void resetAllData() {
     setOrders(orders: [], isNotify: false);
     setIsOrdersFirstTimeLoading(value: false, isNotify: false);
