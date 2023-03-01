@@ -75,8 +75,6 @@ class Styles {
   static Color gameButtonShade2 = const Color(0xff73009B);
 
 
-  static Color cardGradient1 = const Color(0xff4F167A);
-  static Color cardGradient2 = const Color(0xff370850);
   static Color discountCardColor = const Color(0xffA765DB);
   static Color discountTextColor = const Color(0xff3F134C);
   static Color buttonPinkColor = const Color(0xffE9DBF9);
