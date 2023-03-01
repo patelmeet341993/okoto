@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:okoto/view/authentication/screens/sign_up_screen.dart';
+import 'package:okoto/view/device/screens/devices_screen.dart';
 
 import '../../utils/my_print.dart';
 import '../../view/authentication/screens/login_screen.dart';
@@ -108,6 +109,10 @@ class NavigationController {
         page = parseTermsAndConditionsScreen(settings: settings);
         break;
       }
+      case DevicesScreen.routeName: {
+        page = parseDevicesScreen(settings: settings);
+        break;
+      }
       case AboutAppScreen.routeName: {
         page = parseAboutAppScreen(settings: settings);
         break;
@@ -160,6 +165,10 @@ class NavigationController {
 
   static Widget? parseHomeScreen({required RouteSettings settings}) {
     return const HomeScreen();
+  }
+
+  static Widget? parseDevicesScreen({required RouteSettings settings}) {
+    return const DevicesScreen();
   }
 
   static Widget? parseTermsAndConditionsScreen({required RouteSettings settings}) {
@@ -240,6 +249,12 @@ class NavigationController {
       routeName: HomeScreen.routeName,
     ));
   }
+
+  static Future<dynamic> navigateToDevicesScreen({required NavigationOperationParameters navigationOperationParameters}) {
+      return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+        routeName: DevicesScreen.routeName,
+      ));
+    }
 
   static Future<dynamic> navigateToTermsAndConditionsScreen({
     required NavigationOperationParameters navigationOperationParameters, 

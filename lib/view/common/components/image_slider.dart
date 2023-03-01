@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:okoto/view/common/components/common_text.dart';
+
+import '../../../configs/styles.dart';
 
 class ImageSlider extends StatefulWidget {
   /// Children in slideView to slide
@@ -98,7 +101,8 @@ class _ImageSliderState extends State<ImageSlider>
           child:  SizedBox(
               width: widget.width,
               height: widget.height,
-              child: TabBarView(
+              child:
+              TabBarView(
                 controller: widget.tabController,
                 physics: scrollPhysics,
                 children: widget.children,
