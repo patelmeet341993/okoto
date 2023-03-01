@@ -7,7 +7,6 @@ import 'package:okoto/view/common/components/my_common_textfield.dart';
 import '../../../backend/navigation/navigation.dart';
 import '../../../configs/styles.dart';
 import '../../../utils/my_print.dart';
-import '../../common/components/common_primary_button.dart';
 import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
 
@@ -83,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
-            stops: [0.8,.99 ,],
+            stops: const [0.8,.99 ,],
 
           ),),
           child: GestureDetector(
@@ -102,20 +101,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: <Widget>[
                           getTopShapeAndIllustrate(),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5).copyWith(top: 65),
+                            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5).copyWith(top: 65),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
                                 getTopPageDetails(),
-                                SizedBox(
+                                const SizedBox(
                                   height: 60,
                                 ),
                                 getMobileNumberTextField(),
-                                SizedBox(
+                                const SizedBox(
                                   height: 60,
                                 ),
                                 CommonSubmitButton(
@@ -145,14 +144,14 @@ class _LoginScreenState extends State<LoginScreen> {
       clipBehavior: Clip.none,
       children: [
         CustomPaint(
-          size: Size(double.maxFinite, 320),
+          size: const Size(double.maxFinite, 320),
           painter: TopCustomShape(),
         ),
         Positioned(
           bottom: -50,
           left: 0,
           right: 0,
-          child: Container(
+          child: SizedBox(
             width: 280,
             height: 280,
             child: Image.asset(
@@ -168,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [
+      children: const [
         CommonText(
           text: "Welcome  Gamer !",
           fontSize: 26,
@@ -189,15 +188,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget getMobileNumberTextField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
         children: [
-          CommonText(
+          const CommonText(
             text: "Enter Mobile Number",
             fontSize: 14,
             textAlign: TextAlign.center,
           ),
-          SizedBox(
+          const SizedBox(
             height: 2,
           ),
           MyCommonTextField(
@@ -205,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
             prefixText: "+91    ",
             cursorColor: Colors.white,
             prefix: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              margin: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Image.asset(
                 "assets/images/indian_flag.png",
                 height: 20,
@@ -391,7 +390,7 @@ class TopCustomShape extends CustomPainter {
       begin: Alignment.topRight,
       end: Alignment.bottomLeft,
       //stops: [0.0,0.2,0.8, 30,],
-      stops: [0.001,0.25,0.8,1,],
+      stops: const [0.001,0.25,0.8,1,],
     ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     paint.style = PaintingStyle.fill;
     paint.strokeWidth = 6.0;

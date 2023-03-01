@@ -59,6 +59,8 @@ class AuthenticationController {
     bool isForceLogout = false,
     String forceLogoutMessage = "",
   }) async {
+    MyPrint.printOnConsole("AuthenticationController().logout() called");
+
     if(!isForceLogout && context != null && isShowConfirmDialog) {
       dynamic value = await showDialog(context: context, builder: (context){
         return CommonPopUp(
@@ -75,7 +77,7 @@ class AuthenticationController {
       }
     }
 
-    context ??= NavigationController.mainScreenNavigator.currentContext!;
+    context = NavigationController.mainScreenNavigator.currentContext!;
 
     UserProvider provider = userProvider;
     UserController userController = UserController(userProvider: provider);
@@ -103,7 +105,7 @@ class AuthenticationController {
 
       NavigationController.navigateToLoginScreen(
         navigationOperationParameters: NavigationOperationParameters(
-          context: context,
+          context: NavigationController.mainScreenNavigator.currentContext!,
           navigationType: NavigationType.pushNamedAndRemoveUntil,
         ),
       );
