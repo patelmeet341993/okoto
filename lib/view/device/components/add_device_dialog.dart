@@ -9,7 +9,10 @@ import 'package:okoto/utils/my_utils.dart';
 import 'package:okoto/view/common/components/common_textfield.dart';
 import 'package:provider/provider.dart';
 
+import '../../../configs/styles.dart';
+import '../../common/components/common_submit_button.dart';
 import '../../common/components/common_text.dart';
+import '../../common/components/my_common_textfield.dart';
 
 class AddDeviceDialog extends StatefulWidget {
   const AddDeviceDialog({Key? key}) : super(key: key);
@@ -62,18 +65,51 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
         return !isLoading;
       },
       child: AlertDialog(
-        // contentPadding: const EdgeInsets.all(0),
-        // insetPadding: const EdgeInsets.all(0),
-        titlePadding: const EdgeInsets.all(0),
-        title: getTitleWidget(),
+        backgroundColor: Styles.floatingButton,
+        titlePadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.zero,
         content: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              getDeviceIdTextField(),
-              getAddDeviceButton(themeData: Theme.of(context)),
-            ],
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                 Row(
+                   crossAxisAlignment: CrossAxisAlignment.end,
+                   mainAxisAlignment: MainAxisAlignment.end,
+                   children: [
+                     InkWell(
+                         onTap: (){
+                           if(!isLoading) Navigator.pop(context);
+                         },
+                         child: Container(
+                             padding: EdgeInsets.symmetric(horizontal: 10,).copyWith(top: 5),
+                             child: Icon(Icons.close, color: Colors.white,size: 20,)))
+                   ],
+                 ),
+                //SizedBox(height: 15,),
+                getDeviceIdTextField(),
+                SizedBox(height: 20,),
+                CommonSubmitButton(
+                  text: 'Add Device',
+                  elevation: 20,
+                  height: 30,
+                  fontSize: 13,
+                  verticalPadding: 8,
+                  horizontalPadding: 20,
+                  borderRadius: 5,
+                  icon: Icon(Icons.add,color: Colors.white,size: 18),
+                  onTap: () {
+                    if(_formKey.currentState?.validate() ?? false) {
+                      addDevice(deviceId: deviceIdController.text.trim());
+                    }
+                  },
+                ),
+                SizedBox(height: 10,),
+
+              ],
+            ),
           ),
         ),
       ),
@@ -100,7 +136,29 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
   }
 
   Widget getDeviceIdTextField() {
-    return CommonTextField(
+    return   MyCommonTextField(
+      controller: deviceIdController,
+      labelText: 'Enter Device Id',
+      cursorColor: Colors.white,
+      prefix: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Image.asset(
+          "assets/images/vr_icon.png",
+          height: 20,
+          width: 26,
+          fit: BoxFit.fill,
+        ),
+      ),
+      validator: (val) {
+        if(val == null || val.isEmpty) {
+          return "Device Id cannot be empty";
+        }
+        else {
+          return null;
+        }
+      },
+    );
+      CommonTextField(
       textEditingController: deviceIdController,
       hint: "Enter Device Id",
       enabled: true,

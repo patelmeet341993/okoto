@@ -73,6 +73,7 @@ class Styles {
   static Color imageSliderTab= const Color(0xff9D36ED);
   static Color gameButtonShade1 = const Color(0xff6716B9);
   static Color gameButtonShade2 = const Color(0xff73009B);
+  static Color floatingButton = const Color(0xff48136F);
 
 
   static Color discountCardColor = const Color(0xffA765DB);
