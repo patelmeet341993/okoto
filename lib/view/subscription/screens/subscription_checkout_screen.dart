@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:okoto/backend/game/game_controller.dart';
 import 'package:okoto/backend/navigation/navigation.dart';
+import 'package:okoto/backend/order/order_controller.dart';
+import 'package:okoto/backend/order/order_provider.dart';
 import 'package:okoto/backend/subscription/subscription_controller.dart';
 import 'package:okoto/model/game/game_model.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/view/common/components/common_appbar.dart';
-import 'package:okoto/view/common/components/common_primary_button.dart';
 import 'package:okoto/view/common/components/common_submit_button.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
@@ -102,6 +103,11 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
       });
 
       if (isSubscriptionBuySuccessful) {
+        OrderController(orderProvider: context.read<OrderProvider>()).getOrdersList(
+          userId: userId,
+          isRefresh: true,
+          isNotify: true,
+        );
         NavigationController.navigateToOrderListScreen(
           navigationOperationParameters: NavigationOperationParameters(
             context: context,
@@ -228,7 +234,8 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
                 letterSpacing: 0.5,
-              ),const SizedBox(
+              ),
+              const SizedBox(
                 height: 5,
               ),
               CommonText(

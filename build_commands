@@ -5,3 +5,24 @@ flutter pub run flutter_launcher_icons -f <your config file name here>     //Wit
 
 //For Native Splash Screen
 flutter pub run flutter_native_splash:create
+
+1) dev
+
+To Build dev Build Release :- flutter build apk --release -t lib/main_dev.dart --flavor dev --no-tree-shake-icons
+To Build dev Build Debug   :- flutter build apk --debug -t lib/main_dev.dart --flavor dev --no-tree-shake-icons
+To Run dev Build Release   :- flutter run --release -t lib/main_dev.dart --flavor dev
+To Run dev Build Debug     :- flutter run --debug -t lib/main_dev.dart --flavor dev
+To Build dev Build Web Release :- flutter build web --release -t lib/main_dev.dart --no-tree-shake-icons --web-renderer canvaskit
+To Run dev Build Web Release :- flutter run -d chrome --release -t lib/main_dev.dart
+To Rub dev Web Server :- flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0 -t lib/main_dev.dart --web-renderer canvaskit
+
+2) prod
+
+To Build prod Build Release :- flutter build apk --release -t lib/main_prod.dart --flavor prod --no-tree-shake-icons
+To Build prod Build Debug   :- flutter build apk --debug -t lib/main_prod.dart --flavor prod --no-tree-shake-icons
+To Build prod ios Build Release :- flutter build ios --release -t lib/main_prod.dart --no-tree-shake-icons
+To Run prod Build Release   :- flutter run --release -t lib/main_prod.dart --flavor prod
+To Run prod Build Debug     :- flutter run --debug -t lib/main_prod.dart --flavor prod
+To Build prod Build Web Release :- flutter build web --release -t lib/main_prod.dart --no-tree-shake-icons --web-renderer canvaskit
+To Run prod Build Web Release :- flutter run -d chrome --release -t lib/main_prod.dart
+To Rub prod Web Server :- flutter run -d web-server --web-port 8080 --web-hostname 0.0.0.0 -t lib/main_prod.dart --web-renderer canvaskit

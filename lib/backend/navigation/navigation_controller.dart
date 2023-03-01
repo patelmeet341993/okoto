@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:okoto/view/authentication/screens/sign_up_screen.dart';
+import 'package:okoto/view/device/screens/devices_screen.dart';
 import 'package:okoto/view/order/screens/order_detail_screen.dart';
 import 'package:okoto/view/subscription/screens/subscription_detail_screen.dart';
-import 'package:okoto/view/device/screens/devices_screen.dart';
 
 import '../../utils/my_print.dart';
 import '../../view/authentication/screens/login_screen.dart';
@@ -16,6 +16,7 @@ import '../../view/home/screens/home_screen.dart';
 import '../../view/home/screens/home_temp_screen.dart';
 import '../../view/order/screens/order_list_screen.dart';
 import '../../view/subscription/screens/subscription_checkout_screen.dart';
+import '../../view/subscription/screens/subscription_list_screen.dart';
 import 'navigation_arguments.dart';
 import 'navigation_operation.dart';
 import 'navigation_operation_parameters.dart';
@@ -115,6 +116,10 @@ class NavigationController {
         page = parseDevicesScreen(settings: settings);
         break;
       }
+      case SubscriptionListScreen.routeName: {
+        page = parseSubscriptionListScreen(settings: settings);
+        break;
+      }
       case AboutAppScreen.routeName: {
         page = parseAboutAppScreen(settings: settings);
         break;
@@ -180,6 +185,10 @@ class NavigationController {
 
   static Widget? parseDevicesScreen({required RouteSettings settings}) {
     return const DevicesScreen();
+  }
+
+  static Widget? parseSubscriptionListScreen({required RouteSettings settings}) {
+    return const SubscriptionListScreen();
   }
 
   static Widget? parseTermsAndConditionsScreen({required RouteSettings settings}) {
@@ -317,6 +326,12 @@ class NavigationController {
       routeName: OrderListScreen.routeName,
     ));
   }
+
+  static Future<dynamic> navigateToSubscriptionListScreen({required NavigationOperationParameters navigationOperationParameters}) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: SubscriptionListScreen.routeName,
+    ));
+  }
   
   static Future<dynamic> navigateToSubscriptionCheckoutScreen({
     required NavigationOperationParameters navigationOperationParameters,
@@ -327,6 +342,7 @@ class NavigationController {
       arguments: arguments,
     ));
   }
+
   static Future<dynamic> navigateToSubscriptionDetailScreen({
     required NavigationOperationParameters navigationOperationParameters,
     required SubscriptionDetailScreenNavigationArguments arguments,
@@ -336,6 +352,7 @@ class NavigationController {
       arguments: arguments,
     ));
   }
+
   static Future<dynamic> navigateToPaymentDetailScreen({
     required NavigationOperationParameters navigationOperationParameters,
     required PaymentDetailScreenNavigationArguments arguments,

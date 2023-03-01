@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
-            stops: [0.8,.99 ,],
+            stops: const [0.8,.99 ,],
 
           ),),
           child: GestureDetector(
@@ -151,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
           bottom: -50,
           left: 0,
           right: 0,
-          child: Container(
+          child: SizedBox(
             width: 280,
             height: 280,
             child: Image.asset(
@@ -167,17 +167,17 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
-      children: [
-        const CommonText(
+      children: const [
+        CommonText(
           text: "Welcome  Gamer !",
           fontSize: 26,
           textAlign: TextAlign.center,
           fontWeight: FontWeight.bold,
         ),
-        const SizedBox(
+        SizedBox(
           height: 10,
         ),
-        const CommonText(
+        CommonText(
           text: "Login/Signup to start your VR Gaming Journey",
           fontSize: 15.5,
           textAlign: TextAlign.center,
@@ -390,7 +390,7 @@ class TopCustomShape extends CustomPainter {
       begin: Alignment.topRight,
       end: Alignment.bottomLeft,
       //stops: [0.0,0.2,0.8, 30,],
-      stops: [0.001,0.25,0.8,1,],
+      stops: const [0.001,0.25,0.8,1,],
     ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
     paint.style = PaintingStyle.fill;
     paint.strokeWidth = 6.0;
