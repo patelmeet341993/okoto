@@ -97,8 +97,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               inAsyncCall: isLoading,
               progressIndicator: const CommonLoader(),
               child: Scaffold(
+                appBar: const CommonAppBar(text: "Subscriptions", isBackButtonVisible: false,),
                 backgroundColor: Colors.transparent,
-                appBar: const CommonAppBar(text: "Subscriptions",),
                 body: SafeArea(
                   child: getMainBody(
                     subscriptionProvider: subscriptionProvider,
@@ -176,7 +176,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         await getSubscriptions(isRefresh: true, isNotify: true);
       },
       child: ListView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10).copyWith(top: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
         itemCount: subscriptions.length,
         itemBuilder: (BuildContext context, int index) {
           SubscriptionModel subscriptionModel = subscriptions[index];

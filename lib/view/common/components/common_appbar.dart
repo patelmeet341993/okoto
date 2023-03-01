@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:okoto/view/common/components/common_back_button.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CommonAppBar({Key? key, this.text = "", this.height = kToolbarHeight}) : super(key: key);
+  const CommonAppBar({Key? key, this.text = "", this.height = kToolbarHeight, this.isBackButtonVisible = true}) : super(key: key);
   final String text;
   final double height;
+  final bool isBackButtonVisible;
 
   @override
   Widget build(BuildContext context) {
@@ -16,16 +17,19 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
         // leadingWidth: 55,
         leading: Row(
         children:  [
-            InkWell(
-              onTap: (){
-                Navigator.pop(context);
-              },
-              child: const Padding(
-                padding: EdgeInsets.only(left: 18.0),
-                child: SizedBox(
-                  width: 32,
-                    height: 32,
-                    child: CommonBackButton(padding: 0,)),
+            Visibility(
+              visible: isBackButtonVisible,
+              child: InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 18.0),
+                  child: SizedBox(
+                    width: 32,
+                      height: 32,
+                      child: CommonBackButton(padding: 0,)),
+                ),
               ),
             ),
           ],

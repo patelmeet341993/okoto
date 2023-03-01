@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:okoto/view/authentication/screens/sign_up_screen.dart';
+import 'package:okoto/view/order/screens/order_detail_screen.dart';
+import 'package:okoto/view/subscription/screens/subscription_detail_screen.dart';
 
 import '../../utils/my_print.dart';
 import '../../view/authentication/screens/login_screen.dart';
@@ -117,6 +119,15 @@ class NavigationController {
         page = parseSubscriptionCheckoutScreen(settings: settings);
         break;
       }
+      case SubscriptionDetail.routeName: {
+        page = parseSubscriptionDetailScreen(settings: settings);
+        break;
+      }
+
+      case OrderDetailScreen.routeName: {
+        page = parsePaymentDetailScreen(settings: settings);
+        break;
+      }
     }
 
     if (page != null) {
@@ -197,6 +208,31 @@ class NavigationController {
       return null;
     }
   }
+  static Widget? parseSubscriptionDetailScreen({required RouteSettings settings}) {
+    if(settings.arguments is SubscriptionDetailScreenNavigationArguments) {
+      SubscriptionDetailScreenNavigationArguments arguments = settings.arguments as SubscriptionDetailScreenNavigationArguments;
+
+      return SubscriptionDetail(
+        arguments: arguments,
+      );
+    }
+    else {
+      return null;
+    }
+  }
+
+  static Widget? parsePaymentDetailScreen({required RouteSettings settings}) {
+    if(settings.arguments is PaymentDetailScreenNavigationArguments) {
+      PaymentDetailScreenNavigationArguments arguments = settings.arguments as PaymentDetailScreenNavigationArguments;
+
+      return OrderDetailScreen(
+        arguments: arguments,
+      );
+    }
+    else {
+      return null;
+    }
+  }
   //endregion
 
   //region Navigation Methods
@@ -260,6 +296,24 @@ class NavigationController {
   }) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: SubscriptionCheckoutScreen.routeName,
+      arguments: arguments,
+    ));
+  }
+  static Future<dynamic> navigateToSubscriptionDetailScreen({
+    required NavigationOperationParameters navigationOperationParameters,
+    required SubscriptionDetailScreenNavigationArguments arguments,
+  }) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: SubscriptionDetail.routeName,
+      arguments: arguments,
+    ));
+  }
+  static Future<dynamic> navigateToPaymentDetailScreen({
+    required NavigationOperationParameters navigationOperationParameters,
+    required PaymentDetailScreenNavigationArguments arguments,
+  }) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: OrderDetailScreen.routeName,
       arguments: arguments,
     ));
   }

@@ -1,3 +1,5 @@
+import 'package:okoto/model/order/order_model.dart';
+
 import '../../model/subscription/subscription_model.dart';
 
 class NavigationArguments {
@@ -37,5 +39,24 @@ class SubscriptionCheckoutScreenNavigationArguments extends NavigationArguments 
   const SubscriptionCheckoutScreenNavigationArguments({
     required this.subscriptionId,
     this.subscriptionModel,
+  });
+}
+class SubscriptionDetailScreenNavigationArguments extends NavigationArguments {
+  final String subscriptionId;
+  final SubscriptionModel? subscriptionModel;
+
+  const SubscriptionDetailScreenNavigationArguments({
+    required this.subscriptionId,
+    this.subscriptionModel,
+  });
+}
+
+class PaymentDetailScreenNavigationArguments extends NavigationArguments {
+  final String orderId;
+  final OrderModel? orderModel;
+
+  const PaymentDetailScreenNavigationArguments({
+    required this.orderId,
+    this.orderModel,
   });
 }

@@ -4,7 +4,10 @@ import 'package:okoto/backend/order/order_provider.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/configs/constants.dart';
 import 'package:okoto/model/order/order_model.dart';
+import 'package:okoto/utils/date_presentation.dart';
+import 'package:okoto/view/common/components/common_appbar.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
+import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:okoto/view/order/components/order_card.dart';
 import 'package:provider/provider.dart';
 
@@ -56,18 +59,21 @@ class _OrderListSceenState extends State<OrderListScreen> {
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
 
-    return ChangeNotifierProvider<OrderProvider>.value(
-      value: orderProvider,
-      child: Consumer<OrderProvider>(
-        builder: (BuildContext context, OrderProvider orderProvider, Widget? child) {
-          return ModalProgressHUD(
-            inAsyncCall: isLoading,
-            child: Scaffold(
-              appBar: getAppBar(),
-              body: getMainBody(orderProvider: orderProvider),
-            ),
-          );
-        },
+    return MyScreenBackground(
+      child: ChangeNotifierProvider<OrderProvider>.value(
+        value: orderProvider,
+        child: Consumer<OrderProvider>(
+          builder: (BuildContext context, OrderProvider orderProvider, Widget? child) {
+            return ModalProgressHUD(
+              inAsyncCall: isLoading,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: CommonAppBar(text: "Payment History"),
+                body: getMainBody(orderProvider: orderProvider),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -79,11 +85,13 @@ class _OrderListSceenState extends State<OrderListScreen> {
   }
 
   Widget getMainBody({required OrderProvider orderProvider}) {
-    if(orderProvider.isOrdersFirstTimeLoading) {
-      return const CommonLoader(isCenter: true,);
+    if (orderProvider.isOrdersFirstTimeLoading) {
+      return const CommonLoader(
+        isCenter: true,
+      );
     }
 
-    if(!orderProvider.isOrdersLoading && orderProvider.ordersLength == 0) {
+    if (!orderProvider.isOrdersLoading && orderProvider.ordersLength == 0) {
       return RefreshIndicator(
         onRefresh: () async {
           getData(
@@ -94,7 +102,9 @@ class _OrderListSceenState extends State<OrderListScreen> {
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height * 0.4,),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.4,
+            ),
             const Center(
               child: Text("No Orders"),
             ),
@@ -104,7 +114,16 @@ class _OrderListSceenState extends State<OrderListScreen> {
     }
 
     List<OrderModel> orders = orderProvider.getOrders(isNewInstance: false);
-    int ordersLength = orders.length + 1;
+    // int ordersLength = orders.length + 1;
+    Map<int, List<OrderModel>> orderModelMap = {};
+    orders.forEach((element) {
+      if (orderModelMap.containsKey(element.createdTime!.toDate().month)) {
+        orderModelMap[element.createdTime!.toDate().month]?.add(element);
+      } else {
+        orderModelMap[element.createdTime!.toDate().month] = [element];
+      }
+    });
+    int ordersLength = orderModelMap.length + 1;
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -115,12 +134,24 @@ class _OrderListSceenState extends State<OrderListScreen> {
       },
       color: themeData.primaryColor,
       backgroundColor: themeData.scaffoldBackgroundColor,
-      child: ListView.builder(
+      child:
+          // GroupedListView<dynamic, String>(
+          //   elements: orders,
+          //   groupBy: (element) => element.createdTime.toDate().month,
+          //   groupSeparatorBuilder: (String groupByValue) => Text("${groupByValue}", style: TextStyle(color: Colors.green),),
+          //   itemBuilder: (context, dynamic element) => Text("${element.amount}"),
+          //   // itemComparator: (item1, item2) => item1['name'].compareTo(item2['name']), // optional
+          //   useStickyGroupSeparators: true, // optional
+          //   floatingHeader: true, // optional
+          //   order: GroupedListOrder.ASC, // optional
+          // ),
+
+          ListView.builder(
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: ordersLength,
         itemBuilder: (BuildContext context, int index) {
-          if(ordersLength == 0 || index == ordersLength - 1) {
-            if(orderProvider.isOrdersLoading) {
+          if (ordersLength == 0 || index == ordersLength - 1) {
+            if (orderProvider.isOrdersLoading) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 child: const CommonLoader(
@@ -128,19 +159,31 @@ class _OrderListSceenState extends State<OrderListScreen> {
                   size: 50,
                 ),
               );
-            }
-            else {
+            } else {
               return null;
             }
           }
 
           OrderModel orderModel = orders[index];
 
-          if(index >= (ordersLength - AppConfigurations.ordersRefreshLimit) && (!orderProvider.isOrdersLoading && orderProvider.hasMoreOrders)) {
+          if (index >= (ordersLength - AppConfigurations.ordersRefreshLimit) && (!orderProvider.isOrdersLoading && orderProvider.hasMoreOrders)) {
             getData(isRefresh: false, isNotify: false);
           }
+          List<OrderModel> orderModelList = orderModelMap.values.toList()[index];
 
-          return OrderCard(orderModel: orderModel);
+          // return OrderCard(orderModel: orderModel);
+          return Column(
+            children: [
+              Text("${DatePresentation.MMMM(orderModelMap.keys.toList()[index])}"),
+              ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: orderModelList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return OrderCard(orderModel: orderModelList[index]);
+                  })
+            ],
+          );
         },
       ),
     );

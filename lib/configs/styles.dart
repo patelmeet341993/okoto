@@ -68,6 +68,22 @@ class Styles {
   static Color cardGradient2 = const Color(0xff370850);
   static Color discountCardColor = const Color(0xffA765DB);
   static Color discountTextColor = const Color(0xff3F134C);
+  static Color buttonPinkColor = const Color(0xffE9DBF9);
+  static Color buttonVioletColor = const Color(0xff9349C0);
+  static Color starColor = const Color(0xffF0C119);
+  static Color textWhiteColor = const Color(0xffE0E0E0);
+  static Color readMoreTextColor = const Color(0xffDB73FF);
+  static Color checkoutBottomPriceBackground = const Color(0xff431168);
+  static Color moreLeftBackground = const Color(0xffA4A4A4);
+  static Color moreLeftTextColor = const Color(0xff6F6F6F);
+
+
+  static Color successStatusBackGround = const Color(0xffC4E3B9);
+  static Color successStatusText = const Color(0xff39A826);
+  static Color failedStatusBackGround = const Color(0xffF6B6B6);
+  static Color failedStatusText = const Color(0xffE32626);
+
+
 
   //endregion
 
