@@ -60,6 +60,10 @@ class _SplashScreenState extends State<SplashScreen> {
         );
 
         if(context.mounted) {
+          // NavigationController.navigateToHomeTempScreen(navigationOperationParameters: NavigationOperationParameters(
+          //   context: context,
+          //   navigationType: NavigationType.pushNamedAndRemoveUntil,
+          // ));
           NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
             context: context,
             navigationType: NavigationType.pushNamedAndRemoveUntil,
@@ -76,6 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
             navigationType: NavigationType.pushNamedAndRemoveUntil,
           ));
         }
+
       }
     }
     else {
@@ -87,6 +92,11 @@ class _SplashScreenState extends State<SplashScreen> {
             navigationType: NavigationType.pushNamedAndRemoveUntil,
           ),
         );
+
+        // NavigationController.navigateToSignUpScreen(navigationOperationParameters: NavigationOperationParameters(
+        //   context: context,
+        //   navigationType: NavigationType.pushNamed,
+        // ));
 
       }
     }

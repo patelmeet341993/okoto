@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:okoto/view/common/components/common_back_button.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../../backend/navigation/navigation.dart';
@@ -241,6 +242,10 @@ class _OtpScreenState extends State<OtpScreen> {
       );
 
       if(context.mounted) {
+        // NavigationController.navigateToHomeTempScreen(navigationOperationParameters: NavigationOperationParameters(
+        //   context: context,
+        //   navigationType: NavigationType.pushNamedAndRemoveUntil,
+        // ));
         NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
           context: context,
           navigationType: NavigationType.pushNamedAndRemoveUntil,
@@ -250,7 +255,6 @@ class _OtpScreenState extends State<OtpScreen> {
     else {
       MyPrint.printOnConsole("User Not Exist");
       MyPrint.logOnConsole("Created:${userProvider.getUserModel()}");
-
       if(context.mounted) {
         NavigationController.navigateToSignUpScreen(navigationOperationParameters: NavigationOperationParameters(
           context: context,
@@ -474,13 +478,32 @@ class _OtpScreenState extends State<OtpScreen> {
            Countdown(
              // controller: _controller,
              seconds: otpDuration.toInt(),
-             build: (_, double time) => CommonText(
-              text: formatedTime(timeInSecond: time),
-               //color: Styles.myLightVioletShade3,
-               color: Styles.myLightPinkShade,
-               fontSize: 19,
-               fontWeight: FontWeight.w700,
-             ),
+             build: (_, double time) =>
+                 GradientText(
+                   formatedTime(timeInSecond: time),
+                   textAlign: TextAlign.start,
+                   style: TextStyle(
+
+                     fontWeight: FontWeight.w700,
+                     letterSpacing: 1.1,
+                     fontSize: 19,
+                     // decoration: TextDecoration.underline,
+
+                   ),
+                   gradientDirection: GradientDirection.ttb,
+                   colors: [
+                     //Styles.myLightVioletShade3,
+                     Styles.myLightVioletShade3,
+                     Styles.myLightPinkShade,
+                   ],
+                 ),
+             //     CommonText(
+             //  text: formatedTime(timeInSecond: time),
+             //   //color: Styles.myLightVioletShade3,
+             //   color: Styles.myLightPinkShade,
+             //   fontSize: 19,
+             //   fontWeight: FontWeight.w700,
+             // ),
              interval: Duration(seconds: 1),
              onFinished: () {
 
@@ -524,28 +547,52 @@ class _OtpScreenState extends State<OtpScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          GradientText(
+            "Didn't receive code? ",
+            textAlign: TextAlign.start,
+            style: TextStyle(
+
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+              fontSize: 17,
+              // decoration: TextDecoration.underline,
+
+            ),
+            gradientDirection: GradientDirection.ttb,
+            colors: [
+              Styles.myLightVioletShade3,
+              Styles.myLightVioletShade3,
+              Styles.myLightPinkShade,
+            ],
+          ),
           InkWell(
             onTap: (){
               registerUser(widget.mobile);
             },
-            child: Text(
-              "Didn't receive code? Resend",
+            child: GradientText(
+              "Resend",
               textAlign: TextAlign.start,
               style: TextStyle(
-                color: Styles.myLightVioletShade3,
+
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.1,
-                fontSize: 18,
+                fontSize: 17,
                 decoration: TextDecoration.underline,
+                decorationThickness: 1.5
 
               ),
+              gradientDirection: GradientDirection.ttb,
+              colors: [
+                Styles.myLightVioletShade3,
+                Styles.myLightVioletShade3,
+                Styles.myLightPinkShade,
+            ],
             ),
           ),
         ],
       ),
     );
   }
-
 
   Widget submitButton(){
     return  CommonSubmitButton(
@@ -587,7 +634,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
 
-//region Garbage--------------------------------------------------------------------------------------------------------------------------------------------
+  //region Garbage--------------------------------------------------------------------------------------------------------------------------------------------
 
   Widget getAppBar() {
     return Row(

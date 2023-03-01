@@ -126,7 +126,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
 
         if(context.mounted) {
-          NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
+          NavigationController.navigateToHomeTempScreen(navigationOperationParameters: NavigationOperationParameters(
             context: context,
             navigationType: NavigationType.pushNamedAndRemoveUntil,
           ));
@@ -157,82 +157,88 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
 
-    return ModalProgressHUD(
-      inAsyncCall: isLoading,
-      progressIndicator: const CommonLoader(),
-      child: Scaffold(
-        body: MyScreenBackground(
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10).copyWith(top: 60),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          getTopBar(),
-                          SizedBox(height: 60,),
-                          getTopDetails(),
-                          SizedBox(height: 80,),
-                          getBasicInfo(),
-                          SizedBox(height: 80,),
-                          letsPlayButton(),
-                        ],
-                      ),
-                      /* Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(vertical: 30),
-                            child: Image.asset(
-                              "assets/images/logo.png",
-                              width: 60,
+    return WillPopScope(
+      onWillPop: () async {
+        await AuthenticationController(userProvider: userProvider).logout();
+        return false;
+      },
+      child: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        progressIndicator: const CommonLoader(),
+        child: Scaffold(
+          body: MyScreenBackground(
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10).copyWith(top: 60),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            getTopBar(),
+                            SizedBox(height: 60,),
+                            getTopDetails(),
+                            SizedBox(height: 80,),
+                            getBasicInfo(),
+                            SizedBox(height: 80,),
+                            letsPlayButton(),
+                          ],
+                        ),
+                        /* Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 30),
+                              child: Image.asset(
+                                "assets/images/logo.png",
+                                width: 60,
+                              ),
                             ),
-                          ),
-                          CommonTextField(
-                            hint: "Name",
-                            textEditingController: nameController,
-                            isRequired: true,
-                            prefixIcon: Icons.person,
-                            validator: (String? text) {
-                              if(text?.isEmpty ?? true) {
-                                return "Name Cannot be empty";
-                              }
-                              else {
-                                return null;
-                              }
-                            },
-                          ),
-                          CommonTextField(
-                            hint: "Username",
-                            textEditingController: userNameController,
-                            isRequired: true,
-                            prefixIcon: Icons.person_pin,
-                            validator: (String? text) {
-                              if(text?.isEmpty ?? true) {
-                                return "Username Cannot be empty";
-                              }
-                              else {
-                                return null;
-                              }
-                            },
-                          ),
-                          getDateOfBirthSelection(),
-                          getGenderSelection(),
-                          getTermsCondition(),
-                          getSignUpButton(),
-                          getLoginWithAnotherAccountLink(),
-                        ],
-                      ),*/
+                            CommonTextField(
+                              hint: "Name",
+                              textEditingController: nameController,
+                              isRequired: true,
+                              prefixIcon: Icons.person,
+                              validator: (String? text) {
+                                if(text?.isEmpty ?? true) {
+                                  return "Name Cannot be empty";
+                                }
+                                else {
+                                  return null;
+                                }
+                              },
+                            ),
+                            CommonTextField(
+                              hint: "Username",
+                              textEditingController: userNameController,
+                              isRequired: true,
+                              prefixIcon: Icons.person_pin,
+                              validator: (String? text) {
+                                if(text?.isEmpty ?? true) {
+                                  return "Username Cannot be empty";
+                                }
+                                else {
+                                  return null;
+                                }
+                              },
+                            ),
+                            getDateOfBirthSelection(),
+                            getGenderSelection(),
+                            getTermsCondition(),
+                            getSignUpButton(),
+                            getLoginWithAnotherAccountLink(),
+                          ],
+                        ),*/
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -244,7 +250,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        CommonBackButton(),
+        InkWell(
+          onTap: ()async{
+           await AuthenticationController(userProvider: userProvider).logout();
+          },
+          child: Container(
+            padding: EdgeInsets.all(7),
+            decoration: BoxDecoration(
+                color: Styles.myButtonBlack,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Styles.myVioletShade4)
+            ),
+            child: Icon(
+              Icons.arrow_back_outlined,
+              color: Styles.myVioletShade4,
+              size: 20,
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -342,17 +365,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
         SizedBox(height: 10,),
-        MyCommonTextField(
-          //controller: userNameController,
-          labelText: 'Gender',
-          enabled: false,
-          cursorColor: Colors.white,
-          prefix: Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Icon(
-              MdiIcons.genderMaleFemale,
-              color: Colors.white,
-              size: 23,
+        InkWell(
+          onTap: () async {
+           bool? isMale = await showDialog(context: context,
+                builder: (context){
+                  return GenderSelectDialog(
+                    isMale: gender == UserGender.male
+                        ? true
+                        : gender == UserGender.female ? false : null,
+                  );
+               }
+            );
+
+           if(isMale != null) {
+             if(isMale){
+               setState(() {
+                 gender = UserGender.male;
+
+               });
+               MyPrint.printOnConsole('isthis male is');
+             }else {
+               setState(() {
+                 gender = UserGender.male;
+               });
+               MyPrint.printOnConsole('isthis female is');
+             }
+           }
+          },
+          child: MyCommonTextField(
+            //controller: userNameController,
+            labelText: gender ?? 'Gender',
+            enabled: false,
+            cursorColor: Colors.white,
+            prefix: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Icon(
+                MdiIcons.genderMaleFemale,
+                color: Colors.white,
+                size: 23,
+              ),
             ),
           ),
         ),
@@ -606,5 +657,83 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 //endregion
+
+
+
+}
+
+
+// class GenderSelectDialog extends StatefulWidget {
+//    bool? isMale;
+//    GenderSelectDialog ({this.isMale});
+//
+//   @override
+//   State<GenderSelectDialog> createState() => _GenderSelectDialogState();
+// }
+
+class GenderSelectDialog extends StatelessWidget {
+
+  bool? isMale;
+  GenderSelectDialog({this.isMale});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return AlertDialog(
+      contentPadding: EdgeInsets.zero,
+      content: Container(
+        padding: EdgeInsets.symmetric(vertical: 20,horizontal: 20),
+        decoration: BoxDecoration(
+          color: Styles.myDialogBackground,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: getMaleAndFemaleView(context: context,isMale: true,isSelected:isMale == true  )),
+            SizedBox(width: 10,),
+            Expanded(child: getMaleAndFemaleView(context: context,isMale: false,isSelected: isMale == false)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getMaleAndFemaleView({required bool isMale, bool isSelected = false,required BuildContext context}){
+
+    return InkWell(
+      onTap: (){
+        Navigator.pop(context,isMale);
+
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? Styles.myLightPinkShade1 : Colors.transparent,
+            width: 2
+          )
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(isMale?'assets/images/male.png':'assets/images/female.png',height: 55,width: 55,),
+            SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(isMale?Icons.male:Icons.female,size: 17,color: Colors.white,),
+                SizedBox(width: 5,),
+                CommonText(text: isMale?'Male':'Female',fontSize: 15,),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+
+  }
+
 
 }

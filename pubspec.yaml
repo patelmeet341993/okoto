@@ -49,6 +49,8 @@ dependencies:
 #  overlay_support: ^2.1.0
   shimmer: ^2.0.0
   timer_count_down: ^2.2.2
+  simple_gradient_text: ^1.2.4
+  cloudinary_sdk: ^4.0.2+10
 #  top_snackbar_flutter: ^3.0.0+1
   my_popup_snakbar:
     git:
@@ -68,3 +70,4 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/icons/

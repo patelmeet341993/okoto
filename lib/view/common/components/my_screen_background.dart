@@ -12,6 +12,8 @@ class MyScreenBackground extends StatelessWidget {
     return Container(
         width: double.maxFinite,
         decoration: BoxDecoration(
+         //color: Styles.myBackgroundShade2,
+
         image: DecorationImage(
         fit: BoxFit.fitWidth,
         image: AssetImage('assets/images/mybackground.png',),
