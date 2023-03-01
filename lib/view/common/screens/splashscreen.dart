@@ -51,6 +51,10 @@ class _SplashScreenState extends State<SplashScreen> {
         await userController.checkSubscriptionActivatedOrNot();
 
         if(context.mounted) {
+          // NavigationController.navigateToHomeTempScreen(navigationOperationParameters: NavigationOperationParameters(
+          //   context: context,
+          //   navigationType: NavigationType.pushNamedAndRemoveUntil,
+          // ));
           NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
             context: context,
             navigationType: NavigationType.pushNamedAndRemoveUntil,

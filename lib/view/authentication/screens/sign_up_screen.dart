@@ -113,7 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await userController.checkSubscriptionActivatedOrNot();
 
         if(context.mounted) {
-          NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
+          NavigationController.navigateToHomeTempScreen(navigationOperationParameters: NavigationOperationParameters(
             context: context,
             navigationType: NavigationType.pushNamedAndRemoveUntil,
           ));

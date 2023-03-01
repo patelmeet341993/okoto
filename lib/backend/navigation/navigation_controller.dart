@@ -10,6 +10,7 @@ import '../../view/common/screens/about_app_screen.dart';
 import '../../view/common/screens/splashscreen.dart';
 import '../../view/common/screens/terms_and_conditions_screen.dart';
 import '../../view/home/screens/home_screen.dart';
+import '../../view/home/screens/home_temp_screen.dart';
 import '../../view/order/screens/order_list_screen.dart';
 import '../../view/subscription/screens/subscription_checkout_screen.dart';
 import 'navigation_arguments.dart';
@@ -97,6 +98,10 @@ class NavigationController {
         page = parseSignUpScreen(settings: settings);
         break;
       }
+      case HomeTempScreen.routeName: {
+        page = parseHomeTempScreen(settings: settings);
+        break;
+      }
       case HomeScreen.routeName: {
         page = parseHomeScreen(settings: settings);
         break;
@@ -149,6 +154,10 @@ class NavigationController {
 
   static Widget? parseSignUpScreen({required RouteSettings settings}) {
     return const SignUpScreen();
+  }
+
+  static Widget? parseHomeTempScreen({required RouteSettings settings}) {
+    return const HomeTempScreen();
   }
 
   static Widget? parseHomeScreen({required RouteSettings settings}) {
@@ -219,6 +228,12 @@ class NavigationController {
   static Future<dynamic> navigateToSignUpScreen({required NavigationOperationParameters navigationOperationParameters}) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: SignUpScreen.routeName,
+    ));
+  }
+
+  static Future<dynamic> navigateToHomeTempScreen({required NavigationOperationParameters navigationOperationParameters}) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: HomeTempScreen.routeName,
     ));
   }
 

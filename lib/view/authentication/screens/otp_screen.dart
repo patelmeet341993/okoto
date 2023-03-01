@@ -227,6 +227,10 @@ class _OtpScreenState extends State<OtpScreen> {
       await userController.checkSubscriptionActivatedOrNot();
 
       if(context.mounted) {
+        // NavigationController.navigateToHomeTempScreen(navigationOperationParameters: NavigationOperationParameters(
+        //   context: context,
+        //   navigationType: NavigationType.pushNamedAndRemoveUntil,
+        // ));
         NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
           context: context,
           navigationType: NavigationType.pushNamedAndRemoveUntil,
@@ -575,7 +579,6 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-
   Widget submitButton(){
     return  CommonSubmitButton(
       text: 'Submit',
@@ -616,7 +619,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
 
-//region Garbage--------------------------------------------------------------------------------------------------------------------------------------------
+  //region Garbage--------------------------------------------------------------------------------------------------------------------------------------------
 
   Widget getAppBar() {
     return Row(
