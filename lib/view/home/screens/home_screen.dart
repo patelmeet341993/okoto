@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:okoto/backend/user/user_provider.dart';
+import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/package/my_coverflow_package.dart';
+import 'package:okoto/utils/parsing_helper.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:okoto/view/device/screens/devices_screen.dart';
 import 'package:okoto/view/profile_screen/screens/profile_screen.dart';
@@ -11,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 import '../../../configs/styles.dart';
 import '../../../model/user/user_model.dart';
+import '../../../model/user/user_subscription_model.dart';
 import '../../../package/slider_widget_package.dart';
 import '../../../utils/my_print.dart';
 import '../../authentication/screens/login_screen.dart';
@@ -33,7 +37,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderStateMixin {
   late ThemeData themeData;
   int screenSelected = 0;
-  late UserProvider userProvider;
   bool isLoading = false;
   TabController? tabController;
   List<String> bannerImages = <String>[];
@@ -59,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
   void initState() {
     super.initState();
     initializeBannerImages();
-    userProvider = Provider.of<UserProvider>(context);
   }
 
   @override
@@ -97,10 +99,10 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const CommonText(text: 'My Account', fontSize: 19, fontWeight: FontWeight.bold),
+                                    CommonText(text: 'My Account', fontSize: 19, fontWeight: FontWeight.bold),
+                                    SizedBox(height: 25),
+                                    getMyAccountCard(userModel),
                                     const SizedBox(height: 25),
-                                    getMyAccountCard(),
-                                    const SizedBox(height: 35),
                                     const CommonText(text: 'Explore', fontSize: 19, fontWeight: FontWeight.bold),
                                     const SizedBox(height: 25),
                                     getExploreWidget(),
@@ -225,7 +227,16 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
 
   //region My Account
 
-  Widget getMyAccountCard(){
+  Widget getMyAccountCard(UserModel userModel){
+    UserSubscriptionModel? userSubscriptionModel;
+    SubscriptionModel? mySubscriptionPlan;
+    if(userModel.userSubscriptionModel != null){
+      userSubscriptionModel = userModel.userSubscriptionModel;
+      if(userSubscriptionModel?.mySubscription != null){
+        mySubscriptionPlan = userSubscriptionModel!.mySubscription;
+      }
+    }
+
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.all(15),
@@ -243,29 +254,40 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          getMyProfileRow(userName: 'viren1904'),
+          getMyProfileRow(userName: userModel.userName),
           const SizedBox(height: 8,),
-          const CommonText(text: 'Premium Subscription',fontSize: 19,fontWeight: FontWeight.bold),
-          const SizedBox(height: 12,),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child:Padding(
-                    padding:  const EdgeInsets.symmetric(vertical: 5.0),
-                    child: getMyPlanDetails(),
-                  ) ,
-                ),
-                const VerticalDivider(color: Colors.white,width: 5,thickness: 1.2,),
-                Expanded(
-                  child:Padding(
-                    padding:  const EdgeInsets.symmetric(vertical: 5.0),
-                    child: MyValidityCircle(),
-                  ) ,
-                ),
-              ],
-            ),
-          )
+          userSubscriptionModel != null && mySubscriptionPlan != null
+              ? Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                        CommonText(text: mySubscriptionPlan.name,fontSize: 19,fontWeight: FontWeight.bold),
+                        SizedBox(height: 12,),
+                        IntrinsicHeight(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child:Padding(
+                                  padding:  const EdgeInsets.symmetric(vertical: 5.0),
+                                  child: getMyPlanDetails(mySubscriptionPlan,userSubscriptionModel),
+                                ) ,
+                              ),
+                              const VerticalDivider(color: Colors.white,width: 5,thickness: 1.2,),
+                              Expanded(
+                                child:Padding(
+                                  padding:  const EdgeInsets.symmetric(vertical: 5.0),
+                                  child: MyValidityCircle(),
+                                ) ,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                )
+              : CommonText(text: 'Buy Plan To start VR journey',
+                  fontSize: 16,fontWeight: FontWeight.bold,
+                textAlign: TextAlign.center,
+              )
+
         ],
       ),
     );
@@ -283,13 +305,15 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
     );
   }
 
-  Widget getMyPlanDetails(){
+  Widget getMyPlanDetails(SubscriptionModel methodSubscriptionModel,UserSubscriptionModel methodUserSubscriptionModel){
+    double price = methodSubscriptionModel.discountedPrice != -1 ? methodSubscriptionModel.discountedPrice :methodSubscriptionModel.price;
+    int myPrice = ParsingHelper.parseIntMethod(price);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         RichText(
             text: TextSpan(
-              text: '160 ₹  ',
+              text: '$myPrice ₹  ',
               style: const TextStyle(
                 fontSize: 21,
                 fontWeight: FontWeight.w500
@@ -301,8 +325,6 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
                       fontWeight: FontWeight.normal,
                     fontSize: 13,
                     color: Colors.white.withOpacity(.7)
-
-
                   ),
                 )
               ]
@@ -312,12 +334,12 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
         const SizedBox(height: 10,),
         showDetailsRichText(
           heading:'Subscribed on',
-          mainText: '26 Aug 22',
+          mainText: methodUserSubscriptionModel.activatedDate == null ? '-' : DateFormat("dd MMM yy").format(methodUserSubscriptionModel.activatedDate!.toDate()),
         ),
         const SizedBox(height: 10,),
         showDetailsRichText(
           heading:'Most played game',
-          mainText: 'Cricket',
+          mainText: 'CSGO 2',
         ),
       ],
     );
@@ -337,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
               text: '$mainText ',
               style: const TextStyle(
                 fontWeight: FontWeight.w500,
-                fontSize: 15,
+                fontSize: 14,
                 color: Colors.white,
               ),
             )
