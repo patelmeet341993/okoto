@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:okoto/configs/constants.dart';
 
 import '../../model/common/new_document_data_model.dart';
@@ -50,5 +51,30 @@ class NotificationController {
     }
 
     return isCreated;
+  }
+
+  Future<String?> getToken({bool isRefresh = false}) async {
+    NotificationProvider provider = notificationProvider;
+
+    String? notificationToken = provider.notificationToken.get();
+
+    if(isRefresh) {
+      await FirebaseMessaging.instance.deleteToken();
+
+      provider.notificationToken.set(value: null, isNotify: false);
+    }
+
+    try {
+      notificationToken ??= await FirebaseMessaging.instance.getToken();
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error getting token: $e");
+      MyPrint.printOnConsole(s);
+    }
+    MyPrint.printOnConsole("Messaging Token:$notificationToken");
+
+    provider.notificationToken.set(value: notificationToken, isNotify: false);
+
+    return notificationToken;
   }
 }
