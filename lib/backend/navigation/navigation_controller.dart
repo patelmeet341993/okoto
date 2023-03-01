@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:okoto/view/authentication/screens/sign_up_screen.dart';
+import 'package:okoto/view/notification_screen/notification_screen.dart';
 import 'package:okoto/view/order/screens/order_detail_screen.dart';
 import 'package:okoto/view/subscription/screens/subscription_detail_screen.dart';
 import 'package:okoto/view/device/screens/devices_screen.dart';
@@ -99,6 +100,10 @@ class NavigationController {
         page = parseSignUpScreen(settings: settings);
         break;
       }
+      case NotificationScreen.routeName: {
+        page = parseNotificationScreen(settings: settings);
+        break;
+      }
       case HomeTempScreen.routeName: {
         page = parseHomeTempScreen(settings: settings);
         break;
@@ -168,6 +173,10 @@ class NavigationController {
 
   static Widget? parseSignUpScreen({required RouteSettings settings}) {
     return const SignUpScreen();
+  }
+
+  static Widget? parseNotificationScreen({required RouteSettings settings}) {
+    return const NotificationScreen();
   }
 
   static Widget? parseHomeTempScreen({required RouteSettings settings}) {
@@ -271,6 +280,12 @@ class NavigationController {
   static Future<dynamic> navigateToSignUpScreen({required NavigationOperationParameters navigationOperationParameters}) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: SignUpScreen.routeName,
+    ));
+  }
+
+  static Future<dynamic> navigateToNotificationScreen({required NavigationOperationParameters navigationOperationParameters}) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: NotificationScreen.routeName,
     ));
   }
 

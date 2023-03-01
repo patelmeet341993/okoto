@@ -166,10 +166,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           const SizedBox(
             width: 14,
           ),
-          const Icon(
-            MdiIcons.bell,
-            color: Colors.white,
-            size: 24,
+          InkWell(
+            onTap: (){
+              NavigationController.navigateToNotificationScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: NavigationController.mainScreenNavigator.currentContext!,
+                    navigationType: NavigationType.pushNamed,
+                  ));
+            },
+            child: const Icon(
+              MdiIcons.bell,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
           const SizedBox(
             width: 14,
@@ -347,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         showDetailsRichText(
           heading: 'Subscribed on',
           mainText:
-              methodUserSubscriptionModel.activatedDate == null ? '-' : DateFormat("dd MMM yy").format(methodUserSubscriptionModel.activatedDate!.toDate()),
+              methodUserSubscriptionModel.activatedDate == null ? '-' : DateFormat("dd MMM yyyy").format(methodUserSubscriptionModel.activatedDate!.toDate()),
         ),
         const SizedBox(
           height: 10,
@@ -538,7 +547,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ],
         ),
 
-        onSubmit: () {},
+        onSubmit: () {
+          NavigationController.navigateToDevicesScreen(
+              navigationOperationParameters: NavigationOperationParameters(
+                context: NavigationController.mainScreenNavigator.currentContext!,
+                navigationType: NavigationType.pushNamed,
+              ));
+        },
       ),
     );
   }

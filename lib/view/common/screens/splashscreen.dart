@@ -117,44 +117,89 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
       color: themeData.colorScheme.background,
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-          child: Column(
-            children: [
-              /*Center(
-                child: LoadingAnimationWidget.inkDrop(color: themeData.backgroundColor, size: 40),
-              ),*/
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CommonText(
-                      text: 'OKOTO',
-                      //color: Styles.myLightPinkShade.withOpacity(.4),
-                      color: Styles.myVioletShade4.withOpacity(.8),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 60,
-                    ),
-                  ],
-                )
+        body:Stack(
+          children: [
+            Container(
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                //color: Styles.myBackgroundShade2,
 
-                // Center(
-                //   child: Image.asset("assets/images/${AppController.isDev ? "okoto-dev-logo.png" : "okoto-prod-logo.png"}"),
-                // ),
-              ),
-              const Center(
-                child: SpinKitDualRing(
-                  //  color:Styles.myLightPinkShade,
-                  color:Colors.white,
-                  duration: const Duration(milliseconds: 500),
-                  size: 50,
-                  lineWidth: 5,
+                image: DecorationImage(
+                  fit: BoxFit.fitWidth,
+                  // image: AssetImage('assets/images/mybackground.png',),
+                  image: AssetImage('assets/icons/Splash_screen.jpg',),
                 ),
+                gradient: LinearGradient(
+                  colors: [
+                    Styles.myBlueColor.withAlpha(-85),
+                    Styles.myBackgroundShade1,
+                    Styles.myBackgroundShade1,
+                    Styles.myBackgroundShade1,
+                    Styles.myBackgroundShade2,
+                    Styles.myBackgroundShade3,
+                  ],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  stops: [-2,0.18,0.45,0.6,0.70,2,],
+                ),
+
               ),
-              SizedBox(height: 15,)
-            ],
+              child: Container(),
+
+
+            ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 45,
+            child: SpinKitDualRing(
+                        //  color:Styles.myLightPinkShade,
+                        color:Colors.white,
+                        duration: const Duration(milliseconds: 500),
+                        size: 45,
+                        lineWidth: 3,
+                      ),
           ),
-        ),
+          ],
+        )
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+        //   child: Column(
+        //     children: [
+        //       /*Center(
+        //         child: LoadingAnimationWidget.inkDrop(color: themeData.backgroundColor, size: 40),
+        //       ),*/
+        //       Expanded(
+        //         child: Column(
+        //           mainAxisAlignment: MainAxisAlignment.center,
+        //           children: [
+        //             CommonText(
+        //               text: 'OKOTO',
+        //               //color: Styles.myLightPinkShade.withOpacity(.4),
+        //               color: Styles.myVioletShade4.withOpacity(.8),
+        //               fontWeight: FontWeight.bold,
+        //               fontSize: 60,
+        //             ),
+        //           ],
+        //         )
+        //
+        //         // Center(
+        //         //   child: Image.asset("assets/images/${AppController.isDev ? "okoto-dev-logo.png" : "okoto-prod-logo.png"}"),
+        //         // ),
+        //       ),
+        //       const Center(
+        //         child: SpinKitDualRing(
+        //           //  color:Styles.myLightPinkShade,
+        //           color:Colors.white,
+        //           duration: const Duration(milliseconds: 500),
+        //           size: 50,
+        //           lineWidth: 5,
+        //         ),
+        //       ),
+        //       SizedBox(height: 15,)
+        //     ],
+        //   ),
+        // ),
       ),
     );
   }

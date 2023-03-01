@@ -68,10 +68,6 @@ class SubscriptionCheckoutGameSelectionCard extends StatelessWidget {
         color: Colors.transparent,
         child: Stack(
           clipBehavior: Clip.none,
-          // alignment: Alignment.bottomCenter,
-          // fit: StackFit.passthrough,
-
-          // fit: StackFit.expand,
           children: [
             Card(
               elevation: 10,
