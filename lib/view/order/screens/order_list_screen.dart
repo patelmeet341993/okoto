@@ -11,6 +11,8 @@ import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:okoto/view/order/components/order_card.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utils/my_print.dart';
+import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
 
 class OrderListScreen extends StatefulWidget {
@@ -114,17 +116,7 @@ class _OrderListSceenState extends State<OrderListScreen> {
     }
 
     List<OrderModel> orders = orderProvider.getOrders(isNewInstance: false);
-    // int ordersLength = orders.length + 1;
-    Map<int, List<OrderModel>> orderModelMap = {};
-    orders.forEach((element) {
-      if (orderModelMap.containsKey(element.createdTime!.toDate().month)) {
-        orderModelMap[element.createdTime!.toDate().month]?.add(element);
-      } else {
-        orderModelMap[element.createdTime!.toDate().month] = [element];
-      }
-    });
-    int ordersLength = orderModelMap.length + 1;
-
+    int ordersLength = orders.length + 1;
     return RefreshIndicator(
       onRefresh: () async {
         getData(
@@ -134,19 +126,7 @@ class _OrderListSceenState extends State<OrderListScreen> {
       },
       color: themeData.primaryColor,
       backgroundColor: themeData.scaffoldBackgroundColor,
-      child:
-          // GroupedListView<dynamic, String>(
-          //   elements: orders,
-          //   groupBy: (element) => element.createdTime.toDate().month,
-          //   groupSeparatorBuilder: (String groupByValue) => Text("${groupByValue}", style: TextStyle(color: Colors.green),),
-          //   itemBuilder: (context, dynamic element) => Text("${element.amount}"),
-          //   // itemComparator: (item1, item2) => item1['name'].compareTo(item2['name']), // optional
-          //   useStickyGroupSeparators: true, // optional
-          //   floatingHeader: true, // optional
-          //   order: GroupedListOrder.ASC, // optional
-          // ),
-
-          ListView.builder(
+      child: ListView.builder(
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: ordersLength,
         itemBuilder: (BuildContext context, int index) {
@@ -169,19 +149,25 @@ class _OrderListSceenState extends State<OrderListScreen> {
           if (index >= (ordersLength - AppConfigurations.ordersRefreshLimit) && (!orderProvider.isOrdersLoading && orderProvider.hasMoreOrders)) {
             getData(isRefresh: false, isNotify: false);
           }
-          List<OrderModel> orderModelList = orderModelMap.values.toList()[index];
 
-          // return OrderCard(orderModel: orderModel);
+          String key = "${orderModel.createdTime!.toDate().month}${orderModel.createdTime!.toDate().year}";
+          MyPrint.printOnConsole("$key ${orderProvider.ordersMapWithMonthYear[key] == orderModel.id}");
+          String month = orderModel.createdTime!.toDate().month == DateTime.now().month ? "This" : DatePresentation.MMyyyy(orderModel.createdTime!);
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("${DatePresentation.MMMM(orderModelMap.keys.toList()[index])}"),
-              ListView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: orderModelList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return OrderCard(orderModel: orderModelList[index]);
-                  })
+              orderProvider.ordersMapWithMonthYear[key] == orderModel.id
+                  ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10),
+                child: CommonText(
+                        text: month,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        letterSpacing: .2,
+                      ),
+                  )
+                  : Text(""),
+              OrderCard(orderModel: orderModel)
             ],
           );
         },

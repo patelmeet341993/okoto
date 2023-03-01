@@ -39,7 +39,8 @@ class OrderCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(
           horizontal: 18,
-        ).copyWith(top: 25),
+          vertical: 5
+        ),
         child: Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           child: Container(

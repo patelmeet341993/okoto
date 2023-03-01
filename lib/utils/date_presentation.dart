@@ -14,13 +14,18 @@ abstract class DatePresentation {
     return DateFormat('HH:mm:ss').format(dateTime);
   }
 
+  static String MMyyyy(Timestamp timeStamp) {
+    DateTime dateTime = timeStamp.toDate();
+    return DateFormat('MMMM, yyyy').format(dateTime);
+  }
+
   static String ddMMyyyyFormatter(String timeStamp) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(timeStamp));
     return DateFormat('dd/MM/yyyy').format(dateTime);
   }
   static String ddMMyyyySlashFormatter(Timestamp timeStamp) {
     DateTime dateTime = timeStamp.toDate();
-    return DateFormat('dd/MM/yy').format(dateTime);
+    return DateFormat('dd MMM yyyy').format(dateTime);
   }
 
   static String yMMMdFormatter(String timeStamp) {
