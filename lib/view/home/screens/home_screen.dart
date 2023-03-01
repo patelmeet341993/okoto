@@ -184,21 +184,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           const SizedBox(
             width: 14,
           ),
-          // const Icon(MdiIcons.bell,color: Colors.white,size: 24,),
-          // const SizedBox(width: 14,),
           InkWell(
               onTap: (){
                 Navigator.pushNamed(context, ProfileScreen.routeName);
               },
               child: MyProfileAvatar()),
           const SizedBox(width: 14,),
-
-          InkWell(
-              onTap: (){
-                AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
-                //
-              },
-              child: const Icon(MdiIcons.logout,color: Colors.white,size: 24,)),
 
         ],
       ),

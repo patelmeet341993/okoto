@@ -46,7 +46,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         inAsyncCall: isLoading,
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: const CommonAppBar(text: "Profile"),
+          appBar:  CommonAppBar(text: "Profile", actions: [
+            InkWell(
+                onTap: (){
+
+                  AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
+
+                },
+                child: const Icon(Icons.logout,color: Colors.white,size: 24,)),
+            SizedBox(width: 20,),
+          ]),
           body: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
