@@ -11,6 +11,7 @@ import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
+import '../../../backend/authentication/authentication_controller.dart';
 import '../../../configs/styles.dart';
 import '../../../model/user/user_model.dart';
 import '../../../model/user/user_subscription_model.dart';
@@ -21,6 +22,7 @@ import '../../common/components/common_text.dart';
 import '../../common/components/image_slider.dart';
 import '../../common/components/modal_progress_hud.dart';
 import '../../common/components/my_profile_avatar.dart';
+import '../../profile_screen/screens/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = "/HomeScreen";
@@ -70,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         if (userModel == null) {
           return const SizedBox();
         }
+
         return Scaffold(
           body: MyScreenBackground(
             child: SafeArea(
@@ -80,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          getMyAppBar(),
+                          getMyAppBar(userProvider),
                           const SizedBox(
                             height: 15,
                           ),
@@ -128,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   // child: getImageSlider(bannerImages: bannerImages),
   // ),
 
-  Widget getMyAppBar() {
+  Widget getMyAppBar(UserProvider userProvider) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Row(
@@ -163,9 +166,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(
-            width: 14,
-          ),
+          const SizedBox(width: 14,),
           InkWell(
             onTap: (){
               NavigationController.navigateToNotificationScreen(
@@ -183,7 +184,22 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           const SizedBox(
             width: 14,
           ),
-          MyProfileAvatar(),
+          // const Icon(MdiIcons.bell,color: Colors.white,size: 24,),
+          // const SizedBox(width: 14,),
+          InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, ProfileScreen.routeName);
+              },
+              child: MyProfileAvatar()),
+          const SizedBox(width: 14,),
+
+          InkWell(
+              onTap: (){
+                AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
+                //
+              },
+              child: const Icon(MdiIcons.logout,color: Colors.white,size: 24,)),
+
         ],
       ),
     );
@@ -254,6 +270,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       }
     }
 
+    int totalDays = userSubscriptionModel?.mySubscription?.validityInDays ?? 28, remainingDays = 20;
+    if(userSubscriptionModel?.activatedDate != null && userSubscriptionModel?.expiryDate != null) {
+      // DateTime activatedDate = userSubscriptionModel!.activatedDate!.toDate();
+      DateTime expiryDate = userSubscriptionModel!.expiryDate!.toDate();
+      DateTime dateTime = DateTime.now();
+
+      remainingDays = expiryDate.difference(dateTime).inDays;
+      if(remainingDays < 0 || remainingDays > totalDays) {
+        remainingDays = totalDays;
+      }
+    }
+
     return Container(
       width: double.maxFinite,
       padding: const EdgeInsets.all(15),
@@ -300,7 +328,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5.0),
-                              child: MyValidityCircle(),
+                              child: myValidityCircle(
+                                totalDays: totalDays,
+                                remainingDays: remainingDays,
+                              ),
                             ),
                           ),
                         ],
@@ -384,7 +415,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  Widget MyValidityCircle() {
+  Widget myValidityCircle({
+    required int totalDays,
+    required int remainingDays,
+  }) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -394,7 +428,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Transform.scale(
             scaleX: -1,
             child: CircularProgressIndicator(
-              value: 0.9,
+              value: remainingDays/totalDays,
               strokeWidth: 4.5,
               color: Styles.myLightVioletShade1,
             ),
@@ -405,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CommonText(text: '26', fontWeight: FontWeight.bold, fontSize: 30),
+              CommonText(text: '$remainingDays', fontWeight: FontWeight.bold, fontSize: 30),
               const SizedBox(
                 height: 2,
               ),
@@ -441,13 +475,28 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               width: spacing,
             ),
             exploreBox(
+              onTap: () {
+                NavigationController.navigateToSubscriptionListScreen(navigationOperationParameters: NavigationOperationParameters(
+                  context: context,
+                  navigationType: NavigationType.pushNamed,
+                ));
+              },
               imageUrl: 'assets/icons/subscriptions.png',
               title: 'Subscription',
             ),
             SizedBox(
               width: spacing,
             ),
-            exploreBox(imageUrl: 'assets/icons/payment.png', title: 'Payment History'),
+            exploreBox(
+              onTap: () {
+                NavigationController.navigateToOrderListScreen(navigationOperationParameters: NavigationOperationParameters(
+                  context: context,
+                  navigationType: NavigationType.pushNamed,
+                ));
+              },
+              imageUrl: 'assets/icons/payment.png',
+              title: 'Payment History',
+            ),
           ],
         ),
         SizedBox(

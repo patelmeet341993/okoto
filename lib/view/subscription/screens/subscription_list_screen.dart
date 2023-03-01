@@ -13,16 +13,16 @@ import 'package:provider/provider.dart';
 import '../../../backend/subscription/subscription_provider.dart';
 import '../components/subscription_card.dart';
 
-class SubscriptionScreen extends StatefulWidget {
-  static const String routeName = "/SubscriptionScreen";
+class SubscriptionListScreen extends StatefulWidget {
+  static const String routeName = "/SubscriptionListScreen";
 
-  const SubscriptionScreen({Key? key}) : super(key: key);
+  const SubscriptionListScreen({Key? key}) : super(key: key);
 
   @override
-  State<SubscriptionScreen> createState() => _SubscriptionScreenState();
+  State<SubscriptionListScreen> createState() => _SubscriptionListScreenState();
 }
 
-class _SubscriptionScreenState extends State<SubscriptionScreen> {
+class _SubscriptionListScreenState extends State<SubscriptionListScreen> {
   late ThemeData themeData;
   bool isLoading = false;
 
@@ -97,7 +97,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               inAsyncCall: isLoading,
               progressIndicator: const CommonLoader(),
               child: Scaffold(
-                appBar: const CommonAppBar(text: "Subscriptions", isBackButtonVisible: false,),
+                appBar: const CommonAppBar(text: "Subscriptions", isBackButtonVisible: true,),
                 backgroundColor: Colors.transparent,
                 body: SafeArea(
                   child: getMainBody(

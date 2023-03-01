@@ -70,7 +70,7 @@ class _OrderListSceenState extends State<OrderListScreen> {
               inAsyncCall: isLoading,
               child: Scaffold(
                 backgroundColor: Colors.transparent,
-                appBar: CommonAppBar(text: "Payment History"),
+                appBar: const CommonAppBar(text: "Payment History"),
                 body: getMainBody(orderProvider: orderProvider),
               ),
             );
@@ -166,7 +166,7 @@ class _OrderListSceenState extends State<OrderListScreen> {
                         letterSpacing: .2,
                       ),
                   )
-                  : Text(""),
+                  : const Text(""),
               OrderCard(orderModel: orderModel)
             ],
           );

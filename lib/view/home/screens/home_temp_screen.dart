@@ -53,7 +53,7 @@ class _HomeTempScreenState extends State<HomeTempScreen> {
         return const DevicesScreen();
       }
       case 1:{
-        return const SubscriptionScreen();
+        return const SubscriptionListScreen();
       }
       case 2:{
         return const ProfileScreen();
