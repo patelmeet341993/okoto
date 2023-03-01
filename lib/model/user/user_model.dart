@@ -5,7 +5,7 @@ import '../../utils/parsing_helper.dart';
 import 'user_subscription_model.dart';
 
 class UserModel {
-  String id = "", name = "", userName = "", gender = "", mobileNumber = "";
+  String id = "", name = "", userName = "", gender = "", mobileNumber = "", notificationToken = "";
   Timestamp? createdDate, dateOfBirth;
   bool adminEnabled = true;
   UserSubscriptionModel? userSubscriptionModel;
@@ -17,6 +17,7 @@ class UserModel {
     this.userName = "",
     this.gender = "",
     this.mobileNumber = "",
+    this.notificationToken = "",
     this.createdDate,
     this.dateOfBirth,
     this.adminEnabled = true,
@@ -39,6 +40,7 @@ class UserModel {
     userName = ParsingHelper.parseStringMethod(map['userName']);
     gender = ParsingHelper.parseStringMethod(map['gender']);
     mobileNumber = ParsingHelper.parseStringMethod(map['mobileNumber']);
+    notificationToken = ParsingHelper.parseStringMethod(map['notificationToken']);
     createdDate = ParsingHelper.parseTimestampMethod(map['createdDate']);
     dateOfBirth = ParsingHelper.parseTimestampMethod(map['dateOfBirth']);
     adminEnabled = ParsingHelper.parseBoolMethod(map['adminEnabled']);
@@ -75,6 +77,7 @@ class UserModel {
       "userName" : userName,
       "gender" : gender,
       "mobileNumber" : mobileNumber,
+      "notificationToken" : notificationToken,
       "createdDate" : toJson ? createdDate?.toDate().toIso8601String() : createdDate,
       "dateOfBirth" : toJson ? dateOfBirth?.toDate().toIso8601String() : dateOfBirth,
       "adminEnabled" : adminEnabled,

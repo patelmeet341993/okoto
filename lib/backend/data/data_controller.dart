@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:okoto/configs/typedefs.dart';
+import 'package:provider/provider.dart';
 
 import '../../configs/constants.dart';
 import '../../model/admin/payment_credentials_model.dart';
 import '../../model/admin/property_model.dart';
 import '../../utils/my_print.dart';
 import '../../utils/my_utils.dart';
+import '../device/device_provider.dart';
+import '../game/game_provider.dart';
 import '../navigation/navigation.dart';
+import '../notification/notification_provider.dart';
+import '../order/order_provider.dart';
+import '../subscription/subscription_provider.dart';
+import '../user/user_provider.dart';
 import 'data_provider.dart';
 
 class DataController {
-  final DataProvider dataProvider;
+  late DataProvider _dataProvider;
 
-  const DataController({required this.dataProvider});
+  DataController({required DataProvider? dataProvider}) {
+    _dataProvider = dataProvider ?? DataProvider();
+  }
+
+  DataProvider get dataProvider => _dataProvider;
 
   Future<PropertyModel> getPropertyData({bool isRefresh = true}) async {
     String tag = MyUtils.getUniqueIdFromUuid();
@@ -105,5 +116,14 @@ class DataController {
     String mobileNumber = dataProvider.propertyModel.contactNumber;
 
     await MyUtils.launchWhatsAppChat(mobileNumber: mobileNumber, message: "Hello, I want to contact you");
+  }
+
+  void clearAllAppProviderData(BuildContext context) {
+    Provider.of<UserProvider>(context, listen: false).resetAllData();
+    Provider.of<DeviceProvider>(context, listen: false).resetAllData();
+    Provider.of<SubscriptionProvider>(context, listen: false).resetAllData();
+    Provider.of<OrderProvider>(context, listen: false).resetAllData();
+    Provider.of<GameProvider>(context, listen: false).resetAllData();
+    Provider.of<NotificationProvider>(context, listen: false).resetAllData();
   }
 }

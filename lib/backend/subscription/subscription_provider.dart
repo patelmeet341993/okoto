@@ -37,4 +37,9 @@ class SubscriptionProvider extends CommonProvider {
   }
   //endregion
   //endregion
+
+  void resetAllData() {
+    setAllSubscriptions(subscriptions: [], isNotify: false);
+    setIsAllSubscriptionsLoading(value: false, isNotify: false);
+  }
 }

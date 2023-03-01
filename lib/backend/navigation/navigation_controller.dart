@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:okoto/view/authentication/screens/sign_up_screen.dart';
 import 'package:okoto/view/order/screens/order_detail_screen.dart';
 import 'package:okoto/view/subscription/screens/subscription_detail_screen.dart';
+import 'package:okoto/view/device/screens/devices_screen.dart';
 
 import '../../utils/my_print.dart';
 import '../../view/authentication/screens/login_screen.dart';
@@ -12,6 +13,7 @@ import '../../view/common/screens/about_app_screen.dart';
 import '../../view/common/screens/splashscreen.dart';
 import '../../view/common/screens/terms_and_conditions_screen.dart';
 import '../../view/home/screens/home_screen.dart';
+import '../../view/home/screens/home_temp_screen.dart';
 import '../../view/order/screens/order_list_screen.dart';
 import '../../view/subscription/screens/subscription_checkout_screen.dart';
 import 'navigation_arguments.dart';
@@ -32,8 +34,6 @@ class NavigationController {
   NavigationController._();
 
   static final GlobalKey<NavigatorState> mainScreenNavigator = GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> pharmaDashboardScreenNavigator = GlobalKey<NavigatorState>();
-  static GlobalKey<NavigatorState> historyScreenNavigator = GlobalKey<NavigatorState>();
 
   static bool isUserProfileTabInitialized = false;
 
@@ -99,12 +99,20 @@ class NavigationController {
         page = parseSignUpScreen(settings: settings);
         break;
       }
+      case HomeTempScreen.routeName: {
+        page = parseHomeTempScreen(settings: settings);
+        break;
+      }
       case HomeScreen.routeName: {
         page = parseHomeScreen(settings: settings);
         break;
       }
       case TermsAndConditionsScreen.routeName: {
         page = parseTermsAndConditionsScreen(settings: settings);
+        break;
+      }
+      case DevicesScreen.routeName: {
+        page = parseDevicesScreen(settings: settings);
         break;
       }
       case AboutAppScreen.routeName: {
@@ -162,8 +170,16 @@ class NavigationController {
     return const SignUpScreen();
   }
 
+  static Widget? parseHomeTempScreen({required RouteSettings settings}) {
+    return const HomeTempScreen();
+  }
+
   static Widget? parseHomeScreen({required RouteSettings settings}) {
     return const HomeScreen();
+  }
+
+  static Widget? parseDevicesScreen({required RouteSettings settings}) {
+    return const DevicesScreen();
   }
 
   static Widget? parseTermsAndConditionsScreen({required RouteSettings settings}) {
@@ -258,11 +274,23 @@ class NavigationController {
     ));
   }
 
+  static Future<dynamic> navigateToHomeTempScreen({required NavigationOperationParameters navigationOperationParameters}) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: HomeTempScreen.routeName,
+    ));
+  }
+
   static Future<dynamic> navigateToHomeScreen({required NavigationOperationParameters navigationOperationParameters}) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: HomeScreen.routeName,
     ));
   }
+
+  static Future<dynamic> navigateToDevicesScreen({required NavigationOperationParameters navigationOperationParameters}) {
+      return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+        routeName: DevicesScreen.routeName,
+      ));
+    }
 
   static Future<dynamic> navigateToTermsAndConditionsScreen({
     required NavigationOperationParameters navigationOperationParameters, 

@@ -7,9 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:okoto/view/common/components/common_back_button.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../../../backend/navigation/navigation.dart';
+import '../../../backend/notification/notification_provider.dart';
 import '../../../backend/user/user_controller.dart';
 import '../../../backend/user/user_provider.dart';
 import '../../../configs/styles.dart';
@@ -131,7 +133,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
         //startTimer();
 
-        _otpFocusNode?.requestFocus();
+        // _otpFocusNode?.requestFocus();
 
         //_smsReceiver.startListening();
 
@@ -209,19 +211,41 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Future onSuccess(User user) async {
     UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserController userController = UserController(userProvider: userProvider);
+
+    NotificationProvider notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+
     userProvider.setUserId(userId: user.uid, isNotify: false);
     userProvider.setFirebaseUser(user: user, isNotify: false);
 
     MyPrint.printOnConsole("Email:${user.email}");
     MyPrint.printOnConsole("Mobile:${user.phoneNumber}");
 
-    bool isExist = await UserController(userProvider: userProvider).checkUserWithIdExistOrNotAndIfNotExistThenCreate(userId: user.uid);
+    bool isExist = await userController.checkUserWithIdExistOrNotAndIfNotExistThenCreate(
+      userId: user.uid,
+    );
     MyPrint.printOnConsole("isExist:$isExist");
 
     if (isExist && (userProvider.getUserModel()?.isHavingNecessaryInformation() ?? false)) {
       MyPrint.printOnConsole("User Exist");
 
+      await userController.updateNotificationTokenForUserAndStoreInProvider(
+        userId: user.uid,
+        notificationProvider: notificationProvider,
+      );
+
+      await userController.checkSubscriptionActivatedOrNot();
+
+      userController.startUserListening(
+        userId: user.uid,
+        notificationProvider: notificationProvider,
+      );
+
       if(context.mounted) {
+        // NavigationController.navigateToHomeTempScreen(navigationOperationParameters: NavigationOperationParameters(
+        //   context: context,
+        //   navigationType: NavigationType.pushNamedAndRemoveUntil,
+        // ));
         NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
           context: context,
           navigationType: NavigationType.pushNamedAndRemoveUntil,
@@ -231,9 +255,7 @@ class _OtpScreenState extends State<OtpScreen> {
     else {
       MyPrint.printOnConsole("User Not Exist");
       MyPrint.logOnConsole("Created:${userProvider.getUserModel()}");
-
       if(context.mounted) {
-
         NavigationController.navigateToSignUpScreen(navigationOperationParameters: NavigationOperationParameters(
           context: context,
           navigationType: NavigationType.pushNamed,
@@ -286,7 +308,7 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
-    double size = 80;
+    // double size = 80;
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       // progressIndicator: const SpinKitFadingCircle(color: Colors.blue,),
@@ -456,13 +478,32 @@ class _OtpScreenState extends State<OtpScreen> {
            Countdown(
              // controller: _controller,
              seconds: otpDuration.toInt(),
-             build: (_, double time) => CommonText(
-              text: formatedTime(timeInSecond: time),
-               //color: Styles.myLightVioletShade3,
-               color: Styles.myLightPinkShade,
-               fontSize: 19,
-               fontWeight: FontWeight.w700,
-             ),
+             build: (_, double time) =>
+                 GradientText(
+                   formatedTime(timeInSecond: time),
+                   textAlign: TextAlign.start,
+                   style: TextStyle(
+
+                     fontWeight: FontWeight.w700,
+                     letterSpacing: 1.1,
+                     fontSize: 19,
+                     // decoration: TextDecoration.underline,
+
+                   ),
+                   gradientDirection: GradientDirection.ttb,
+                   colors: [
+                     //Styles.myLightVioletShade3,
+                     Styles.myLightVioletShade3,
+                     Styles.myLightPinkShade,
+                   ],
+                 ),
+             //     CommonText(
+             //  text: formatedTime(timeInSecond: time),
+             //   //color: Styles.myLightVioletShade3,
+             //   color: Styles.myLightPinkShade,
+             //   fontSize: 19,
+             //   fontWeight: FontWeight.w700,
+             // ),
              interval: Duration(seconds: 1),
              onFinished: () {
 
@@ -506,28 +547,52 @@ class _OtpScreenState extends State<OtpScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          GradientText(
+            "Didn't receive code? ",
+            textAlign: TextAlign.start,
+            style: TextStyle(
+
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+              fontSize: 17,
+              // decoration: TextDecoration.underline,
+
+            ),
+            gradientDirection: GradientDirection.ttb,
+            colors: [
+              Styles.myLightVioletShade3,
+              Styles.myLightVioletShade3,
+              Styles.myLightPinkShade,
+            ],
+          ),
           InkWell(
             onTap: (){
               registerUser(widget.mobile);
             },
-            child: Text(
-              "Didn't receive code? Resend",
+            child: GradientText(
+              "Resend",
               textAlign: TextAlign.start,
               style: TextStyle(
-                color: Styles.myLightVioletShade3,
+
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.1,
-                fontSize: 18,
+                fontSize: 17,
                 decoration: TextDecoration.underline,
+                decorationThickness: 1.5
 
               ),
+              gradientDirection: GradientDirection.ttb,
+              colors: [
+                Styles.myLightVioletShade3,
+                Styles.myLightVioletShade3,
+                Styles.myLightPinkShade,
+            ],
             ),
           ),
         ],
       ),
     );
   }
-
 
   Widget submitButton(){
     return  CommonSubmitButton(
@@ -569,7 +634,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
 
-//region Garbage--------------------------------------------------------------------------------------------------------------------------------------------
+  //region Garbage--------------------------------------------------------------------------------------------------------------------------------------------
 
   Widget getAppBar() {
     return Row(
@@ -1011,7 +1076,7 @@ class _OtpScreenState extends State<OtpScreen> {
               if (verificationId != null) {
                 String? otp = ""; //_otpController?.text;
 
-                bool result = await verifyOTP(otp: otp, verificationId: verificationId);
+                /*bool result = */await verifyOTP(otp: otp, verificationId: verificationId);
               }
             }
           }

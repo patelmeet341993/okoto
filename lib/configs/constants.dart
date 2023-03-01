@@ -21,21 +21,6 @@ class FirestoreExceptionCodes {
   static const String notFound = "not-found";
 }
 
-class UserGender {
-  static const String male = "Male";
-  static const String female = "Female";
-  static const String other = "Other";
-
-  static const List<String> values = [male, female, other];
-}
-
-class OrderType {
-  static const String subscription = "Subscription";
-  static const String product = "Product";
-
-  static const List<String> values = [subscription, product];
-}
-
 class FirebaseNodes {
   //region Admin
   static const String adminCollection = "admin";
@@ -89,6 +74,19 @@ class FirebaseNodes {
   static MyFirestoreDocumentReference gameDocumentReference({String? gameId}) => FirestoreController.documentReference(
     collectionName: FirebaseNodes.gamesCollection,
     documentId: gameId,
+  );
+  //endregion
+
+  //region Notifications Collection
+  static const String notificationsCollection = 'notifications';
+
+  static MyFirestoreCollectionReference get notificationsCollectionReference => FirestoreController.collectionReference(
+    collectionName: FirebaseNodes.gamesCollection,
+  );
+
+  static MyFirestoreDocumentReference notificationDocumentReference({String? notificationId}) => FirestoreController.documentReference(
+    collectionName: FirebaseNodes.notificationsCollection,
+    documentId: notificationId,
   );
   //endregion
 
@@ -153,12 +151,39 @@ class FirebaseNodes {
   //endregion
 }
 
-//Shared Preference Keys
+class NotificationTarget {
+  static const String admin = "Admin";
+  static const String announcement = "Announcement";
+
+  static const List<String> values = [admin, announcement];
+}
+
+class NotificationType {
+  static const String subscriptionOrder = "Subscription Order";
+
+  static const List<String> values = [subscriptionOrder];
+}
+
+class OrderType {
+  static const String subscription = "Subscription";
+  static const String product = "Product";
+
+  static const List<String> values = [subscription, product];
+}
+
 class SharePreferenceKeys {
   static const String isUserLoggedIn = "isUserLoggedIn";
 }
 
 class UIConstants {
   static const String noUserImageUrl = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+}
+
+class UserGender {
+  static const String male = "Male";
+  static const String female = "Female";
+  static const String other = "Other";
+
+  static const List<String> values = [male, female, other];
 }
 
