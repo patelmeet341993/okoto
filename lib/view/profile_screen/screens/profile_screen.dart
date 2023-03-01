@@ -50,34 +50,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
           body: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                getMainWidget(),
-                Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      singleOption1(
-                        iconData: Icons.list,
-                        option: "Orders",
-                        ontap: () async {
-                          NavigationController.navigateToOrderListScreen(
-                              navigationOperationParameters: NavigationOperationParameters(
-                            context: context,
-                            navigationType: NavigationType.pushNamed,
-                          ));
-                        },
-                      ),
-                      singleOption1(
-                        iconData: Icons.logout,
-                        option: "Logout",
-                        ontap: () async {
-                          AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
-                        },
-                      ),
-                    ],
-                  ),
+                SizedBox(
+                  height: 33,
                 ),
+                getMainWidget(),
+                // Center(
+                //   child: Column(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       singleOption1(
+                //         iconData: Icons.list,
+                //         option: "Orders",
+                //         ontap: () async {
+                //           NavigationController.navigateToOrderListScreen(
+                //               navigationOperationParameters: NavigationOperationParameters(
+                //             context: context,
+                //             navigationType: NavigationType.pushNamed,
+                //           ));
+                //         },
+                //       ),
+                //       singleOption1(
+                //         iconData: Icons.logout,
+                //         option: "Logout",
+                //         ontap: () async {
+                //           AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
+                //         },
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -90,10 +93,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Consumer<UserProvider>(
       builder: (BuildContext context, UserProvider userProvider, Widget? child) {
         return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             getProfileUserNameWidget(
               userProvider.getUserModel() ?? UserModel(),
             ),
+            SizedBox(height: 33,),
             getLastGamePlayedWidget(
               userProvider.getUserModel() ?? UserModel(),
             )
@@ -135,34 +140,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   //region lastGamePlayedWidget
   Widget getLastGamePlayedWidget(UserModel userModel) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          child: getHeaderWithValue(headerText: "Last game played", value: "Call of Duty: Warzone", iconPath: "assets/icons/gamePad.png"),
-        ),
-        const SizedBox(
-          height: 40,
-          child: VerticalDivider(
-            thickness: 2,
-            color: Colors.white,
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: getHeaderWithValue(headerText: "Last game played", value: "Call of Duty: Warzone", iconPath: "assets/icons/gamePad.png"),
           ),
-        ),
-        Expanded(
-          child: getHeaderWithValue(
-              headerText: "Total Time",
-              iconPath: "assets/icons/stopWatch.png",
-              value: "${DatePresentation.getSingleFormat("mm", Timestamp.now())}m : ${DatePresentation.getSingleFormat("ss", Timestamp.now())}s"),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: VerticalDivider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+          ),
+          Expanded(
+            child: getHeaderWithValue(
+                headerText: "Total Time",
+                iconPath: "assets/icons/stopWatch.png",
+                value: "${DatePresentation.getSingleFormat("mm", Timestamp.now())}m : ${DatePresentation.getSingleFormat("ss", Timestamp.now())}s"),
+          ),
+        ],
+      ),
     );
   }
 
   Widget getHeaderWithValue({required String headerText, required String value, String iconPath = ""}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         CommonText(
           text: headerText,
@@ -170,17 +177,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
           fontStyle: FontStyle.italic,
           fontWeight: FontWeight.w600,
         ),
-        SizedBox(height: 16,),
-        Container(
+        SizedBox(
+          height: 16,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Visibility(
                 visible: iconPath.isNotEmpty,
                 child: Padding(
-                  padding: const EdgeInsets.only(right:8.0),
+                  padding: const EdgeInsets.only(right: 12.0),
                   child: Image.asset(
                     iconPath,
                     fit: BoxFit.contain,
@@ -190,7 +200,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               Flexible(
-                  child: CommonText(text: value, fontStyle: FontStyle.normal,textAlign: TextAlign.center, fontSize: 16,)),
+                  child: CommonText(
+                text: value,
+                fontStyle: FontStyle.normal,
+                fontSize: 16,
+              )),
             ],
           ),
         ),
