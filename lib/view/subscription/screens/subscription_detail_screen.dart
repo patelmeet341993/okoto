@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/model/game/game_model.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
+import 'package:okoto/utils/my_print.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
 import 'package:okoto/view/common/components/common_submit_button.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
@@ -67,6 +68,7 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
           future: getFuture,
           builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
             if (asyncSnapshot.connectionState == ConnectionState.done) {
+              MyPrint.printOnConsole('SubsCripModel : ${subscriptionModel.toMap()}');
               return getMainWidget();
             } else {
               return const Center(child: CommonLoader());
@@ -81,7 +83,11 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
     return Consumer(
       builder: (BuildContext context, UserProvider userProvider, _) {
         SubscriptionModel? activeSubscriptionModel = userProvider.getUserModel()?.userSubscriptionModel?.mySubscription;
-        bool isActiveSubscription = activeSubscriptionModel!.id == subscriptionModel.id;
+
+        bool isActiveSubscription = false;
+        if(activeSubscriptionModel != null){
+          isActiveSubscription = activeSubscriptionModel!.id == subscriptionModel.id;
+        }
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18.0).copyWith(top: 32),
           child: SingleChildScrollView(

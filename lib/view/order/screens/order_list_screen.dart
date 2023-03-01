@@ -107,9 +107,12 @@ class _OrderListSceenState extends State<OrderListScreen> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.4,
             ),
-            const Center(
-              child: Text("No Orders"),
+            Center(
+              child: CommonText(
+                  text:"No Payment History",fontSize: 17,fontWeight: FontWeight.bold
+              ),
             ),
+
           ],
         ),
       );
