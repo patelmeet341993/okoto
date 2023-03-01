@@ -3,6 +3,7 @@ import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/package/my_coverflow_package.dart';
@@ -90,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
                               getMyAppBar(),
                               const SizedBox(height: 15,),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                padding: const EdgeInsets.symmetric(horizontal: 0),
                                 child: getImageSlider(bannerImages: bannerImages),
                               ),
                               const SizedBox(height: 25,),
@@ -151,11 +152,21 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
             ],
           ),
           const Spacer(),
-          Image.asset(
-            "assets/images/vr_icon.png",
-            height: 20,
-            width: 26,
-            fit: BoxFit.fill,
+          InkWell(
+            onTap: (){
+              NavigationController.navigateToDevicesScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                      context: NavigationController.mainScreenNavigator.currentContext!,
+                    navigationType: NavigationType.pushNamed,
+                  )
+              );
+            },
+            child: Image.asset(
+              "assets/images/vr_icon.png",
+              height: 20,
+              width: 26,
+              fit: BoxFit.fill,
+            ),
           ),
           const SizedBox(width: 14,),
           const Icon(MdiIcons.bell,color: Colors.white,size: 24,),
@@ -192,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
       allowManualSlide: true,
       children: bannerImages.map((image) {
         return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 0),
+          margin: const EdgeInsets.symmetric(horizontal: 20),
           child: CachedNetworkImage(
             imageUrl: CloudinaryImage(image)
                 .transform()
@@ -410,7 +421,15 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
       children: [
         Row(
           children: [
-            exploreBox(imageUrl: 'assets/icons/device.png',title: 'Device'),
+            exploreBox(imageUrl: 'assets/icons/device.png',
+                title: 'Device',onTap: (){
+                  NavigationController.navigateToDevicesScreen(
+                      navigationOperationParameters: NavigationOperationParameters(
+                        context: NavigationController.mainScreenNavigator.currentContext!,
+                        navigationType: NavigationType.pushNamed,
+                      )
+                  );
+                }),
             SizedBox(width:spacing ,),
             exploreBox(imageUrl: 'assets/icons/subscriptions.png',title: 'Subscription'),
             SizedBox(width:spacing ,),
@@ -433,35 +452,38 @@ class _HomeScreenState extends State<HomeScreen>  with SingleTickerProviderState
     );
    }
 
-  Widget exploreBox({String imageUrl ="assets/images/vr_icon.png", String title = 'Device'}){
+  Widget exploreBox({String imageUrl ="assets/images/vr_icon.png", String title = 'Device',Function()? onTap,}){
       return Expanded(
-        child: Container(
-          height: 85,
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            gradient: LinearGradient(
-              colors: [
-                Styles.cardGradient1,
-                Styles.cardGradient2,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                imageUrl,
-                height: 19,
-                width: 23,
-                fit: BoxFit.fill,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            height: 85,
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              gradient: LinearGradient(
+                colors: [
+                  Styles.cardGradient1,
+                  Styles.cardGradient2,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              const SizedBox(height: 5,),
-              CommonText(text: title,textAlign: TextAlign.center,fontSize: 12),
-            ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  imageUrl,
+                  height: 19,
+                  width: 23,
+                  fit: BoxFit.fill,
+                ),
+                const SizedBox(height: 5,),
+                CommonText(text: title,textAlign: TextAlign.center,fontSize: 12),
+              ],
+            ),
           ),
         ),
       );

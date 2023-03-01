@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../backend/device/device_provider.dart';
 
 class DevicesScreen extends StatefulWidget {
+  static const String routeName = '/DevicesScreen';
   const DevicesScreen({Key? key}) : super(key: key);
 
   @override
@@ -131,4 +132,6 @@ class _DevicesScreenState extends State<DevicesScreen> {
       ),
     );
   }
+
+
 }
