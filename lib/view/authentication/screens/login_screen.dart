@@ -7,7 +7,6 @@ import 'package:okoto/view/common/components/my_common_textfield.dart';
 import '../../../backend/navigation/navigation.dart';
 import '../../../configs/styles.dart';
 import '../../../utils/my_print.dart';
-import '../../common/components/common_primary_button.dart';
 import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
 
@@ -102,20 +101,20 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: <Widget>[
                           getTopShapeAndIllustrate(),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5).copyWith(top: 65),
+                            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5).copyWith(top: 65),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
                                 getTopPageDetails(),
-                                SizedBox(
+                                const SizedBox(
                                   height: 60,
                                 ),
                                 getMobileNumberTextField(),
-                                SizedBox(
+                                const SizedBox(
                                   height: 60,
                                 ),
                                 CommonSubmitButton(
@@ -145,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
       clipBehavior: Clip.none,
       children: [
         CustomPaint(
-          size: Size(double.maxFinite, 320),
+          size: const Size(double.maxFinite, 320),
           painter: TopCustomShape(),
         ),
         Positioned(
@@ -169,16 +168,16 @@ class _LoginScreenState extends State<LoginScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        CommonText(
+        const CommonText(
           text: "Welcome  Gamer !",
           fontSize: 26,
           textAlign: TextAlign.center,
           fontWeight: FontWeight.bold,
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
-        CommonText(
+        const CommonText(
           text: "Login/Signup to start your VR Gaming Journey",
           fontSize: 15.5,
           textAlign: TextAlign.center,
@@ -189,15 +188,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget getMobileNumberTextField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
         children: [
-          CommonText(
+          const CommonText(
             text: "Enter Mobile Number",
             fontSize: 14,
             textAlign: TextAlign.center,
           ),
-          SizedBox(
+          const SizedBox(
             height: 2,
           ),
           MyCommonTextField(
@@ -205,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
             prefixText: "+91    ",
             cursorColor: Colors.white,
             prefix: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
+              margin: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Image.asset(
                 "assets/images/indian_flag.png",
                 height: 20,

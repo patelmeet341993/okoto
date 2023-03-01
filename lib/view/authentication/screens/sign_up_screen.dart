@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:okoto/backend/notification/notification_provider.dart';
-import 'package:okoto/view/common/components/common_back_button.dart';
+import 'package:okoto/utils/extensions.dart';
 import 'package:okoto/view/common/components/common_submit_button.dart';
 import 'package:provider/provider.dart';
 
@@ -126,7 +126,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
 
         if(context.mounted) {
-          NavigationController.navigateToHomeTempScreen(navigationOperationParameters: NavigationOperationParameters(
+          NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
             context: context,
             navigationType: NavigationType.pushNamedAndRemoveUntil,
           ));
@@ -182,11 +182,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             getTopBar(),
-                            SizedBox(height: 60,),
+                            const SizedBox(height: 60,),
                             getTopDetails(),
-                            SizedBox(height: 80,),
+                            const SizedBox(height: 80,),
                             getBasicInfo(),
-                            SizedBox(height: 80,),
+                            const SizedBox(height: 80,),
                             letsPlayButton(),
                           ],
                         ),
@@ -255,7 +255,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
            await AuthenticationController(userProvider: userProvider).logout();
           },
           child: Container(
-            padding: EdgeInsets.all(7),
+            padding: const EdgeInsets.all(7),
             decoration: BoxDecoration(
                 color: Styles.myButtonBlack,
                 borderRadius: BorderRadius.circular(8),
@@ -277,16 +277,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        CommonText(
+        const CommonText(
           text: "Let us know you better,",
           fontSize: 27,
           textAlign: TextAlign.start,
           fontWeight: FontWeight.bold,
         ),
-        SizedBox(
+        const SizedBox(
           height: 9,
         ),
-        CommonText(
+        const CommonText(
           text: "Please provide some information of you",
           fontSize: 17,
           textAlign: TextAlign.start,
@@ -303,8 +303,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           labelText: 'Full Name',
           cursorColor: Colors.white,
           prefix: Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Icon(
+            margin: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: const Icon(
               Icons.person_outline,
               color: Colors.white,
               size: 20,
@@ -319,14 +319,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
             }
           },
         ),
-        SizedBox(height: 10,),
+        const SizedBox(height: 10,),
         MyCommonTextField(
           controller: userNameController,
           labelText: 'Username',
           cursorColor: Colors.white,
           prefix: Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Icon(
+            margin: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: const Icon(
               Icons.sports_esports_outlined,
               color: Colors.white,
               size: 23,
@@ -341,7 +341,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             }
           },
         ),
-        SizedBox(height: 10,),
+        const SizedBox(height: 10,),
         InkWell(
           onTap: (){
             pickDate();
@@ -355,8 +355,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             },
             cursorColor: Colors.white,
             prefix: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: Icon(
+              margin: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: const Icon(
                 Icons.cake,
                 color: Colors.white,
                 size: 23,
@@ -364,7 +364,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
         ),
-        SizedBox(height: 10,),
+        const SizedBox(height: 10,),
         InkWell(
           onTap: () async {
            bool? isMale = await showDialog(context: context,
@@ -386,7 +386,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                MyPrint.printOnConsole('isthis male is');
              }else {
                setState(() {
-                 gender = UserGender.male;
+                 gender = UserGender.female;
                });
                MyPrint.printOnConsole('isthis female is');
              }
@@ -394,12 +394,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           },
           child: MyCommonTextField(
             //controller: userNameController,
-            labelText: gender ?? 'Gender',
+            labelText: gender.checkNotEmpty ? gender : 'Gender',
             enabled: false,
             cursorColor: Colors.white,
             prefix: Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.0),
-              child: Icon(
+              margin: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: const Icon(
                 MdiIcons.genderMaleFemale,
                 color: Colors.white,
                 size: 23,
@@ -418,31 +418,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return CommonSubmitButton(
         onTap: (){
           if(_formKey.currentState!.validate()){
-            if(isAcceptedTerms) {
-              bool formValid = _formKey.currentState?.validate() ?? false;
-              bool dobValid = dateOfBirth != null;
-              bool genderValid = gender?.isNotEmpty ?? false;
+            /*if(!isAcceptedTerms) {
+              MyToast.showError(context: context, msg: "Please accept T&C");
+              return;
+            }*/
 
-              MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
+            bool formValid = _formKey.currentState?.validate() ?? false;
+            bool dobValid = dateOfBirth != null;
+            bool genderValid = gender?.isNotEmpty ?? false;
 
-              if(formValid && dobValid && genderValid) {
-                updateUserData();
-              }
-              else if(!formValid) {
+            MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
 
-              }
-              else if(!dobValid) {
-                MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
-              }
-              else if(!genderValid) {
-                MyToast.showError(context: context, msg: "Gender is Mandatory");
-              }
-              else {
+            if(formValid && dobValid && genderValid) {
+              updateUserData();
+            }
+            else if(!formValid) {
 
-              }
+            }
+            else if(!dobValid) {
+              MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
+            }
+            else if(!genderValid) {
+              MyToast.showError(context: context, msg: "Gender is Mandatory");
             }
             else {
-              MyToast.showError(context: context, msg: "Please accept T&C");
+
             }
           }
         },
@@ -682,7 +682,7 @@ class GenderSelectDialog extends StatelessWidget {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       content: Container(
-        padding: EdgeInsets.symmetric(vertical: 20,horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 20),
         decoration: BoxDecoration(
           color: Styles.myDialogBackground,
           borderRadius: BorderRadius.circular(6),
@@ -691,7 +691,7 @@ class GenderSelectDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(child: getMaleAndFemaleView(context: context,isMale: true,isSelected:isMale == true  )),
-            SizedBox(width: 10,),
+            const SizedBox(width: 10,),
             Expanded(child: getMaleAndFemaleView(context: context,isMale: false,isSelected: isMale == false)),
           ],
         ),
@@ -707,7 +707,7 @@ class GenderSelectDialog extends StatelessWidget {
 
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15),
+        padding: const EdgeInsets.symmetric(vertical: 15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
@@ -719,12 +719,12 @@ class GenderSelectDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(isMale?'assets/images/male.png':'assets/images/female.png',height: 55,width: 55,),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(isMale?Icons.male:Icons.female,size: 17,color: Colors.white,),
-                SizedBox(width: 5,),
+                const SizedBox(width: 5,),
                 CommonText(text: isMale?'Male':'Female',fontSize: 15,),
               ],
             )
