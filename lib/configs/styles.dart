@@ -74,6 +74,9 @@ class Styles {
   static Color gameButtonShade1 = const Color(0xff6716B9);
   static Color gameButtonShade2 = const Color(0xff73009B);
   static Color floatingButton = const Color(0xff48136F);
+  static Color notificationCardColor = const Color(0xff3B1457);
+  static Color notificationImage= const Color(0xff560F81);
+
 
 
   static Color discountCardColor = const Color(0xffA765DB);

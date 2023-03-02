@@ -10,6 +10,7 @@ class CommonText extends StatelessWidget {
   final TextOverflow? textOverFlow;
   final TextDecoration? textDecoration;
   final FontStyle fontStyle;
+  final double? height;
 
   const CommonText({
     super.key,
@@ -21,6 +22,7 @@ class CommonText extends StatelessWidget {
     this.color =  Colors.white,
     this.textAlign,
     this.maxLines,
+    this.height,
     this.textDecoration,
     this.textOverFlow,
   });
@@ -33,7 +35,7 @@ class CommonText extends StatelessWidget {
       maxLines: maxLines,
       overflow: textOverFlow,
       style: TextStyle(
-        //height: 1,
+        height: height,
         fontStyle: fontStyle,
         letterSpacing: letterSpacing,
         wordSpacing: 1,

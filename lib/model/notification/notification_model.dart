@@ -9,7 +9,7 @@ import '../../utils/parsing_helper.dart';
 /// target will contain value from [NotificationTarget] or any other id
 
 class NotificationModel {
-  String id = "", title = "", description = "", type = "", target = "", createdBy = "";
+  String id = "", title = "", description = "", type = "", target = "", createdBy = "",image = "";
   bool isOpened = false;
   Timestamp? createdTime;
   OrderModel? orderData;
@@ -18,6 +18,7 @@ class NotificationModel {
     this.id = "",
     this.title = "",
     this.description = "",
+    this.image = "",
     this.type = "",
     this.target = "",
     this.createdBy = "",
@@ -29,6 +30,7 @@ class NotificationModel {
   NotificationModel.fromMap(Map<String, dynamic> map) {
     id = ParsingHelper.parseStringMethod(map['id']);
     title = ParsingHelper.parseStringMethod(map['title']);
+    image = ParsingHelper.parseStringMethod(map['image']);
     description = ParsingHelper.parseStringMethod(map['description']);
     type = ParsingHelper.parseStringMethod(map['type']);
     target = ParsingHelper.parseStringMethod(map['target']);
@@ -50,6 +52,7 @@ class NotificationModel {
       "title" : title,
       "description" : description,
       "type" : type,
+      "image" : image,
       "target" : target,
       "createdBy" : createdBy,
       "isOpened" : isOpened,
