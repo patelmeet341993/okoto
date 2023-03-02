@@ -1,5 +1,7 @@
 import 'package:okoto/backend/common/common_provider.dart';
 
+import '../../model/notification/notification_model.dart';
+
 class NotificationProvider extends CommonProvider {
   NotificationProvider() {
     _initializeFields();
@@ -14,7 +16,32 @@ class NotificationProvider extends CommonProvider {
 
   late final CommonProviderPrimitiveParameter<String?> notificationToken;
 
-  void resetAllData() {
+  void resetAllData() {}
 
+  List<NotificationModel> _notificationModelList = <NotificationModel>[];
+
+  void setNotificationModelList(List<NotificationModel> notificationModelList, {bool isNotify = true}) {
+    if (notificationModelList.isNotEmpty) {
+      _notificationModelList = notificationModelList;
+    }
+    if (isNotify) {
+      notifyListeners();
+    }
   }
+
+  List<NotificationModel> get getNotificationModelList => _notificationModelList;
+
+  //region to show the list month wise
+  final Map<String, String> _notificationsMapWithMonthYear = {};
+
+  void setOrdersMapWithMonthYear(Map<String, String> notificationsMapWithMonthYear, {bool isClear = true, bool isNotify = true}) {
+    if (isClear) _notificationsMapWithMonthYear.clear();
+    _notificationsMapWithMonthYear.addAll(notificationsMapWithMonthYear);
+    if (isNotify) {
+      notifyListeners();
+    }
+  }
+
+  Map<String, String> get notificationsMapWithMonthYear => _notificationsMapWithMonthYear;
+//endregion
 }
