@@ -466,197 +466,197 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
 
 //region Garbage--------------------------------------------------------------------------------------------------------------------------------
-  Widget getDateOfBirthSelection() {
-    return GestureDetector(
-      onTap: () {
-        pickDate();
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: themeData.inputDecorationTheme.border?.borderSide.color ?? Colors.white70),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.date_range, color: themeData.iconTheme.color?.withAlpha(150),),
-            const SizedBox(width: 13,),
-            Expanded(
-              child: Text.rich(
-                TextSpan(
-                  text: dateOfBirth != null ? DatePresentation.ddMMyyyyFormatter(dateOfBirth!.millisecondsSinceEpoch.toString()) : "Select Date Of Birth",
-                  style: themeData.textTheme.titleSmall?.copyWith(
-                    color: themeData.textTheme.titleSmall!.color?.withAlpha(dateOfBirth != null ? 255 : 150),
-                  ),
-                  children: dateOfBirth == null ? [
-                    const TextSpan(
-                      text: ' *',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ] : null,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  //region Gender Selection
-  Widget getGenderSelection() {
-    String? selectedGender;
-    List<String> gendersList = UserGender.values;
-    if(gendersList.isNotEmpty) {
-      if(!gendersList.contains(gender)) {
-        gender = null;
-      }
-      selectedGender = gender;
-    }
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Theme(
-        data: themeData.copyWith(
-          highlightColor: Colors.transparent,
-          // splashColor: Colors.transparent,
-        ),
-        child: DropdownButtonFormField<String>(
-          value: selectedGender,
-          onChanged: (String? value) {
-            gender = value;
-            setState(() {});
-          },
-          // hint: const Text("Select Gender"),
-          hint: Text.rich(
-            TextSpan(
-              text: "Select Gender",
-              style: themeData.textTheme.titleSmall?.copyWith(
-                color: themeData.textTheme.titleSmall!.color?.withAlpha(150),
-              ),
-              children: const [
-                TextSpan(
-                  text: ' *',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ],
-            ),
-          ),
-          style: themeData.textTheme.titleSmall,
-          dropdownColor: themeData.primaryColor,
-          // underline: const SizedBox(),
-          isExpanded: true,
-          decoration: InputDecoration(
-            prefixIcon: Icon(getGenderIconFromGenderString(gender: selectedGender)),
-            contentPadding: const EdgeInsets.all(5),
-          ),
-          items: gendersList.map((e) {
-            return DropdownMenuItem<String>(
-              value: e,
-              child: Text(e),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
-  IconData getGenderIconFromGenderString({required String? gender}) {
-    if(gender == UserGender.male) {
-      return Icons.male;
-    }
-    else if(gender == UserGender.female) {
-      return Icons.female;
-    }
-    else {
-      return Icons.transgender;
-    }
-  }
-  //endregion
-
-  Widget getTermsCondition() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Checkbox(
-          activeColor: themeData.primaryColor,
-          value: isAcceptedTerms,
-          onChanged: (bool? value) {
-            isAcceptedTerms = value!;
-            setState(() {});
-          },
-        ),
-        const CommonText(text:"Please accept ",fontSize: 14, ),
-        InkWell(
-          onTap: () {
-            DataController(dataProvider: Provider.of<DataProvider>(context, listen: false)).showTermsAndConditionBottomSheet(context: context);
-          },
-          child: Text(
-            "Terms and Conditions",
-            style: themeData.textTheme.labelLarge?.copyWith(
-              decoration: TextDecoration.underline,
-             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget getSignUpButton() {
-    return CommonPrimaryButton(
-      text: "Submit",
-      onTap: () {
-        if(isAcceptedTerms) {
-          bool formValid = _formKey.currentState?.validate() ?? false;
-          bool dobValid = dateOfBirth != null;
-          bool genderValid = gender?.isNotEmpty ?? false;
-
-          MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
-
-          if(formValid && dobValid && genderValid) {
-            updateUserData();
-          }
-          else if(!formValid) {
-
-          }
-          else if(!dobValid) {
-            MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
-          }
-          else if(!genderValid) {
-            MyToast.showError(context: context, msg: "Gender is Mandatory");
-          }
-          else {
-
-          }
-        }
-        else {
-          MyToast.showError(context: context, msg: "Please accept T&C");
-        }
-      },
-      filled: true,
-    );
-  }
-
-  Widget getLoginWithAnotherAccountLink() {
-    return InkWell(
-      onTap: () {
-        AuthenticationController(userProvider: userProvider).logout();
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Text(
-          "Login With Another Account",
-          style: themeData.textTheme.labelLarge?.copyWith(
-            decoration: TextDecoration.underline,
-            color: themeData.textTheme.labelLarge!.color?.withOpacity(0.6),
-            fontSize: 12,
-          ),
-        ),
-      ),
-    );
-  }
-//endregion
+//   Widget getDateOfBirthSelection() {
+//     return GestureDetector(
+//       onTap: () {
+//         pickDate();
+//       },
+//       child: Container(
+//         margin: const EdgeInsets.symmetric(vertical: 10),
+//         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+//         decoration: BoxDecoration(
+//           border: Border.all(color: themeData.inputDecorationTheme.border?.borderSide.color ?? Colors.white70),
+//           borderRadius: BorderRadius.circular(4),
+//         ),
+//         child: Row(
+//           children: [
+//             Icon(Icons.date_range, color: themeData.iconTheme.color?.withAlpha(150),),
+//             const SizedBox(width: 13,),
+//             Expanded(
+//               child: Text.rich(
+//                 TextSpan(
+//                   text: dateOfBirth != null ? DatePresentation.ddMMyyyyFormatter(dateOfBirth!.millisecondsSinceEpoch.toString()) : "Select Date Of Birth",
+//                   style: themeData.textTheme.titleSmall?.copyWith(
+//                     color: themeData.textTheme.titleSmall!.color?.withAlpha(dateOfBirth != null ? 255 : 150),
+//                   ),
+//                   children: dateOfBirth == null ? [
+//                     const TextSpan(
+//                       text: ' *',
+//                       style: TextStyle(color: Colors.red),
+//                     ),
+//                   ] : null,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   //region Gender Selection
+//   Widget getGenderSelection() {
+//     String? selectedGender;
+//     List<String> gendersList = UserGender.values;
+//     if(gendersList.isNotEmpty) {
+//       if(!gendersList.contains(gender)) {
+//         gender = null;
+//       }
+//       selectedGender = gender;
+//     }
+//
+//     return Container(
+//       margin: const EdgeInsets.symmetric(vertical: 10),
+//       child: Theme(
+//         data: themeData.copyWith(
+//           highlightColor: Colors.transparent,
+//           // splashColor: Colors.transparent,
+//         ),
+//         child: DropdownButtonFormField<String>(
+//           value: selectedGender,
+//           onChanged: (String? value) {
+//             gender = value;
+//             setState(() {});
+//           },
+//           // hint: const Text("Select Gender"),
+//           hint: Text.rich(
+//             TextSpan(
+//               text: "Select Gender",
+//               style: themeData.textTheme.titleSmall?.copyWith(
+//                 color: themeData.textTheme.titleSmall!.color?.withAlpha(150),
+//               ),
+//               children: const [
+//                 TextSpan(
+//                   text: ' *',
+//                   style: TextStyle(color: Colors.red),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           style: themeData.textTheme.titleSmall,
+//           dropdownColor: themeData.primaryColor,
+//           // underline: const SizedBox(),
+//           isExpanded: true,
+//           decoration: InputDecoration(
+//             prefixIcon: Icon(getGenderIconFromGenderString(gender: selectedGender)),
+//             contentPadding: const EdgeInsets.all(5),
+//           ),
+//           items: gendersList.map((e) {
+//             return DropdownMenuItem<String>(
+//               value: e,
+//               child: Text(e),
+//             );
+//           }).toList(),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   IconData getGenderIconFromGenderString({required String? gender}) {
+//     if(gender == UserGender.male) {
+//       return Icons.male;
+//     }
+//     else if(gender == UserGender.female) {
+//       return Icons.female;
+//     }
+//     else {
+//       return Icons.transgender;
+//     }
+//   }
+//   //endregion
+//
+//   Widget getTermsCondition() {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.center,
+//       children: [
+//         Checkbox(
+//           activeColor: themeData.primaryColor,
+//           value: isAcceptedTerms,
+//           onChanged: (bool? value) {
+//             isAcceptedTerms = value!;
+//             setState(() {});
+//           },
+//         ),
+//         const CommonText(text:"Please accept ",fontSize: 14, ),
+//         InkWell(
+//           onTap: () {
+//             DataController(dataProvider: Provider.of<DataProvider>(context, listen: false)).showTermsAndConditionBottomSheet(context: context);
+//           },
+//           child: Text(
+//             "Terms and Conditions",
+//             style: themeData.textTheme.labelLarge?.copyWith(
+//               decoration: TextDecoration.underline,
+//              ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//
+//   Widget getSignUpButton() {
+//     return CommonPrimaryButton(
+//       text: "Submit",
+//       onTap: () {
+//         if(isAcceptedTerms) {
+//           bool formValid = _formKey.currentState?.validate() ?? false;
+//           bool dobValid = dateOfBirth != null;
+//           bool genderValid = gender?.isNotEmpty ?? false;
+//
+//           MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
+//
+//           if(formValid && dobValid && genderValid) {
+//             updateUserData();
+//           }
+//           else if(!formValid) {
+//
+//           }
+//           else if(!dobValid) {
+//             MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
+//           }
+//           else if(!genderValid) {
+//             MyToast.showError(context: context, msg: "Gender is Mandatory");
+//           }
+//           else {
+//
+//           }
+//         }
+//         else {
+//           MyToast.showError(context: context, msg: "Please accept T&C");
+//         }
+//       },
+//       filled: true,
+//     );
+//   }
+//
+//   Widget getLoginWithAnotherAccountLink() {
+//     return InkWell(
+//       onTap: () {
+//         AuthenticationController(userProvider: userProvider).logout();
+//       },
+//       child: Container(
+//         padding: const EdgeInsets.symmetric(vertical: 3),
+//         child: Text(
+//           "Login With Another Account",
+//           style: themeData.textTheme.labelLarge?.copyWith(
+//             decoration: TextDecoration.underline,
+//             color: themeData.textTheme.labelLarge!.color?.withOpacity(0.6),
+//             fontSize: 12,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+ //endregion
 
 
 

@@ -5,6 +5,7 @@ import 'package:okoto/view/authentication/screens/sign_up_screen.dart';
 import 'package:okoto/view/notification_screen/notification_screen.dart';
 import 'package:okoto/view/device/screens/devices_screen.dart';
 import 'package:okoto/view/order/screens/order_detail_screen.dart';
+import 'package:okoto/view/profile_screen/screens/edit_profile_screen.dart';
 import 'package:okoto/view/subscription/screens/subscription_detail_screen.dart';
 
 import '../../utils/my_print.dart';
@@ -118,6 +119,10 @@ class NavigationController {
         page = parseTermsAndConditionsScreen(settings: settings);
         break;
       }
+      case EditProfileScreen.routeName: {
+        page = parseEditProfileScreen(settings: settings);
+        break;
+      }
       case DevicesScreen.routeName: {
         page = parseDevicesScreen(settings: settings);
         break;
@@ -188,6 +193,10 @@ class NavigationController {
 
   static Widget? parseNotificationScreen({required RouteSettings settings}) {
     return const NotificationScreen();
+  }
+
+  static Widget? parseEditProfileScreen({required RouteSettings settings}) {
+    return const EditProfileScreen();
   }
 
   static Widget? parseHomeTempScreen({required RouteSettings settings}) {
@@ -301,6 +310,12 @@ class NavigationController {
   static Future<dynamic> navigateToNotificationScreen({required NavigationOperationParameters navigationOperationParameters}) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: NotificationScreen.routeName,
+    ));
+  }
+
+  static Future<dynamic> navigateToEditProfileScreen({required NavigationOperationParameters navigationOperationParameters}) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: EditProfileScreen.routeName,
     ));
   }
 
