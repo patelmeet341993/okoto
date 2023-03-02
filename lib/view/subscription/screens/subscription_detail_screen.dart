@@ -62,7 +62,7 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: const CommonAppBar(
-          text: "Details",
+          text: "Plan Details",
         ),
         body: FutureBuilder(
           future: getFuture,
@@ -88,56 +88,85 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
         if(activeSubscriptionModel != null){
           isActiveSubscription = activeSubscriptionModel!.id == subscriptionModel.id;
         }
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0).copyWith(top: 32),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                getSubscriptionsNamesAndImage(),
-                const SizedBox(
-                  height: 25,
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0).copyWith(top: 32),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    getSubscriptionsNamesAndImage(),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    validityView(),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    getDescriptionView(),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    getGamesView(),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                   /* Center(
+                      child: Visibility(
+                        visible: !isActiveSubscription,
+                        child: CommonSubmitButton(
+                            // height: 30,
+                            horizontalPadding: 52,
+                            verticalPadding: 10,
+                            text: "Choose",
+                            onTap: () async {
+                              await NavigationController.navigateToSubscriptionCheckoutScreen(
+                                navigationOperationParameters: NavigationOperationParameters(
+                                  context: context,
+                                  navigationType: NavigationType.pushNamed,
+                                ),
+                                arguments: SubscriptionCheckoutScreenNavigationArguments(
+                                  subscriptionId: subscriptionModel.id,
+                                  subscriptionModel: subscriptionModel,
+                                ),
+                              );
+                            }),
+                      ),
+                    ),*/
+                    const SizedBox(
+                      height: 80,
+                    ),
+                  ],
                 ),
-                validityView(),
-                const SizedBox(
-                  height: 25,
-                ),
-                getDescriptionView(),
-                const SizedBox(
-                  height: 25,
-                ),
-                getGamesView(),
-                const SizedBox(
-                  height: 50,
-                ),
-                Center(
-                  child: Visibility(
-                    visible: !isActiveSubscription,
-                    child: CommonSubmitButton(
-                        // height: 30,
-                        horizontalPadding: 52,
-                        verticalPadding: 10,
-                        text: "Choose",
-                        onTap: () async {
-                          await NavigationController.navigateToSubscriptionCheckoutScreen(
-                            navigationOperationParameters: NavigationOperationParameters(
-                              context: context,
-                              navigationType: NavigationType.pushNamed,
-                            ),
-                            arguments: SubscriptionCheckoutScreenNavigationArguments(
-                              subscriptionId: subscriptionModel.id,
-                              subscriptionModel: subscriptionModel,
-                            ),
-                          );
-                        }),
-                  ),
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-              ],
+              ),
             ),
-          ),
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: !isActiveSubscription?CommonSubmitButton(
+                horizontalPadding: 52,
+                verticalPadding: 18,
+                borderRadius: 120,
+                fontSize: 20,
+                text: "Choose Plan",
+                onTap: ()async {
+                  await NavigationController.navigateToSubscriptionCheckoutScreen(
+                    navigationOperationParameters: NavigationOperationParameters(
+                      context: context,
+                      navigationType: NavigationType.pushNamed,
+                    ),
+                    arguments: SubscriptionCheckoutScreenNavigationArguments(
+                      subscriptionId: subscriptionModel.id,
+                      subscriptionModel: subscriptionModel,
+                    ),
+                  );
+
+                },
+              ):SizedBox.shrink(),
+            )
+          ],
         );
       }
     );
@@ -223,10 +252,10 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
 
 //endregion
 
-//region validityView
+  //region validityView
   Widget validityView() {
     return CommonWidgetWithHeader(
-        text: "Validity:",
+        text: "Validity",
         widget: CommonText(
           text: "${subscriptionModel.validityInDays} Days",
           letterSpacing: .2,
@@ -239,7 +268,7 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
   //region descriptionView
   Widget getDescriptionView() {
     return CommonWidgetWithHeader(
-        text: "Description:",
+        text: "Description",
         widget: CommonText(
           text: subscriptionModel.description,
           letterSpacing: .2,
@@ -251,7 +280,7 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
 
   //region gamesView
   Widget getGamesView() {
-    return CommonWidgetWithHeader(text: "Games:", widget: gameList());
+    return CommonWidgetWithHeader(text: "Games", widget: gameList());
   }
 
   Widget gameList() {
@@ -321,7 +350,7 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
     return Container(
       child: CommonWidgetWithHeader(
         fontSize: 14,
-        text: "Description:",
+        text: "Description",
         widget: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -359,8 +388,8 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
 
   //endregion
 
-//region CommonWidgetView with title
-  Widget CommonWidgetWithHeader({required String text, required Widget widget, double fontSize = 18}) {
+  //region CommonWidgetView with title
+  Widget CommonWidgetWithHeader({required String text, required Widget widget, double fontSize = 19}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
