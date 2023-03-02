@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:okoto/utils/date_presentation.dart';
 import 'package:okoto/view/common/components/common_appbar.dart';
@@ -49,10 +50,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           appBar: CommonAppBar(text: "Profile", actions: [
             InkWell(
                 onTap: () {
-                  AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
+                  NavigationController.navigateToNotificationScreen(
+                      navigationOperationParameters: NavigationOperationParameters(
+                        context: NavigationController.mainScreenNavigator.currentContext!,
+                        navigationType: NavigationType.pushNamed,
+                      ));
+                  // AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
                 },
                 child: const Icon(
-                  Icons.logout,
+                  MdiIcons.bell,
                   color: Colors.white,
                   size: 24,
                 )),
