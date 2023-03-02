@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:okoto/view/authentication/screens/sign_up_screen.dart';
+import 'package:okoto/view/gamelist/gamelist_screen.dart';
 import 'package:okoto/view/notification_screen/notification_screen.dart';
 import 'package:okoto/view/device/screens/devices_screen.dart';
 import 'package:okoto/view/order/screens/order_detail_screen.dart';
@@ -131,6 +132,10 @@ class NavigationController {
         page = parseSubscriptionListScreen(settings: settings);
         break;
       }
+      case GameListScreen.routeName: {
+        page = parseGameListScreen(settings: settings);
+        break;
+      }
       case AboutAppScreen.routeName: {
         page = parseAboutAppScreen(settings: settings);
         break;
@@ -193,6 +198,10 @@ class NavigationController {
 
   static Widget? parseNotificationScreen({required RouteSettings settings}) {
     return const NotificationScreen();
+  }
+
+  static Widget? parseGameListScreen({required RouteSettings settings}) {
+    return const GameListScreen();
   }
 
   static Widget? parseEditProfileScreen({required RouteSettings settings}) {
@@ -334,6 +343,12 @@ class NavigationController {
   static Future<dynamic> navigateToDevicesScreen({required NavigationOperationParameters navigationOperationParameters}) {
       return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
         routeName: DevicesScreen.routeName,
+      ));
+    }
+
+    static Future<dynamic> navigateToGameListScreen({required NavigationOperationParameters navigationOperationParameters}) {
+      return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+        routeName: GameListScreen.routeName,
       ));
     }
 
