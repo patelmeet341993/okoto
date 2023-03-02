@@ -495,7 +495,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ),
         Row(
           children: [
-            exploreBox(imageUrl: 'assets/icons/my_games.png', title: 'Play time'),
+            exploreBox(
+                imageUrl: 'assets/icons/my_games.png',
+                title: 'Our Games',
+                onTap: (){
+                  NavigationController.navigateToGameListScreen(
+                      navigationOperationParameters: NavigationOperationParameters(
+                          context: NavigationController.mainScreenNavigator.currentContext!,
+                          navigationType: NavigationType.pushNamed)
+                  );
+                }
+            ),
             SizedBox(
               width: spacing,
             ),

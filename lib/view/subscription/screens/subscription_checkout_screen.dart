@@ -172,9 +172,21 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
 
     return Column(
       children: [
+
         Padding(
           padding: const EdgeInsets.all(18.0),
           child: getSubscriptionCard(subscriptionModel: subscriptionModel),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0),
+          child: CommonText(text:
+          "You can select ${subscriptionModel.requiredGamesCount} game(s). Click on '+ Add' Button to choose Games.",
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(
           height: 25,
