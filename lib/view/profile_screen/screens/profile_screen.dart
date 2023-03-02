@@ -52,9 +52,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onTap: () {
                   NavigationController.navigateToNotificationScreen(
                       navigationOperationParameters: NavigationOperationParameters(
-                        context: NavigationController.mainScreenNavigator.currentContext!,
-                        navigationType: NavigationType.pushNamed,
-                      ));
+                    context: NavigationController.mainScreenNavigator.currentContext!,
+                    navigationType: NavigationType.pushNamed,
+                  ));
                   // AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
                 },
                 child: const Icon(
@@ -250,6 +250,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             title: "Account Details",
             firstModel: IconWithTitleAndOnTapModel(
               title: "Edit Details",
+              onTap: () {
+                NavigationController.navigateToEditProfileScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: NavigationController.mainScreenNavigator.currentContext!,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
+              },
               assetPath: "assets/icons/personalInfo.png",
             ),
             secondModel: IconWithTitleAndOnTapModel(
