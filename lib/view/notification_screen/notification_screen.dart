@@ -93,7 +93,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   String month = "";
                   if (model.createdTime != null) {
                     key = "${model.createdTime!.toDate().month}${model.createdTime!.toDate().year}";
-                    month = model.createdTime!.toDate().month == DateTime.now().month ? "This" : DatePresentation.MMyyyy(model.createdTime!);
+                    month = model.createdTime!.toDate().month == DateTime
+                        .now()
+                        .month ? "This" : DatePresentation.MMyyyy(model.createdTime!);
                   }
                   return getNotificationCard(model, model.isOpened, notificationProvider, key, month, index);
                 },
@@ -114,26 +116,25 @@ class _NotificationScreenState extends State<NotificationScreen> {
         // if(isSelected){
         //   is
         // }
-        if(isSelected){
+        if (isSelected) {
           notificationProvider.getNotificationModelList[index].isOpened = false;
           notificationController.updateNotificationIsNotificationOpen(model: notificationModel, value: false);
           setState(() {});
         }
-
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           notificationProvider.notificationsMapWithMonthYear[key] == notificationModel.id
               ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 20),
-                  child: CommonText(
-                    text: month,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 20,
-                    letterSpacing: .2,
-                  ),
-                )
+            padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 20),
+            child: CommonText(
+              text: month,
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+              letterSpacing: .2,
+            ),
+          )
               : const SizedBox(),
           Container(
             decoration: BoxDecoration(
@@ -151,15 +152,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 child: notificationModel.image.isNotEmpty
                     ? CommonCachedNetworkImage(imageUrl: notificationModel.image, borderRadius: 4)
                     : Center(
-                        child: Text(
-                          titleFirstLetter.characters.first,
-                          style: TextStyle(
-                              //color: Colors.black.withOpacity(.6),
-                              color: Styles.readMoreTextColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 23),
-                        ),
-                      ),
+                  child: Text(
+                    titleFirstLetter.characters.first,
+                    style: TextStyle(
+                      //color: Colors.black.withOpacity(.6),
+                        color: Styles.readMoreTextColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 23),
+                  ),
+                ),
               ),
               title: Padding(
                 padding: const EdgeInsets.only(bottom: 1.0),
