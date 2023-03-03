@@ -140,6 +140,7 @@ class _GameListScreenState extends State<GameListScreen> {
       ),
     );
   }
+
   Widget getGameChildrenView(GameModel gameModel) {
     return Container(
       child: CommonWidgetWithHeader(
