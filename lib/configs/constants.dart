@@ -81,7 +81,7 @@ class FirebaseNodes {
   static const String notificationsCollection = 'notifications';
 
   static MyFirestoreCollectionReference get notificationsCollectionReference => FirestoreController.collectionReference(
-    collectionName: FirebaseNodes.gamesCollection,
+    collectionName: FirebaseNodes.notificationsCollection,
   );
 
   static MyFirestoreDocumentReference notificationDocumentReference({String? notificationId}) => FirestoreController.documentReference(

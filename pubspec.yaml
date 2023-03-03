@@ -46,6 +46,7 @@ dependencies:
   google_fonts: ^4.0.1
   loading_animation_widget: ^1.2.0+4
   material_design_icons_flutter: ^6.0.7096
+  image_picker: ^0.8.6+4
   show_up_animation: ^2.0.0
 
 

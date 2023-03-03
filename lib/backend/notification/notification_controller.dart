@@ -13,12 +13,13 @@ class NotificationController {
   late NotificationProvider _notificationProvider;
   late NotificationRepository _notificationRepository;
 
-  NotificationController({required NotificationProvider? notificationProvider, NotificationRepository? repository}){
+  NotificationController({required NotificationProvider? notificationProvider, NotificationRepository? repository}) {
     _notificationProvider = notificationProvider ?? NotificationProvider();
     _notificationRepository = repository ?? NotificationRepository();
   }
 
   NotificationProvider get notificationProvider => _notificationProvider;
+
   NotificationRepository get notificationRepository => _notificationRepository;
 
   Future<bool> createSubscriptionOrderNotification({required OrderModel orderModel, required String userId}) async {
@@ -44,8 +45,7 @@ class NotificationController {
       bool isCreated = await notificationRepository.createNotification(notificationModel: notificationModel);
 
       MyPrint.printOnConsole("isCreated:$isCreated", tag: tag);
-    }
-    catch(e, s) {
+    } catch (e, s) {
       MyPrint.printOnConsole("Error in Creating Notification in NotificationController().createSubscriptionOrderNotification():$e", tag: tag);
       MyPrint.printOnConsole(s, tag: tag);
     }
@@ -58,7 +58,7 @@ class NotificationController {
 
     String? notificationToken = provider.notificationToken.get();
 
-    if(isRefresh) {
+    if (isRefresh) {
       await FirebaseMessaging.instance.deleteToken();
 
       provider.notificationToken.set(value: null, isNotify: false);
@@ -66,8 +66,7 @@ class NotificationController {
 
     try {
       notificationToken ??= await FirebaseMessaging.instance.getToken();
-    }
-    catch(e, s) {
+    } catch (e, s) {
       MyPrint.printOnConsole("Error getting token: $e");
       MyPrint.printOnConsole(s);
     }
@@ -76,5 +75,47 @@ class NotificationController {
     provider.notificationToken.set(value: notificationToken, isNotify: false);
 
     return notificationToken;
+  }
+
+  Future<bool> getNotificationList() async {
+    bool isFetched = false;
+    List<NotificationModel> notificationList = <NotificationModel>[];
+    try {
+      notificationList = await notificationRepository.getNotificationsList();
+      notificationProvider.setNotificationModelList(notificationList);
+      Map<String, String> notificationsMapWithMonthYear = getMapOfMonthYearFromList(notificationList);
+      notificationProvider.setOrdersMapWithMonthYear(notificationsMapWithMonthYear, isClear: true, isNotify: true);
+    } catch (e, s) {
+      MyPrint.printOnConsole("Error in notificationController.getNotificationList: $e");
+      MyPrint.printOnConsole(s);
+    }
+    return isFetched;
+  }
+
+  Map<String, String> getMapOfMonthYearFromList(List<NotificationModel> notificationModel) {
+    Map<String, String> notificationsMapWithMonthYear = {};
+    for (NotificationModel item in notificationModel) {
+      if (item.createdTime != null) {
+        String key = "${item.createdTime!.toDate().month}${item.createdTime!.toDate().year}";
+        if (!notificationsMapWithMonthYear.containsKey(key)) {
+          notificationsMapWithMonthYear[key] = item.id;
+        }
+      }
+    }
+    return notificationsMapWithMonthYear;
+  }
+
+  Future<bool> updateNotificationIsNotificationOpen({required NotificationModel model, required bool value}) async {
+    bool isUpdated = false;
+
+    try {
+      isUpdated = await notificationRepository.updateNotificationValue(id: model.id, key: "isOpened", value: value);
+      // notificationProvider.
+      getNotificationList();
+    } catch (e, s) {
+      MyPrint.printOnConsole("Error in updateNotificationIsNotificationOpen $e");
+      MyPrint.printOnConsole(s);
+    }
+    return isUpdated;
   }
 }
