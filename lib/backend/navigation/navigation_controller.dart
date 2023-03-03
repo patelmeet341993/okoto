@@ -15,6 +15,7 @@ import '../../view/authentication/screens/otp_screen.dart';
 import '../../view/common/screens/about_app_screen.dart';
 import '../../view/common/screens/splashscreen.dart';
 import '../../view/common/screens/terms_and_conditions_screen.dart';
+import '../../view/gamelist/my_game_list.dart';
 import '../../view/home/screens/home_screen.dart';
 import '../../view/home/screens/home_temp_screen.dart';
 import '../../view/order/screens/order_list_screen.dart';
@@ -140,6 +141,10 @@ class NavigationController {
         page = parseAboutAppScreen(settings: settings);
         break;
       }
+      case MyGameList.routeName: {
+        page = parseMyGameList(settings: settings);
+        break;
+      }
       case OrderListScreen.routeName: {
         page = parseOrderListScreen(settings: settings);
         break;
@@ -214,6 +219,10 @@ class NavigationController {
 
   static Widget? parseHomeScreen({required RouteSettings settings}) {
     return const HomeScreen();
+  }
+
+  static Widget? parseMyGameList({required RouteSettings settings}) {
+    return const MyGameList();
   }
 
   static Widget? parseDevicesScreen({required RouteSettings settings}) {
@@ -349,6 +358,12 @@ class NavigationController {
     static Future<dynamic> navigateToGameListScreen({required NavigationOperationParameters navigationOperationParameters}) {
       return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
         routeName: GameListScreen.routeName,
+      ));
+    }
+
+    static Future<dynamic> navigateToMyGameListScreen({required NavigationOperationParameters navigationOperationParameters}) {
+      return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+        routeName: MyGameList.routeName,
       ));
     }
 
