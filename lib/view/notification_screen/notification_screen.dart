@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:okoto/backend/notification/notification_controller.dart';
 import 'package:okoto/backend/notification/notification_provider.dart';
 import 'package:okoto/model/notification/notification_model.dart';
@@ -127,7 +128,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         children: [
           notificationProvider.notificationsMapWithMonthYear[key] == notificationModel.id
               ? Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
             child: CommonText(
               text: month,
               fontWeight: FontWeight.w600,
@@ -174,17 +175,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ),
                     ),
                     const SizedBox(
-                      width: 1,
+                      width: 6,
                     ),
-                    const CommonText(
-                      text: '12/12/23',
+                    CommonText(
+                      text:  notificationModel.createdTime == null ? '' : DateFormat("dd/MM/yy").format(notificationModel.createdTime!.toDate()),
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ],
                 ),
               ),
-              subtitle: Padding(
+              subtitle: notificationModel.description.isNotEmpty ? Padding(
                 padding: const EdgeInsets.only(top: 2.0),
                 child: CommonText(
                   text: notificationModel.description,
@@ -193,7 +194,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   height: 1.1,
                   textOverFlow: TextOverflow.ellipsis,
                 ),
-              ),
+              ):SizedBox.shrink(),
             ),
           ),
           const Divider(
