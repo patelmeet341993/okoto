@@ -67,7 +67,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return getMainWidget();
               } else {
-                return const CommonLoader();
+                return Center(child: const CommonLoader());
               }
             },
           ),
@@ -95,7 +95,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     key = "${model.createdTime!.toDate().month}${model.createdTime!.toDate().year}";
                     month = model.createdTime!.toDate().month == DateTime
                         .now()
-                        .month ? "This" : DatePresentation.MMyyyy(model.createdTime!);
+                        .month ? "This month" : DatePresentation.MMyyyy(model.createdTime!);
                   }
                   return getNotificationCard(model, model.isOpened, notificationProvider, key, month, index);
                 },
