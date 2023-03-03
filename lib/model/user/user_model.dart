@@ -5,7 +5,7 @@ import '../../utils/parsing_helper.dart';
 import 'user_subscription_model.dart';
 
 class UserModel {
-  String id = "", name = "", userName = "", gender = "", mobileNumber = "", notificationToken = "";
+  String id = "", name = "", userName = "", gender = "", mobileNumber = "", notificationToken = "", profileImageUrl = "";
   Timestamp? createdDate, dateOfBirth;
   bool adminEnabled = true;
   UserSubscriptionModel? userSubscriptionModel;
@@ -15,6 +15,7 @@ class UserModel {
     this.id = "",
     this.name = "",
     this.userName = "",
+    this.profileImageUrl = "",
     this.gender = "",
     this.mobileNumber = "",
     this.notificationToken = "",
@@ -37,6 +38,7 @@ class UserModel {
   void _initializeFroMap(Map<String, dynamic> map) {
     id = ParsingHelper.parseStringMethod(map['id']);
     name = ParsingHelper.parseStringMethod(map['name']);
+    profileImageUrl = ParsingHelper.parseStringMethod(map['profileImageUrl']);
     userName = ParsingHelper.parseStringMethod(map['userName']);
     gender = ParsingHelper.parseStringMethod(map['gender']);
     mobileNumber = ParsingHelper.parseStringMethod(map['mobileNumber']);
@@ -76,6 +78,7 @@ class UserModel {
       "name" : name,
       "userName" : userName,
       "gender" : gender,
+      "profileImageUrl" : profileImageUrl,
       "mobileNumber" : mobileNumber,
       "notificationToken" : notificationToken,
       "createdDate" : toJson ? createdDate?.toDate().toIso8601String() : createdDate,

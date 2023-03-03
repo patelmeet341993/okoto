@@ -60,7 +60,7 @@ class _ChooseImageDialogState extends State<ChooseImageDialog> with MySafeState 
               ),
               SizedBox(height: 5,),
 
-              getChooseOption(Icons.photo_camera,'Take from Camera'),
+              getChooseOption(Icons.photo_camera,'Take from Camera', "camera"),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                   width: double.maxFinite,
@@ -68,7 +68,7 @@ class _ChooseImageDialogState extends State<ChooseImageDialog> with MySafeState 
                   child: MySeparator(
                     color: Colors.white,
                   )),
-              getChooseOption(MdiIcons.trayArrowUp,'Upload from device'),
+              getChooseOption(MdiIcons.trayArrowUp,'Upload from device', "gallery"),
               SizedBox(height: 10,),
 
             ],
@@ -78,20 +78,25 @@ class _ChooseImageDialogState extends State<ChooseImageDialog> with MySafeState 
     );
   }
 
-  Widget getChooseOption(IconData icon,String text){
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12,horizontal: 5),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: Colors.white,
-            size: 25,
-          ),
-          SizedBox(width: 10,),
-          CommonText(text: text,fontSize: 17,)
+  Widget getChooseOption(IconData icon,String text, String popString){
+    return InkWell(
+      onTap: (){
+        Navigator.pop(context, popString);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12,horizontal: 5),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: Colors.white,
+              size: 25,
+            ),
+            SizedBox(width: 10,),
+            CommonText(text: text,fontSize: 17,)
 
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -49,6 +49,10 @@
 		<false/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 	  <true/>
+	  <key>LSSupportsOpeningDocumentsInPlace</key>
+      <true/>
+      <key>NSPhotoLibraryUsageDescription</key>
+      <string>We will use for taking the profile picture</string>
 	  <key>NSCalendarsUsageDescription</key>
     <string>We will use calender to show you alerts</string>
     <key>NSContactsUsageDescription</key>

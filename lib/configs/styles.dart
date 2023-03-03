@@ -96,6 +96,12 @@ class Styles {
   static Color failedStatusBackGround = const Color(0xffF6B6B6);
   static Color failedStatusText = const Color(0xffE32626);
 
+  static Color accountDetailSmallSizeGradient1 = const Color(0xff7E3FC0);
+  static Color accountDetailSmallSizeGradient2 = const Color(0xff9F5FE3);
+  static Color iconCircleColor = const Color(0xff7F4EA1);
+
+
+
 
 
   //endregion
