@@ -187,6 +187,9 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
                       child: Container(
                         key: _sliderKey,
                         child: GestureDetector(
+                          onTap: (){
+                            //MyPrint.printOnConsole('Abe Saaleee');
+                          },
                           onHorizontalDragUpdate: onHorizontalDragUpdate,
                           onHorizontalDragEnd: (details) async {
                             _endDx = _dx;

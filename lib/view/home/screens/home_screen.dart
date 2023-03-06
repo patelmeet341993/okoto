@@ -473,7 +473,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ));
               },
               imageUrl: 'assets/icons/subscriptions.png',
-              title: 'Subscription',
+              title: 'Our All\nPlans',
             ),
             SizedBox(
               width: spacing,
@@ -580,7 +580,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       child: SliderWidgetPackage(
         alignment: Alignment.bottomCenter,
         sliderButtonIconPadding: 16,
-        // innerColor: Colors.green,
         outerColor: Colors.white,
         submittedIcon: getSubmitIcon(),
         borderRadius: 120,
@@ -606,6 +605,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ],
         ),
 
+
         onSubmit: () {
           NavigationController.navigateToDevicesScreen(
               navigationOperationParameters: NavigationOperationParameters(
@@ -618,25 +618,35 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   Widget getSubmitIcon() {
-    return Container(
-      height: double.maxFinite,
-      width: double.maxFinite,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [
-              Styles.gameButtonShade1,
-              Styles.gameButtonShade2,
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          )),
-      child: Image.asset(
-        'assets/icons/game_remote.png',
-        width: 38,
-        height: 27,
-        color: Colors.white,
+    return InkWell(
+      borderRadius: BorderRadius.circular(120),
+      onTap: (){
+        NavigationController.navigateToDevicesScreen(
+            navigationOperationParameters: NavigationOperationParameters(
+              context: NavigationController.mainScreenNavigator.currentContext!,
+              navigationType: NavigationType.pushNamed,
+            ));
+      },
+      child: Container(
+        height: double.maxFinite,
+        width: double.maxFinite,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [
+                Styles.gameButtonShade1,
+                Styles.gameButtonShade2,
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            )),
+        child: Image.asset(
+          'assets/icons/game_remote.png',
+          width: 38,
+          height: 27,
+          color: Colors.white,
+        ),
       ),
     );
   }

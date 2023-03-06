@@ -98,7 +98,9 @@ class _MyGameListState extends State<MyGameList> {
   Widget myGameListWidget() {
     if(gameModels.isEmpty){
       return const Center(
-        child: Text("No game available"),
+        child: CommonText(text: "No Games Available\nBuy a plan to add Games",
+            textAlign: TextAlign.center,
+            fontSize: 17,fontWeight: FontWeight.bold),
       );
     }
     return ListView.builder(
@@ -230,4 +232,5 @@ class _MyGameListState extends State<MyGameList> {
     );
   }
 //endregion
+
 }

@@ -46,10 +46,10 @@ class Styles {
 
   //myCustomColors
 
-  static Color myDarkVioletColor = const Color(0xff31144B);
+  static const Color myDarkVioletColor = const Color(0xff31144B);
   static Color myBlueColor = const Color(0xff4BB6FF);
   static Color myLogoBlueColor = const Color(0xff00FFF0);
-  static Color myBorderVioletColor = const Color(0xff702DA4);
+  static const Color myBorderVioletColor = const Color(0xff702DA4);
   static Color myLogoVioletColor = const Color(0xffD900C3);
   static Color myLightVioletShade1 = const Color(0xffB527DB);
   static Color myVioletColor = const Color(0xff883DB8);

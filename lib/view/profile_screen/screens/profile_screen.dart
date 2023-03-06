@@ -137,29 +137,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   //region ProfileUserNameWidegt
   Widget getProfileUserNameWidget(UserModel userModel) {
-    return Column(
-      children: [
-        const MyProfileAvatar(
-          size: 100,
-        ),
-        CommonText(
-          text: userModel.name,
-          fontSize: 20,
-          letterSpacing: .5,
-          fontWeight: FontWeight.w600,
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        CommonText(
-          text: "@${userModel.userName}",
-          fontSize: 16,
-          letterSpacing: .5,
-          fontStyle: FontStyle.italic,
-          color: Styles.textWhiteColor,
-          fontWeight: FontWeight.w600,
-        )
-      ],
+    return InkWell(
+      onTap: (){
+        NavigationController.navigateToEditProfileScreen(
+          navigationOperationParameters: NavigationOperationParameters(
+            context: NavigationController.mainScreenNavigator.currentContext!,
+            navigationType: NavigationType.pushNamed,
+          ),
+        );
+      },
+      child: Column(
+        children: [
+          const MyProfileAvatar(
+            size: 100,
+          ),
+          CommonText(
+            text: userModel.name,
+            fontSize: 20,
+            letterSpacing: .5,
+            fontWeight: FontWeight.w600,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          CommonText(
+            text: "@${userModel.userName}",
+            fontSize: 16,
+            letterSpacing: .5,
+            fontStyle: FontStyle.italic,
+            color: Styles.textWhiteColor,
+            fontWeight: FontWeight.w600,
+          )
+        ],
+      ),
     );
   }
 

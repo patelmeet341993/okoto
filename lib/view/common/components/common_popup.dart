@@ -24,7 +24,7 @@ class CommonPopUp extends StatelessWidget {
     this.rightText = "Yes",
     this.leftOnTap,
     this.rightOnTap,
-    this.rightBackgroundColor = Styles.darkPrimaryColor,
+    this.rightBackgroundColor =  Styles.myBorderVioletColor,
   });
 
   @override

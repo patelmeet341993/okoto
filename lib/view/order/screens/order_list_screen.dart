@@ -161,15 +161,15 @@ class _OrderListSceenState extends State<OrderListScreen> {
             children: [
               orderProvider.ordersMapWithMonthYear[key] == orderModel.id
                   ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10),
-                child: CommonText(
-                        text: month,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        letterSpacing: .2,
-                      ),
-                  )
-                  : const Text(""),
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10),
+                      child: CommonText(
+                              text: month,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              letterSpacing: .2,
+                            ),
+                        )
+                        : const Text(""),
               OrderCard(orderModel: orderModel)
             ],
           );
