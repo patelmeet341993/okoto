@@ -385,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ),
         showDetailsRichText(
           heading: 'Most played game',
-          mainText: 'CSGO 2',
+          mainText: '--',
         ),
       ],
     );

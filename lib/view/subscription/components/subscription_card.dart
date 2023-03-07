@@ -135,11 +135,11 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                         height: 10,
                       ),
                       Visibility(
-                        visible: widget.subscriptionModel.discountedPrice == 0,
+                        visible: widget.subscriptionModel.discountedPrice == widget.subscriptionModel.price,
                         child: CommonText(text: "Rs. ${widget.subscriptionModel.price}", letterSpacing: 0.5, fontWeight: FontWeight.w600),
                       ),
                       Visibility(
-                        visible: widget.subscriptionModel.discountedPrice != 0,
+                        visible: widget.subscriptionModel.discountedPrice != widget.subscriptionModel.price,
                         child: Row(
                           children: [
                             CommonText(text: "Rs. ${widget.subscriptionModel.discountedPrice}", letterSpacing: 0.5, fontWeight: FontWeight.w600),

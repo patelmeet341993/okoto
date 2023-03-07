@@ -80,7 +80,7 @@ class SubscriptionRepository {
         "userSubscriptionModel.isActive" : true,
         "userSubscriptionModel.activatedDate" : activatedDate,
         "userSubscriptionModel.expiryDate" : expiryDate,
-        "userSubscriptionModel.selectedGamesList" : selectedGamesList,
+        "userSubscriptionModel.selectedGames" : selectedGamesList,
       });
     }
 

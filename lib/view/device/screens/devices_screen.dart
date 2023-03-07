@@ -169,6 +169,8 @@ class _DevicesScreenState extends State<DevicesScreen> {
       onRefresh: () async {
         await getDevices(isRefresh: true, isNotify: true);
       },
+      backgroundColor: Colors.white,
+      color: Styles.myDarkVioletColor,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 25),
         itemCount: devices.length,
@@ -183,34 +185,37 @@ class _DevicesScreenState extends State<DevicesScreen> {
   }
 
   Widget getMySingleDeviceCard(DeviceModel deviceModel) {
-    return Row(
-      children: [
-        Image.asset(
-          "assets/images/vr_icon.png",
-          height: 25,
-          width: 30,
-          fit: BoxFit.fill,
-        ),
-        SizedBox(width: 15,),
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommonText(text: deviceModel.id,fontSize: 14,),
-              SizedBox(height: 2,),
-              CommonText(
-                text: deviceModel.createdTime == null ? '-' : DateFormat("dd MMM yyyy").format(deviceModel.createdTime!.toDate()),
-              fontSize: 12,
-                color: Colors.white.withOpacity(.9),
-              )
-            ],
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      child: Row(
+        children: [
+          Image.asset(
+            "assets/images/vr_icon.png",
+            height: 25,
+            width: 30,
+            fit: BoxFit.fill,
           ),
-        ),
-        Icon(
-          Icons.info_outline,
-        )
-      ],
+          SizedBox(width: 15,),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonText(text: deviceModel.id,fontSize: 15,),
+                SizedBox(height: 2,),
+                CommonText(
+                  text: deviceModel.createdTime == null ? '-' : DateFormat("dd MMM yyyy").format(deviceModel.createdTime!.toDate()),
+                fontSize: 12,
+                  color: Colors.white.withOpacity(.9),
+                )
+              ],
+            ),
+          ),
+          Icon(
+            Icons.info_outline,
+          )
+        ],
+      ),
     );
   }
 

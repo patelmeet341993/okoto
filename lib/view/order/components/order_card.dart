@@ -125,7 +125,7 @@ class OrderCard extends StatelessWidget {
           ),
         ),
         CommonText(
-          text: subscriptionOrderDataModel?.subscriptionModel?.discountedPrice == 0
+          text: subscriptionOrderDataModel?.subscriptionModel?.discountedPrice == subscriptionOrderDataModel?.subscriptionModel?.price
               ? "Rs. ${subscriptionOrderDataModel?.subscriptionModel?.price}"
               : "Rs. ${subscriptionOrderDataModel?.subscriptionModel?.discountedPrice}",
           fontSize: 16,

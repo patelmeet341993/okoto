@@ -196,11 +196,11 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
                 height: 5,
               ),
               Visibility(
-                visible: subscriptionModel.discountedPrice == 0,
+                visible: subscriptionModel.discountedPrice == subscriptionModel.price,
                 child: CommonText(text: "Rs. ${subscriptionModel.price}", letterSpacing: 0.5, fontWeight: FontWeight.w600),
               ),
               Visibility(
-                visible: subscriptionModel.discountedPrice != 0,
+                visible: subscriptionModel.discountedPrice != subscriptionModel.price,
                 child: Row(
                   children: [
                     CommonText(text: "Rs. ${subscriptionModel.discountedPrice}", letterSpacing: 0.5, fontWeight: FontWeight.w600),
