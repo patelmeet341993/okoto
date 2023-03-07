@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-    <string>$(APP_DISPLAY_NAME)</string>
+		<string>$(APP_DISPLAY_NAME)</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -48,14 +48,14 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
-	  <true/>
-	  <key>LSSupportsOpeningDocumentsInPlace</key>
-      <true/>
-      <key>NSPhotoLibraryUsageDescription</key>
-      <string>We will use for taking the profile picture</string>
-	  <key>NSCalendarsUsageDescription</key>
-    <string>We will use calender to show you alerts</string>
-    <key>NSContactsUsageDescription</key>
-    <string>We will use contacts to show you alerts</string>
-</dict>
+		<true/>
+		<key>LSSupportsOpeningDocumentsInPlace</key>
+		<true/>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We will use for taking the profile picture</string>
+		<key>NSCalendarsUsageDescription</key>
+		<string>We will use calender to show you alerts</string>
+		<key>NSContactsUsageDescription</key>
+		<string>We will use contacts to show you alerts</string>
+	</dict>
 </plist>

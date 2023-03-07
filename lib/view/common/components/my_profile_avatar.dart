@@ -9,11 +9,12 @@ import 'package:provider/provider.dart';
 
 import '../../../configs/styles.dart';
 import '../../../model/user/user_model.dart';
+import 'image_view_page.dart';
 
 class MyProfileAvatar extends StatelessWidget {
   final double size;
-
-  const MyProfileAvatar({super.key, this.size = 27});
+   bool isImageView = false;
+    MyProfileAvatar({this.size = 27,this.isImageView = false});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +36,23 @@ class MyProfileAvatar extends StatelessWidget {
                 height: size,
                 width: size,
               )
-            : CommonCachedNetworkImage(
-                borderRadius: 100,
-                imageUrl: MyUtils().getSecureUrl(userModel.profileImageUrl),
-                height: size,
-                width: size,
-              ),
+            : InkWell(
+              onTap: isImageView ?  (){
+                showDialog(context: context, builder: (context){
+                  return ImageViewPage(
+                    isDialog: true,
+                    images: [userModel.profileImageUrl],
+                    initialIndex: 0,
+                  );
+                });
+              }:null,
+              child: CommonCachedNetworkImage(
+                  borderRadius: 100,
+                  imageUrl: MyUtils().getSecureUrl(userModel.profileImageUrl),
+                  height: size,
+                  width: size,
+                ),
+            ),
       );
     });
   }

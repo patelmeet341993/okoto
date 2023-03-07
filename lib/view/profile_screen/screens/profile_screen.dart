@@ -14,6 +14,7 @@ import '../../../backend/authentication/authentication_controller.dart';
 import '../../../backend/user/user_provider.dart';
 import '../../../configs/styles.dart';
 import '../../../model/user/user_model.dart';
+import '../../common/components/image_view_page.dart';
 import '../../common/components/modal_progress_hud.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -148,8 +149,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       child: Column(
         children: [
-          const MyProfileAvatar(
+           MyProfileAvatar(
             size: 100,
+             isImageView: true,
           ),
           CommonText(
             text: userModel.name,
