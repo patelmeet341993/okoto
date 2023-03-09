@@ -4,11 +4,14 @@ import '../../utils/parsing_helper.dart';
 class PropertyModel {
   String aboutDescription = "", contactNumber = "", whatsApp = "", termsAndConditionsUrl = "", privacyAndPolicyUrl = "";
   bool notificationsEnabled = false, subscriptionDeleteEnabled = false;
+  List<String> bannerImages = [];
+
 
   PropertyModel({
     this.aboutDescription = "",
     this.contactNumber = "",
     this.whatsApp = "",
+    this.bannerImages = const  [],
     this.termsAndConditionsUrl = "",
     this.privacyAndPolicyUrl = "",
     this.notificationsEnabled = false,
@@ -24,6 +27,7 @@ class PropertyModel {
   }
 
   void _initializeFromMap(Map<String, dynamic> map) {
+    bannerImages = ParsingHelper.parseListMethod<dynamic, String>(map['bannerImages']);
     aboutDescription = ParsingHelper.parseStringMethod(map['aboutDescription']);
     contactNumber = ParsingHelper.parseStringMethod(map['contactNumber']);
     whatsApp = ParsingHelper.parseStringMethod(map['whatsApp']);
@@ -35,6 +39,7 @@ class PropertyModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      "bannerImages": bannerImages,
       "aboutDescription": aboutDescription,
       "contactNumber": contactNumber,
       "whatsApp": whatsApp,

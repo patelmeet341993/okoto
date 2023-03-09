@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 import '../../../backend/authentication/authentication_controller.dart';
+import '../../../backend/data/data_provider.dart';
 import '../../../configs/styles.dart';
 import '../../../model/user/user_model.dart';
 import '../../../model/user/user_subscription_model.dart';
@@ -35,18 +36,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   late ThemeData themeData;
+  late DataProvider dataProvider;
   int screenSelected = 0;
   bool isLoading = false;
   TabController? tabController;
   List<String> bannerImages = <String>[];
 
   void initializeBannerImages() {
-    bannerImages = [
-      "https://res.cloudinary.com/dxegfkhzd/image/upload/v1677566819/pexels-sound-on-3761118_v4fec1.jpg",
-      "https://res.cloudinary.com/dxegfkhzd/image/upload/v1677566812/Asphalt_wpjhwy.png",
-      "https://res.cloudinary.com/dxegfkhzd/image/upload/v1677566812/CSGO_ocbjdq.jpg",
-      "https://res.cloudinary.com/dxegfkhzd/image/upload/v1677566811/pubg_zvj0fi.jpg",
-    ];
+
+    bannerImages = [];
+
+    if(dataProvider.propertyModel.bannerImages.isNotEmpty){
+      bannerImages.addAll(dataProvider.propertyModel.bannerImages);
+    }else{
+      String image = "https://res.cloudinary.com/dxegfkhzd/image/upload/v1677566819/pexels-sound-on-3761118_v4fec1.jpg";
+      bannerImages.add(image);
+    }
+
     if (bannerImages.isNotEmpty) {
       tabController = TabController(length: bannerImages.length, vsync: this);
     } else {
@@ -57,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    dataProvider =  Provider.of<DataProvider>(context,listen: false);
     initializeBannerImages();
   }
 
