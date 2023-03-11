@@ -131,27 +131,7 @@ class _MyGameListState extends State<MyGameList> {
               const SizedBox(
                 width: 20,
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CommonText(text: gameModel.name, fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: .3),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: [
-                        const CommonText(text: "4", fontSize: 13),
-                        Icon(
-                          Icons.star,
-                          color: Styles.starColor,
-                          size: 15,
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
+              Expanded(child: CommonText(text: gameModel.name, fontSize: 17, fontWeight: FontWeight.w600, letterSpacing: .3)),
             ],
           ),
           children: [

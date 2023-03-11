@@ -107,7 +107,9 @@ class _GameListScreenState extends State<GameListScreen> {
               const SizedBox(
                 width: 20,
               ),
-              Expanded(
+              Expanded(child: CommonText(text: gameModel.name, fontSize: 17, fontWeight: FontWeight.w600, letterSpacing: .3)),
+
+            /*  Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -127,7 +129,7 @@ class _GameListScreenState extends State<GameListScreen> {
                     )
                   ],
                 ),
-              ),
+              ),*/
             ],
           ),
           children: [

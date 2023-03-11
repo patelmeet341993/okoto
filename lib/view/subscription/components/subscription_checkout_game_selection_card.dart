@@ -171,17 +171,15 @@ class SubscriptionCheckoutGameSelectionCard extends StatelessWidget {
   Widget getGameDetailsWidget() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         CommonText(
-          text: gameModel.name,
+         text: gameModel.name,
           fontWeight: FontWeight.w600,
           fontSize: 16,
         ),
-        SizedBox(
-          height: 9,
-        ),
-        Row(
+        SizedBox(height: 10,),
+        /*Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             CommonText(
@@ -198,7 +196,7 @@ class SubscriptionCheckoutGameSelectionCard extends StatelessWidget {
         ),
         SizedBox(
           height: 9,
-        ),
+        ),*/
         ReadMoreText(
           gameModel.description,
           style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, letterSpacing: 0.2, color: Styles.textWhiteColor, height: 1.27),

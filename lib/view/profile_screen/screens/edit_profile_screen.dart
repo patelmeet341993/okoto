@@ -22,8 +22,11 @@ import '../../../utils/date_presentation.dart';
 import '../../../utils/my_print.dart';
 import '../../../utils/my_toast.dart';
 import '../../common/components/common_appbar.dart';
+import '../../common/components/common_back_button.dart';
 import '../../common/components/common_loader.dart';
+import '../../common/components/common_popup.dart';
 import '../../common/components/common_submit_button.dart';
+import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
 import '../../common/components/my_common_textfield.dart';
 import '../../common/components/my_profile_avatar.dart';
@@ -40,7 +43,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   bool isLoading = false;
-
+  bool isUpdated = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController nameController = TextEditingController();
@@ -85,6 +88,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       MyPrint.printOnConsole("Error in picking up the image; $e");
       MyPrint.printOnConsole(s);
     }
+  }
+
+  bool isUpdatedValue(){
+    bool methodUpdate = false;
+    UserModel? userModel = userProvider.getUserModel();
+    if (userModel != null) {
+      if( nameController.text != userModel.name || userNameController.text != userModel.userName){
+        methodUpdate = true;
+      }
+      if(pickedImage != null){
+        methodUpdate = true;
+      }
+    }
+    MyPrint.printOnConsole('Method update return: $methodUpdate');
+    return methodUpdate;
   }
 
   Future<void> updateUserData() async {
@@ -162,48 +180,105 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       progressIndicator: const CommonLoader(),
-      child: Scaffold(
-        body: MyScreenBackground(
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CommonAppBar(text: 'Edit Profile'),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                                getMyProfileAvatar(),
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                                getBasicInfo(),
-                                const SizedBox(
-                                  height: 60,
-                                ),
-                                submitButton(),
-                              ],
+      child: WillPopScope(
+        onWillPop: ()async{
+           isUpdated = isUpdatedValue();
+           MyPrint.printOnConsole('Isupdated above $isUpdated');
+
+           if(isUpdated){
+           bool isCompleted = true;
+           bool isYes = false;
+           isYes =  await showDialog(context: context, builder: (context){
+            return CommonPopUp(
+              text: 'Want to save changes?',
+              rightText: 'Yes',
+              rightOnTap: () async {
+                Navigator.pop(context, true);
+              },
+              leftText: 'No',
+              leftOnTap: () {
+                Navigator.pop(context, false);
+              },
+            );
+          });
+
+           if(isYes){
+             setState(() {
+               isLoading = true;
+             });
+             if (_formKey.currentState!.validate()) {
+               bool formValid = _formKey.currentState?.validate() ?? false;
+               bool dobValid = dateOfBirth != null;
+               bool genderValid = gender?.isNotEmpty ?? false;
+
+               MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
+
+               if (formValid && dobValid && genderValid) {
+               } else if (!formValid) {
+               } else if (!dobValid) {
+                 MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
+               } else if (!genderValid) {
+                 MyToast.showError(context: context, msg: "Gender is Mandatory");
+               } else {
+               }
+             }
+             await updateUserData();
+             setState(() {
+               isLoading = false;
+             });
+           }
+
+
+           return isCompleted;
+          }else{
+            MyPrint.printOnConsole('Isupdated $isUpdated');
+            return true;
+          }
+
+        },
+        child: Scaffold(
+          body: MyScreenBackground(
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            getMyAppBar(),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  getMyProfileAvatar(),
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  getBasicInfo(),
+                                  const SizedBox(
+                                    height: 60,
+                                  ),
+                                  submitButton(),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -264,6 +339,93 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+  Widget getMyAppBar(){
+    return  AppBar(
+      leading: Row(
+        children: [
+          InkWell(
+            onTap: ()async {
+              isUpdated = isUpdatedValue();
+              MyPrint.printOnConsole('Isupdated above $isUpdated');
+
+              if(isUpdated){
+                bool isYes = false;
+                isYes =  await showDialog(context: context, builder: (context){
+                  return CommonPopUp(
+                    text: 'Want to save changes?',
+                    rightText: 'Yes',
+                    rightOnTap: () async {
+                      Navigator.pop(context, true);
+                    },
+                    leftText: 'No',
+                    leftOnTap: () {
+                      Navigator.pop(context, false);
+                    },
+                  );
+                });
+
+                if(isYes){
+                  setState(() {
+                    isLoading = true;
+                  });
+                  if (_formKey.currentState!.validate()) {
+                    bool formValid = _formKey.currentState?.validate() ?? false;
+                    bool dobValid = dateOfBirth != null;
+                    bool genderValid = gender?.isNotEmpty ?? false;
+
+                    MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
+
+                    if (formValid && dobValid && genderValid) {
+                    } else if (!formValid) {
+                    } else if (!dobValid) {
+                      MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
+                    } else if (!genderValid) {
+                      MyToast.showError(context: context, msg: "Gender is Mandatory");
+                    } else {
+                    }
+                  }
+                  await updateUserData();
+                  setState(() {
+                    isLoading = false;
+                  });
+                }
+              }
+
+              Navigator.pop(context);
+            },
+            child:  Padding(
+              padding: EdgeInsets.only(left: 18.0),
+              child: SizedBox(
+                width: 32,
+                height: 32,
+                child:Container(
+                  padding: EdgeInsets.all(0),
+                  decoration: BoxDecoration(
+                      color: Styles.myButtonBlack,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Styles.myVioletShade4)
+                  ),
+                  child: Icon(
+                    Icons.arrow_back_outlined,
+                    color: Styles.myVioletShade4,
+                    size: 18,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      centerTitle: true,
+      title: Text(
+        'Edit Profile',
+        style: const TextStyle(fontSize: 20, letterSpacing: 0.8, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+
   Widget getBasicInfo() {
     return Column(
       children: [
@@ -319,9 +481,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           cursorColor: Colors.white,
           prefix: Container(
             margin: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: const Icon(
+            child:  Icon(
               Icons.cake,
-              color: Colors.white,
+              color: Colors.white.withOpacity(.5),
               size: 23,
             ),
           ),
@@ -335,9 +497,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           cursorColor: Colors.white,
           prefix: Container(
             margin: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: const Icon(
+            child:  Icon(
               MdiIcons.genderMaleFemale,
-              color: Colors.white,
+              color: Colors.white.withOpacity(.5),
               size: 23,
             ),
           ),
@@ -347,6 +509,41 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget submitButton() {
+    return InkWell(
+      onTap: () async {
+        if (_formKey.currentState!.validate()) {
+          bool formValid = _formKey.currentState?.validate() ?? false;
+          bool dobValid = dateOfBirth != null;
+          bool genderValid = gender?.isNotEmpty ?? false;
+
+          MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
+
+          if (formValid && dobValid && genderValid) {
+          } else if (!formValid) {
+          } else if (!dobValid) {
+            MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
+          } else if (!genderValid) {
+            MyToast.showError(context: context, msg: "Gender is Mandatory");
+          } else {
+          }
+        }
+        await updateUserData();
+      },
+      child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 13),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            gradient: LinearGradient(
+              colors: [
+                Styles.cardGradient1,
+                Styles.cardGradient2,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),),
+          child: CommonText(text: 'Update Profile',fontSize: 20),
+      ),
+    );
     return CommonSubmitButton(
         onTap: () async {
           if (_formKey.currentState!.validate()) {
@@ -369,4 +566,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         },
         text: "Update Profile");
   }
+
+
 }

@@ -217,7 +217,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
           if (asyncSnapshot.connectionState == ConnectionState.done) {
             return SizedBox(
-              height: 144,
+              height: 124,
               child: ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: gameModels.length,
@@ -238,7 +238,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Widget getGameListComponent(GameModel gameModel) {
     return Container(
       width: 134,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(top: 8,bottom: 2),
       margin: const EdgeInsets.only(right: 32),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -252,33 +252,36 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           getImage(url: gameModel.thumbnailImage, height: 76, width: 134),
-          const SizedBox(
-            height: 9,
-          ),
-          CommonText(
-            text: gameModel.name,
-            maxLines: 1,
-            textOverFlow: TextOverflow.ellipsis,
-            fontSize: 12,
-            letterSpacing: .2,
-            fontWeight: FontWeight.w600,
-          ),
-          const SizedBox(
-            height: 9,
-          ),
-          Row(
-            children: [
-              const CommonText(text: "4", fontSize: 11),
-              Icon(
-                Icons.star,
-                color: Styles.starColor,
-                size: 11,
-              )
-            ],
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CommonText(
+                 text: gameModel.name,
+                // text: 'asdfalsjdkfas fsadjfk asdfkjasldf asf asdkfh l',
+                  maxLines: 2,
+                  textOverFlow: TextOverflow.ellipsis,
+                  fontSize: 12,
+                  letterSpacing: .2,
+                  textAlign: TextAlign.center,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
           )
+          // Row(
+          //   children: [
+          //     const CommonText(text: "4", fontSize: 11),
+          //     Icon(
+          //       Icons.star,
+          //       color: Styles.starColor,
+          //       size: 11,
+          //     )
+          //   ],
+          // )
         ],
       ),
     );

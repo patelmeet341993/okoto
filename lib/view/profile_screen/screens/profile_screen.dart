@@ -153,23 +153,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
             size: 100,
              isImageView: true,
           ),
+          const SizedBox(
+            height: 8,
+          ),
           CommonText(
             text: userModel.name,
             fontSize: 20,
             letterSpacing: .5,
             fontWeight: FontWeight.w600,
           ),
-          const SizedBox(
-            height: 8,
-          ),
           CommonText(
             text: "@${userModel.userName}",
-            fontSize: 16,
+            fontSize: 14,
             letterSpacing: .5,
             fontStyle: FontStyle.italic,
             color: Styles.textWhiteColor,
-            fontWeight: FontWeight.w600,
-          )
+          ),
         ],
       ),
     );
