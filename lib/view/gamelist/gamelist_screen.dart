@@ -7,6 +7,8 @@ import 'package:okoto/view/common/components/modal_progress_hud.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 
+import '../../backend/analytics/analytics_controller.dart';
+import '../../backend/analytics/analytics_event.dart';
 import '../../configs/styles.dart';
 import '../../model/game/game_model.dart';
 import '../../utils/my_utils.dart';
@@ -38,6 +40,7 @@ class _GameListScreenState extends State<GameListScreen> {
     super.initState();
     gameProvider = context.read<GameProvider>();
     gameController = GameController(gameProvider: gameProvider);
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.games_list_screen});
     getFutureData = getGameList();
   }
   @override

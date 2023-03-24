@@ -9,6 +9,8 @@ import 'package:okoto/view/common/components/common_cachednetwork_image.dart';
 import 'package:okoto/view/common/components/common_text.dart';
 import 'package:provider/provider.dart';
 
+import '../../backend/analytics/analytics_controller.dart';
+import '../../backend/analytics/analytics_event.dart';
 import '../../configs/styles.dart';
 import '../../utils/date_presentation.dart';
 import '../common/components/common_appbar.dart';
@@ -50,6 +52,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     super.initState();
     notificationProvider = context.read<NotificationProvider>();
     notificationController = NotificationController(notificationProvider: notificationProvider);
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.notification_screen});
     getFuture = getData();
   }
 
@@ -120,6 +123,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         if (isSelected) {
           notificationProvider.getNotificationModelList[index].isOpened = false;
           notificationController.updateNotificationIsNotificationOpen(model: notificationModel, value: false);
+          // AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.notificationscreen_notification_click,parameters: {AnalyticsParameters.event_value: 'need to give'});
           setState(() {});
         }
       },

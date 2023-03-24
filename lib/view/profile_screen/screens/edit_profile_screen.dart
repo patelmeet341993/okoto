@@ -10,6 +10,8 @@ import 'package:okoto/utils/extensions.dart';
 import 'package:okoto/view/profile_screen/components/choose_image_dialog.dart';
 import 'package:provider/provider.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/navigation/navigation_controller.dart';
 import '../../../backend/navigation/navigation_operation_parameters.dart';
 import '../../../backend/navigation/navigation_type.dart';
@@ -134,6 +136,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {});
 
       if(isUpdated) {
+        bool isNameUpdate = existingUserModel.name != newUserModel.name;
+        bool isUserNameUpdate = existingUserModel.userName != newUserModel.userName;
+        bool isImageUpdate = pickedImage != null;
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.profile_screen_update_profile,parameters: {AnalyticsParameters.event_value: '${(isNameUpdate?'name ':'')}${(isUserNameUpdate?'username ':'')}${(isImageUpdate?'profile_picture':'')}'});
         MyToast.showSuccess(context: context, msg: "Updated Successfully");
         userProvider.setUserModel(userModel: newUserModel, isNotify: false);
 
@@ -172,6 +178,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     userProvider = Provider.of<UserProvider>(context, listen: false);
     userController = UserController(userProvider: userProvider);
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.profile_update_screen});
     initializeValuesFromProvider();
   }
 

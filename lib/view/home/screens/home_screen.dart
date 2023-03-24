@@ -11,6 +11,8 @@ import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/authentication/authentication_controller.dart';
 import '../../../backend/data/data_provider.dart';
 import '../../../configs/styles.dart';
@@ -160,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           const Spacer(),
           InkWell(
             onTap: () {
+              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
               NavigationController.navigateToDevicesScreen(
                   navigationOperationParameters: NavigationOperationParameters(
                 context: NavigationController.mainScreenNavigator.currentContext!,
@@ -176,6 +179,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           const SizedBox(width: 14,),
           InkWell(
             onTap: (){
+              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.notification_screen});
               NavigationController.navigateToNotificationScreen(
                   navigationOperationParameters: NavigationOperationParameters(
                     context: NavigationController.mainScreenNavigator.currentContext!,
@@ -193,6 +197,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ),
           InkWell(
               onTap: (){
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.profile_screen});
                 Navigator.pushNamed(context, ProfileScreen.routeName);
               },
               child: MyProfileAvatar()),
@@ -463,6 +468,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 imageUrl: 'assets/icons/device.png',
                 title: 'Device',
                 onTap: () {
+                  AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
                   NavigationController.navigateToDevicesScreen(
                       navigationOperationParameters: NavigationOperationParameters(
                     context: NavigationController.mainScreenNavigator.currentContext!,
@@ -474,6 +480,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
             exploreBox(
               onTap: () {
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.subscription_plans_list_screen});
                 NavigationController.navigateToSubscriptionListScreen(navigationOperationParameters: NavigationOperationParameters(
                   context: context,
                   navigationType: NavigationType.pushNamed,
@@ -487,6 +494,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ),
             exploreBox(
               onTap: () {
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.payment_history_screen});
                 NavigationController.navigateToOrderListScreen(navigationOperationParameters: NavigationOperationParameters(
                   context: context,
                   navigationType: NavigationType.pushNamed,
@@ -506,6 +514,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 imageUrl: 'assets/icons/my_games.png',
                 title: 'Our All\nGames',
                 onTap: (){
+                  AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.games_list_screen});
                   NavigationController.navigateToGameListScreen(
                       navigationOperationParameters: NavigationOperationParameters(
                           context: NavigationController.mainScreenNavigator.currentContext!,
@@ -519,6 +528,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             exploreBox(imageUrl: 'assets/icons/myplans.png',
                 title: 'My games',
                 onTap: (){
+                  AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.my_games_screen});
                   NavigationController.navigateToMyGameListScreen(
                       navigationOperationParameters: NavigationOperationParameters(
                           context: NavigationController.mainScreenNavigator.currentContext!,
@@ -614,6 +624,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
 
         onSubmit: () {
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
           NavigationController.navigateToDevicesScreen(
               navigationOperationParameters: NavigationOperationParameters(
                 context: NavigationController.mainScreenNavigator.currentContext!,
@@ -628,6 +640,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return InkWell(
       borderRadius: BorderRadius.circular(120),
       onTap: (){
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.my_games_screen});
         NavigationController.navigateToDevicesScreen(
             navigationOperationParameters: NavigationOperationParameters(
               context: NavigationController.mainScreenNavigator.currentContext!,

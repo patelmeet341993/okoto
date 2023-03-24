@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:okoto/backend/notification/notification_provider.dart';
 import 'package:okoto/utils/extensions.dart';
+import 'package:okoto/utils/my_utils.dart';
 import 'package:okoto/view/common/components/common_submit_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/authentication/authentication_controller.dart';
 import '../../../backend/data/data_controller.dart';
 import '../../../backend/data/data_provider.dart';
@@ -126,6 +129,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
 
         if(context.mounted) {
+          int myAge = 0;
+          if(dateOfBirth != null){
+            myAge =  MyUtils().getMyBirthDateFromTimeStamp(Timestamp.fromDate(dateOfBirth!));
+          }
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.signup_success);
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_age,parameters: {AnalyticsParameters.event_value: myAge <=0 ? '' : '$myAge'});
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_gender,parameters: {AnalyticsParameters.event_value:gender ?? ""});
           NavigationController.navigateToHomeScreen(navigationOperationParameters: NavigationOperationParameters(
             context: context,
             navigationType: NavigationType.pushNamedAndRemoveUntil,
@@ -149,7 +159,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     userProvider = Provider.of<UserProvider>(context, listen: false);
     userController = UserController(userProvider: userProvider);
-
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.signup_screen});
     initializeValuesFromProvider();
   }
 

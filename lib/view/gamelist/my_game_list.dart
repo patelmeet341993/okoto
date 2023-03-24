@@ -6,6 +6,8 @@ import 'package:okoto/model/user/user_subscription_model.dart';
 import 'package:okoto/utils/my_print.dart';
 import 'package:provider/provider.dart';
 
+import '../../backend/analytics/analytics_controller.dart';
+import '../../backend/analytics/analytics_event.dart';
 import '../../backend/game/game_controller.dart';
 import '../../backend/game/game_provider.dart';
 import '../../configs/styles.dart';
@@ -58,6 +60,7 @@ class _MyGameListState extends State<MyGameList> {
     super.initState();
     gameProvider = context.read<GameProvider>();
     gameController = GameController(gameProvider: gameProvider);
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.my_games_screen});
     getFutureData = getGameData();
   }
 

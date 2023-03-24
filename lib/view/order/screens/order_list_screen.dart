@@ -11,6 +11,8 @@ import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:okoto/view/order/components/order_card.dart';
 import 'package:provider/provider.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../utils/my_print.dart';
 import '../../common/components/common_text.dart';
 import '../../common/components/modal_progress_hud.dart';
@@ -50,6 +52,7 @@ class _OrderListSceenState extends State<OrderListScreen> {
 
     orderProvider = context.read<OrderProvider>();
     orderController = OrderController(orderProvider: orderProvider);
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.payment_history_screen});
 
     getData(
       isRefresh: false,

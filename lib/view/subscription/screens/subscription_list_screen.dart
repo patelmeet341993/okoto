@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:okoto/backend/subscription/subscription_controller.dart';
 import 'package:okoto/backend/user/user_provider.dart';
+import 'package:okoto/configs/styles.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/utils/my_toast.dart';
 import 'package:okoto/view/common/components/common_appbar.dart';
@@ -10,6 +11,8 @@ import 'package:okoto/view/common/components/modal_progress_hud.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/subscription/subscription_provider.dart';
 import '../components/subscription_card.dart';
 
@@ -77,6 +80,7 @@ class _SubscriptionListScreenState extends State<SubscriptionListScreen> {
     subscriptionController = SubscriptionController(subscriptionProvider: subscriptionProvider);
 
     userProvider = context.read<UserProvider>();
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.subscription_plans_list_screen});
 
     getSubscriptions(isRefresh: false, isNotify: false);
   }
@@ -172,6 +176,8 @@ class _SubscriptionListScreenState extends State<SubscriptionListScreen> {
     List<SubscriptionModel> subscriptions = subscriptionProvider.getAllSubscriptions(isNewInstance: false);
 
     return RefreshIndicator(
+      color: Styles.myDarkVioletColor,
+      backgroundColor: Colors.white,
       onRefresh: () async {
         await getSubscriptions(isRefresh: true, isNotify: true);
       },

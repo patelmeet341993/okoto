@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:okoto/utils/parsing_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
@@ -29,6 +30,22 @@ class MyUtils {
     }
     return url;
   }
+
+  int getMyBirthDateFromTimeStamp(Timestamp? birthDate) {
+    if(birthDate == null){
+      return -1;
+    }
+    Timestamp currentTime = Timestamp.now();
+    int birthDateMilliseconds = birthDate.millisecondsSinceEpoch;
+    int currentTimeMilliseconds = currentTime.millisecondsSinceEpoch;
+    int result = currentTimeMilliseconds - birthDateMilliseconds;
+    double ageTimeStamp = result/31540000000;
+    int myAge = ParsingHelper.parseIntMethod(ageTimeStamp);
+    MyPrint.printOnConsole('My Current Age is $myAge');
+    return myAge;
+  }
+
+
 
   static String getCachedFirebaseImageUrlFromUrl(String url) {
     if(url.startsWith("https://storage.googleapis.com/")) {

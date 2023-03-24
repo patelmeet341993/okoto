@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:my_popup_snakbar/my_popup_snakbar.dart';
 import 'package:okoto/backend/device/device_provider.dart';
@@ -44,10 +45,10 @@ class MyApp extends StatelessWidget {
 
 class MainApp extends StatelessWidget {
   const MainApp({Key? key}) : super(key: key);
-  // final FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.instance;
     MyPrint.printOnConsole("MainApp Build Called");
 
     return Consumer<AppThemeProvider>(
@@ -61,8 +62,8 @@ class MainApp extends StatelessWidget {
             title: AppConstants.getAppNameFromAppType(isDev: AppController.isDev),
             theme: AppTheme.getThemeFromThemeMode(appThemeProvider.themeMode),
             onGenerateRoute: NavigationController.onMainAppGeneratedRoutes,
-            navigatorObservers: const [
-              // FirebaseAnalyticsObserver(analytics: firebaseAnalytics),
+            navigatorObservers:  [
+              FirebaseAnalyticsObserver(analytics: firebaseAnalytics),
             ],
           ),
         );

@@ -11,6 +11,9 @@ import 'package:okoto/utils/my_print.dart';
 import 'package:okoto/utils/my_toast.dart';
 import 'package:okoto/utils/my_utils.dart';
 
+import '../analytics/analytics_controller.dart';
+import '../analytics/analytics_event.dart';
+
 class DeviceController {
   late DeviceProvider _deviceProvider;
   late DeviceRepository _deviceRepository;
@@ -111,6 +114,8 @@ class DeviceController {
 
       if(context?.mounted == true) {
         MyToast.showSuccess(context: context!, msg: "Device Registered Successfully");
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.devicescreen_add_device);
+
       }
 
       isRegistered = true;

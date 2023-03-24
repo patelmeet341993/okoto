@@ -102,6 +102,7 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
                   icon: Icon(Icons.add,color: Colors.white,size: 18),
                   onTap: () {
                     if(_formKey.currentState?.validate() ?? false) {
+
                       addDevice(deviceId: deviceIdController.text.trim());
                     }
                   },
@@ -158,53 +159,6 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
         }
       },
     );
-      CommonTextField(
-      textEditingController: deviceIdController,
-      hint: "Enter Device Id",
-      enabled: true,
-      validator: (String? text) {
-        if((text ?? "").trim().checkEmpty) {
-          return "Device Id cannot be empty";
-        }
-        else {
-          return null;
-        }
-      },
-    );
-  }
 
-  Widget getAddDeviceButton({required ThemeData themeData}) {
-    return InkWell(
-      onTap: () {
-        if(_formKey.currentState?.validate() ?? false) {
-          addDevice(deviceId: deviceIdController.text.trim());
-        }
-      },
-      focusColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      highlightColor: Colors.transparent,
-      child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 8),
-          decoration: BoxDecoration(
-            color: themeData.colorScheme.primary,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: isLoading
-              ? SizedBox(
-                  width: 30,
-                  child: SpinKitDualRing(
-                    color: themeData.colorScheme.onPrimary,
-                    duration: const Duration(milliseconds: 500),
-                    size: 18,
-                    lineWidth: 1,
-                  ),
-                )
-              : const CommonText(
-                  text: "Add",
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-      ),
-    );
   }
 }

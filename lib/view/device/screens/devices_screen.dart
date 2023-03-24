@@ -8,6 +8,8 @@ import 'package:okoto/view/common/components/common_loader.dart';
 import 'package:okoto/view/device/components/add_device_dialog.dart';
 import 'package:provider/provider.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/device/device_provider.dart';
 import '../../../configs/styles.dart';
 import '../../common/components/common_text.dart';
@@ -53,9 +55,8 @@ class _DevicesScreenState extends State<DevicesScreen> {
     super.initState();
     deviceProvider = context.read<DeviceProvider>();
     deviceController = DeviceController(deviceProvider: deviceProvider);
-
     userProvider = context.read<UserProvider>();
-
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.device_list_screen});
     getDevices(isRefresh: false, isNotify: false);
   }
 
@@ -178,43 +179,49 @@ class _DevicesScreenState extends State<DevicesScreen> {
         itemBuilder: (BuildContext context, int index) {
           DeviceModel deviceModel = devices[index];
 
-          return getMySingleDeviceCard(deviceModel);
+          return getMySingleDeviceCard(deviceModel,onTap: (){
+            AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.devicescreen_select_device);
+
+          });
         },
       ),
     );
   }
 
-  Widget getMySingleDeviceCard(DeviceModel deviceModel) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20),
-      child: Row(
-        children: [
-          Image.asset(
-            "assets/images/vr_icon.png",
-            height: 25,
-            width: 30,
-            fit: BoxFit.fill,
-          ),
-          SizedBox(width: 15,),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CommonText(text: deviceModel.id,fontSize: 15,),
-                SizedBox(height: 2,),
-                CommonText(
-                  text: deviceModel.createdTime == null ? '-' : DateFormat("dd MMM yyyy").format(deviceModel.createdTime!.toDate()),
-                fontSize: 12,
-                  color: Colors.white.withOpacity(.9),
-                )
-              ],
+  Widget getMySingleDeviceCard(DeviceModel deviceModel,{Function()? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: Row(
+          children: [
+            Image.asset(
+              "assets/images/vr_icon.png",
+              height: 25,
+              width: 30,
+              fit: BoxFit.fill,
             ),
-          ),
-          Icon(
-            Icons.info_outline,
-          )
-        ],
+            SizedBox(width: 15,),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonText(text: deviceModel.id,fontSize: 15,),
+                  SizedBox(height: 2,),
+                  CommonText(
+                    text: deviceModel.createdTime == null ? '-' : DateFormat("dd MMM yyyy").format(deviceModel.createdTime!.toDate()),
+                  fontSize: 12,
+                    color: Colors.white.withOpacity(.9),
+                  )
+                ],
+              ),
+            ),
+            Icon(
+              Icons.info_outline,
+            )
+          ],
+        ),
       ),
     );
   }
