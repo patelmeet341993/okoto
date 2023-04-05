@@ -36,13 +36,19 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late ThemeData themeData;
   late DataProvider dataProvider;
   int screenSelected = 0;
   bool isLoading = false;
   TabController? tabController;
   List<String> bannerImages = <String>[];
+  DecorationTween? decorationTween;
+  DecorationTween? decorationActivatedTween;
+
+  AnimationController? _controller;
+  AnimationController? _activatedPlanController;
+  double animationBorderRadius = 120;
 
   void initializeBannerImages() {
 
@@ -65,6 +71,60 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    decorationTween = DecorationTween(
+      begin: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Colors.white, Styles.myBackgroundShade3],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+      end: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            Styles.buttonPinkColor,
+            Styles.myLightPinkShade1,
+          ],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+    );
+    decorationActivatedTween = DecorationTween(
+      begin: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Styles.buttonVioletColor, Styles.myVioletColor],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+      end: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Styles.myBlueColor, Styles.myLightVioletShade1],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+    );
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _activatedPlanController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+
+
     dataProvider =  Provider.of<DataProvider>(context,listen: false);
     initializeBannerImages();
   }
@@ -593,45 +653,52 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget getLetsPlayButton() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 60).copyWith(bottom: 20),
-      child: SliderWidgetPackage(
-        alignment: Alignment.bottomCenter,
-        sliderButtonIconPadding: 16,
-        outerColor: Colors.white,
-        submittedIcon: getSubmitIcon(),
-        borderRadius: 120,
+      margin: const EdgeInsets.symmetric(horizontal: 55).copyWith(bottom: 20),
+      child: Container(
+       /* margin: EdgeInsets.all(3),
         height: 65,
-        sliderButtonIcon: const Icon(Icons.person_outline),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            SizedBox(
-              width: 70,
-            ),
-            Expanded(
-              child: CommonText(
-                text: 'Swipe to play game',
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontSize: 18,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(120),
+        ),*/
+        child: SliderWidgetPackage(
+          alignment: Alignment.bottomCenter,
+          sliderButtonIconPadding: 16,
+          outerColor: Colors.white,
+          submittedIcon: getSubmitIcon(),
+          borderRadius: 120,
+          height: 65,
+          sliderButtonIcon: const Icon(Icons.person_outline),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              SizedBox(
+                width: 75,
               ),
-            ),
-            SizedBox(
-              width: 20,
-            ),
-          ],
+              Expanded(
+                child: CommonText(
+                  text: 'Swipe to play game',
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 17,
+                ),
+              ),
+              SizedBox(
+                width: 20,
+              ),
+            ],
+          ),
+
+
+          onSubmit: () {
+            AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
+            AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
+            NavigationController.navigateToDevicesScreen(
+                navigationOperationParameters: NavigationOperationParameters(
+                  context: NavigationController.mainScreenNavigator.currentContext!,
+                  navigationType: NavigationType.pushNamed,
+                ));
+          },
         ),
-
-
-        onSubmit: () {
-          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
-          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
-          NavigationController.navigateToDevicesScreen(
-              navigationOperationParameters: NavigationOperationParameters(
-                context: NavigationController.mainScreenNavigator.currentContext!,
-                navigationType: NavigationType.pushNamed,
-              ));
-        },
       ),
     );
   }
@@ -648,27 +715,40 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               navigationType: NavigationType.pushNamed,
             ));
       },
-      child: Container(
-        height: double.maxFinite,
-        width: double.maxFinite,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [
-                Styles.gameButtonShade1,
-                Styles.gameButtonShade2,
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            )),
-        child: Image.asset(
-          'assets/icons/game_remote.png',
-          width: 38,
-          height: 27,
-          color: Colors.white,
+      child: DecoratedBoxTransition(
+        position: DecorationPosition.background,
+        decoration: decorationActivatedTween!.animate(_activatedPlanController!),
+        child: Container(
+          margin: EdgeInsets.all(1),
+          height: double.maxFinite,
+          width: double.maxFinite,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+             border: Border.all(color: Styles.myDarkVioletColor.withOpacity(.8),width: .5)
+             /* gradient: LinearGradient(
+                colors: [
+                  Styles.gameButtonShade1,
+                  Styles.gameButtonShade2,
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              )*/
+          ),
+          child: Image.asset(
+            'assets/icons/game_remote.png',
+            width: 38,
+            height: 27,
+            color: Colors.white,
+          ),
         ),
       ),
     );
   }
 }
+
+
+/*
+
+position: DecorationPosition.background,
+decoration: decorationActivatedTween!.animate(_activatedPlanController!),*/

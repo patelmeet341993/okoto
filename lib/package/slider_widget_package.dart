@@ -33,7 +33,7 @@ class SliderWidgetPackage extends StatefulWidget {
 
   /// The color of the external area and of the arrow icon.
   /// If not set, this attribute defaults to accentColor from your theme.
-   Color? outerColor;
+  Color? outerColor;
 
   /// The text showed in the default Text widget
   final String? text;
@@ -69,7 +69,7 @@ class SliderWidgetPackage extends StatefulWidget {
   final Alignment alignment;
 
   /// Create a new instance of the widget
-   SliderWidgetPackage({
+  SliderWidgetPackage({
     Key? key,
     this.sliderButtonIconSize = 24,
     this.sliderButtonIconPadding = 16,
@@ -90,6 +90,7 @@ class SliderWidgetPackage extends StatefulWidget {
     this.textStyle,
     this.sliderButtonIcon,
   }) : super(key: key);
+
   @override
   SliderWidgetPackageState createState() => SliderWidgetPackageState();
 }
@@ -101,6 +102,7 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
   final GlobalKey _sliderKey = GlobalKey();
   double _dx = 0;
   double _maxDx = 0;
+
   double get _progress => _dx == 0 ? 0 : _dx / _maxDx;
   double _endDx = 0;
   double _dz = 1;
@@ -111,10 +113,16 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
       _shrinkAnimationController,
       _resizeAnimationController,
       _cancelAnimationController;
+  DecorationTween? decorationTween;
+  DecorationTween? decorationActivatedTween;
+  double animationBorderRadius = 120;
+  AnimationController? _controller;
+  AnimationController? _activatedPlanController;
 
   @override
   Widget build(BuildContext context) {
-    MyPrint.printOnConsole("widget.sliderButtonYOffset:${widget.sliderButtonYOffset}");
+    MyPrint.printOnConsole(
+        "widget.sliderButtonYOffset:${widget.sliderButtonYOffset}");
     MyPrint.printOnConsole("_dx:$_dx");
 
     return Align(
@@ -135,125 +143,127 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
             borderRadius: BorderRadius.circular(widget.borderRadius),
             child: submitted
                 ? Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.rotationY(widget.reversed ? pi : 0),
-              child: Center(
-                child: Stack(
-                  clipBehavior: Clip.antiAlias,
-                  children: <Widget>[
-                    widget.submittedIcon ??
-
-                        Icon(
-                          Icons.done,
-                          color: widget.innerColor ??
-                              Theme.of(context).primaryIconTheme.color,
-                        ),
-                    Positioned.fill(
-                      right: 0,
-                      child: Transform(
-                        transform: Matrix4.rotationY(
-                            _checkAnimationDx * (pi / 2)),
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          color: widget.outerColor ??
-                              Theme.of(context).accentColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-                : Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              fit: StackFit.loose,
-              children: <Widget>[
-                Opacity(
-                  opacity: 1 - 1 * _progress,
-                  child: Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.rotationY(widget.reversed ? pi : 0),
-                    child: widget.child,
-                  ),
-                ),
-                Positioned(
-                  left: widget.sliderButtonYOffset,
-                  child: Transform.scale(
-                    scale: _dz,
-                    origin: Offset(_dx, 0),
-                    child: Transform.translate(
-                      offset: Offset(_dx, 0),
-                      child: Container(
-                        key: _sliderKey,
-                        child: GestureDetector(
-                          onTap: (){
-                            //MyPrint.printOnConsole('Abe Saaleee');
-                          },
-                          onHorizontalDragUpdate: onHorizontalDragUpdate,
-                          onHorizontalDragEnd: (details) async {
-                            _endDx = _dx;
-                            if (_progress <= 0.8 || widget.onSubmit == null) {
-                              _cancelAnimation();
-
-                            }
-                            else {
-                              setState(() {
-                                widget.outerColor = Styles.gameButtonShade1;
-                              });
-
-                              setState(() {
-                                _dz = 0;
-                              });
-
-                              _checkAnimationDx=1;
-
-                              await _shrinkAnimation();
-
-                              //await _resizeAnimation();
-
-
-
-                              //await _checkAnimation();
-
-                              setState(() {
-                                widget.outerColor = Colors.white;
-                              });
-                              widget.onSubmit!();
-                            }
-                          },
-                          child: Transform.rotate(
-                            angle: widget.sliderRotate
-                                ? -pi * _progress
-                                : 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Styles.gameButtonShade1,
-                                      Styles.gameButtonShade2,
-                                    ],
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                  )
+                    child: Center(
+                      child: Stack(
+                        clipBehavior: Clip.antiAlias,
+                        children: <Widget>[
+                          widget.submittedIcon ??
+                              Icon(
+                                Icons.done,
+                                color: widget.innerColor ??
+                                    Theme.of(context).primaryIconTheme.color,
                               ),
-                              child: Image.asset(
-                                'assets/icons/game_remote.png',
-                                width: 33,
-                                height: 33,
-                                color: Colors.white,
+                          Positioned.fill(
+                            right: 0,
+                            child: Transform(
+                              transform: Matrix4.rotationY(
+                                  _checkAnimationDx * (pi / 2)),
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                color: widget.outerColor ??
+                                    Theme.of(context).accentColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : DecoratedBoxTransition(
+                    position: DecorationPosition.background,
+                    decoration: decorationActivatedTween!
+                        .animate(_activatedPlanController!),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      fit: StackFit.loose,
+                      children: <Widget>[
+                        Opacity(
+                          opacity: 1 - 1 * _progress,
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform:
+                                Matrix4.rotationY(widget.reversed ? pi : 0),
+                            child: widget.child,
+                          ),
+                        ),
+                        Positioned(
+                          left: widget.sliderButtonYOffset,
+                          child: Transform.scale(
+                            scale: _dz,
+                            origin: Offset(_dx, 0),
+                            child: Transform.translate(
+                              offset: Offset(_dx, 0),
+                              child: Container(
+                                key: _sliderKey,
+                                child: GestureDetector(
+                                  onTap: () {
+                                  },
+                                  onHorizontalDragUpdate:
+                                      onHorizontalDragUpdate,
+                                  onHorizontalDragEnd: (details) async {
+                                    _endDx = _dx;
+                                    if (_progress <= 0.8 ||
+                                        widget.onSubmit == null) {
+                                      _cancelAnimation();
+                                    } else {
+                                      setState(() {
+                                        widget.outerColor =
+                                            Styles.gameButtonShade1;
+                                      });
+
+                                      setState(() {
+                                        _dz = 0;
+                                      });
+
+                                      _checkAnimationDx = 1;
+
+                                      await _shrinkAnimation();
+
+                                      //await _resizeAnimation();
+
+                                      //await _checkAnimation();
+
+                                      setState(() {
+                                        widget.outerColor = Colors.white;
+                                      });
+                                      widget.onSubmit!();
+                                    }
+                                  },
+                                  child: Transform.rotate(
+                                    angle: widget.sliderRotate
+                                        ? -pi * _progress
+                                        : 0,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Styles.gameButtonShade1,
+                                              Styles.gameButtonShade2,
+                                            ],
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                          )),
+                                      child: Image.asset(
+                                        'assets/icons/game_remote.png',
+                                        width: 33,
+                                        height: 33,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
@@ -287,7 +297,7 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
       end: 1,
     ).animate(CurvedAnimation(
       parent: _checkAnimationController,
-     // curve: Curves.slowMiddle,
+      // curve: Curves.slowMiddle,
       curve: Curves.bounceOut,
     ));
 
@@ -308,12 +318,10 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
     final animation = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(
-        CurvedAnimation(
+    ).animate(CurvedAnimation(
       parent: _shrinkAnimationController,
       curve: Curves.easeOutCirc,
-      )
-    );
+    ));
 
     animation.addListener(() {
       if (mounted) {
@@ -359,7 +367,6 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
     ).animate(CurvedAnimation(
       parent: _cancelAnimationController,
       curve: Curves.fastOutSlowIn,
-
     ));
 
     animation.addListener(() {
@@ -375,6 +382,59 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
   @override
   void initState() {
     super.initState();
+
+    decorationTween = DecorationTween(
+      begin: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Colors.white, Styles.myBackgroundShade3],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+      end: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            Styles.buttonPinkColor,
+            Styles.myLightPinkShade1,
+          ],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+    );
+    decorationActivatedTween = DecorationTween(
+      begin: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Styles.buttonPinkColor, Styles.myLightPinkShade],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+      end: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Styles.myBlueColor, Styles.myLightVioletShade1],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+    );
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _activatedPlanController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
 
     _cancelAnimationController = AnimationController(
       vsync: this,
@@ -394,14 +454,14 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
       duration: widget.animationDuration,
     );
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final RenderBox containerBox =
-      _containerKey.currentContext!.findRenderObject() as RenderBox;
+          _containerKey.currentContext!.findRenderObject() as RenderBox;
       _containerWidth = containerBox.size.width;
       _initialContainerWidth = _containerWidth;
 
       final RenderBox sliderBox =
-      _sliderKey.currentContext!.findRenderObject() as RenderBox;
+          _sliderKey.currentContext!.findRenderObject() as RenderBox;
       final sliderWidth = sliderBox.size.width;
 
       _maxDx = _containerWidth! -

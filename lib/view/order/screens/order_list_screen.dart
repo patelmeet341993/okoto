@@ -52,7 +52,12 @@ class _OrderListSceenState extends State<OrderListScreen> {
 
     orderProvider = context.read<OrderProvider>();
     orderController = OrderController(orderProvider: orderProvider);
-    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.payment_history_screen});
+    AnalyticsController().fireEvent(
+        analyticEvent: AnalyticsEvent.user_any_screen_view,
+        parameters: {
+          AnalyticsParameters.event_value:
+              AnalyticsParameterValue.payment_history_screen
+        });
 
     getData(
       isRefresh: false,
@@ -68,7 +73,8 @@ class _OrderListSceenState extends State<OrderListScreen> {
       child: ChangeNotifierProvider<OrderProvider>.value(
         value: orderProvider,
         child: Consumer<OrderProvider>(
-          builder: (BuildContext context, OrderProvider orderProvider, Widget? child) {
+          builder: (BuildContext context, OrderProvider orderProvider,
+              Widget? child) {
             return ModalProgressHUD(
               inAsyncCall: isLoading,
               child: Scaffold(
@@ -112,10 +118,10 @@ class _OrderListSceenState extends State<OrderListScreen> {
             ),
             Center(
               child: CommonText(
-                  text:"No Payment History",fontSize: 17,fontWeight: FontWeight.bold
-              ),
+                  text: "No Payment History",
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold),
             ),
-
           ],
         ),
       );
@@ -152,27 +158,34 @@ class _OrderListSceenState extends State<OrderListScreen> {
 
           OrderModel orderModel = orders[index];
 
-          if (index >= (ordersLength - AppConfigurations.ordersRefreshLimit) && (!orderProvider.isOrdersLoading && orderProvider.hasMoreOrders)) {
+          if (index >= (ordersLength - AppConfigurations.ordersRefreshLimit) &&
+              (!orderProvider.isOrdersLoading && orderProvider.hasMoreOrders)) {
             getData(isRefresh: false, isNotify: false);
           }
 
-          String key = "${orderModel.createdTime!.toDate().month}${orderModel.createdTime!.toDate().year}";
-          MyPrint.printOnConsole("$key ${orderProvider.ordersMapWithMonthYear[key] == orderModel.id}");
-          String month = orderModel.createdTime!.toDate().month == DateTime.now().month ? "This Month" : DatePresentation.MMyyyy(orderModel.createdTime!);
+          String key =
+              "${orderModel.createdTime!.toDate().month}${orderModel.createdTime!.toDate().year}";
+          MyPrint.printOnConsole(
+              "$key ${orderProvider.ordersMapWithMonthYear[key] == orderModel.id}");
+          String month =
+              orderModel.createdTime!.toDate().month == DateTime.now().month
+                  ? "This Month"
+                  : DatePresentation.MMyyyy(orderModel.createdTime!);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               orderProvider.ordersMapWithMonthYear[key] == orderModel.id
                   ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18.0, vertical: 10),
                       child: CommonText(
-                              text: month,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              letterSpacing: .2,
-                            ),
-                        )
-                        : const Text(""),
+                        text: month,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        letterSpacing: .2,
+                      ),
+                    )
+                  : const Text(""),
               OrderCard(orderModel: orderModel)
             ],
           );
