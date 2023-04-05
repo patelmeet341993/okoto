@@ -15,6 +15,7 @@ import '../../view/authentication/screens/otp_screen.dart';
 import '../../view/common/screens/about_app_screen.dart';
 import '../../view/common/screens/splashscreen.dart';
 import '../../view/common/screens/terms_and_conditions_screen.dart';
+import '../../view/gamelist/game_detail_screen.dart';
 import '../../view/gamelist/my_game_list.dart';
 import '../../view/home/screens/home_screen.dart';
 import '../../view/home/screens/home_temp_screen.dart';
@@ -155,6 +156,11 @@ class NavigationController {
       }
       case SubscriptionDetail.routeName: {
         page = parseSubscriptionDetailScreen(settings: settings);
+        break;
+      }
+
+      case GameDetailsScreen.routeName: {
+        page = parseGameDetailsScreen(settings: settings);
         break;
       }
 
@@ -300,6 +306,19 @@ class NavigationController {
       return null;
     }
   }
+
+  static Widget? parseGameDetailsScreen({required RouteSettings settings}) {
+    if(settings.arguments is GameDetailsScreenNavigationArguments) {
+      GameDetailsScreenNavigationArguments arguments = settings.arguments as GameDetailsScreenNavigationArguments;
+
+      return GameDetailsScreen(
+        arguments: arguments,
+      );
+    }
+    else {
+      return null;
+    }
+  }
   //endregion
 
   //region Navigation Methods
@@ -425,6 +444,16 @@ class NavigationController {
   }) {
     return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
       routeName: OrderDetailScreen.routeName,
+      arguments: arguments,
+    ));
+  }
+
+  static Future<dynamic> navigateToGameDetailsScreen({
+    required NavigationOperationParameters navigationOperationParameters,
+    required GameDetailsScreenNavigationArguments arguments,
+  }) {
+    return NavigationOperation.navigate(navigationOperationParameters: navigationOperationParameters.copyWith(
+      routeName: GameDetailsScreen.routeName,
       arguments: arguments,
     ));
   }

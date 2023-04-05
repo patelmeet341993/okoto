@@ -29,4 +29,17 @@ class GameController {
 
     return isFetched;
   }
+
+  Future<GameModel?> getGameDetailsFromGameId(String gameId)async{
+    try {
+      GameModel? gameModel;
+      gameModel = await _gameRepository.getGameModelFromId(gameId: gameId);
+      return gameModel;
+
+    } catch (e,s){
+      MyPrint.printOnConsole("Error in getGameDetailsFromGameId ${e}");
+      MyPrint.printOnConsole(s);
+    }
+  }
+
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:okoto/backend/game/game_controller.dart';
 import 'package:okoto/backend/game/game_provider.dart';
+import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:okoto/view/common/components/common_appbar.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
 import 'package:okoto/view/common/components/modal_progress_hud.dart';
@@ -9,6 +10,9 @@ import 'package:provider/provider.dart';
 
 import '../../backend/analytics/analytics_controller.dart';
 import '../../backend/analytics/analytics_event.dart';
+import '../../backend/navigation/navigation_controller.dart';
+import '../../backend/navigation/navigation_operation_parameters.dart';
+import '../../backend/navigation/navigation_type.dart';
 import '../../configs/styles.dart';
 import '../../model/game/game_model.dart';
 import '../../utils/my_utils.dart';
@@ -95,53 +99,80 @@ class _GameListScreenState extends State<GameListScreen> {
   //endregion
   Widget gameListData(GameModel gameModel, int index) {
     return Container(
-      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Styles.textWhiteColor))),
+      decoration: BoxDecoration(border: Border(
+          bottom: BorderSide(color: Styles.textWhiteColor,width: .2),
+          // top: BorderSide(color: Styles.textWhiteColor,width: .2),
+      )),
       padding: const EdgeInsets.only(bottom: 11, top: 11),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          initiallyExpanded: index == 0 ? true : false,
-          collapsedIconColor: Colors.white,
-          iconColor: Colors.white,
-          tilePadding: EdgeInsets.zero,
-          title: Row(
+        child: InkWell(
+          onTap: (){
+            NavigationController.navigateToGameDetailsScreen(
+              navigationOperationParameters: NavigationOperationParameters(
+                context: context,
+                navigationType: NavigationType.pushNamed,
+              ),
+              arguments: GameDetailsScreenNavigationArguments(
+                gameId: gameModel.id,
+                gameModel: gameModel,
+              ),
+            );
+          },
+          child: Row(
             children: [
-              getImage(url: gameModel.thumbnailImage, height: 65, width: 90, borderRadius: 0),
+              getImage(url: gameModel.thumbnailImage, height: 65, width: 90, borderRadius: 5),
               const SizedBox(
                 width: 20,
               ),
               Expanded(child: CommonText(text: gameModel.name, fontSize: 17, fontWeight: FontWeight.w600, letterSpacing: .3)),
-
-            /*  Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CommonText(text: gameModel.name, fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: .3),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: [
-                        const CommonText(text: "4", fontSize: 13),
-                        Icon(
-                          Icons.star,
-                          color: Styles.starColor,
-                          size: 15,
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),*/
             ],
           ),
-          children: [
-            const SizedBox(
-              height: 12,
-            ),
-            getGameChildrenView(gameModel),
-          ],
         ),
+
+        // ExpansionTile(
+        //   initiallyExpanded: index == 0 ? true : false,
+        //   collapsedIconColor: Colors.white,
+        //   iconColor: Colors.white,
+        //   tilePadding: EdgeInsets.zero,
+        //   title: Row(
+        //     children: [
+        //       getImage(url: gameModel.thumbnailImage, height: 65, width: 90, borderRadius: 0),
+        //       const SizedBox(
+        //         width: 20,
+        //       ),
+        //       Expanded(child: CommonText(text: gameModel.name, fontSize: 17, fontWeight: FontWeight.w600, letterSpacing: .3)),
+        //
+        //     /*  Expanded(
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: [
+        //             CommonText(text: gameModel.name, fontSize: 15, fontWeight: FontWeight.w600, letterSpacing: .3),
+        //             const SizedBox(
+        //               height: 5,
+        //             ),
+        //             Row(
+        //               children: [
+        //                 const CommonText(text: "4", fontSize: 13),
+        //                 Icon(
+        //                   Icons.star,
+        //                   color: Styles.starColor,
+        //                   size: 15,
+        //                 )
+        //               ],
+        //             )
+        //           ],
+        //         ),
+        //       ),*/
+        //     ],
+        //   ),
+        //   children: [
+        //     const SizedBox(
+        //       height: 12,
+        //     ),
+        //     getGameChildrenView(gameModel),
+        //   ],
+        // ),
       ),
     );
   }
@@ -204,6 +235,7 @@ class _GameListScreenState extends State<GameListScreen> {
       ],
     );
   }
+
   Widget getImage({String url = "", double borderRadius = 5.0, double height = 76, double width = 76}) {
     return CommonCachedNetworkImage(
       imageUrl: MyUtils().getSecureUrl(url),

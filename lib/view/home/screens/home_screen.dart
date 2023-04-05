@@ -205,6 +205,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Row(
         children: [
+          Image.asset(
+            'assets/images/logo_4.png',
+            height: 40,
+            width: 120,
+            fit: BoxFit.fill,
+          ),
+          /*
           GradientText(
             "Okoto",
             textAlign: TextAlign.start,
@@ -218,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Styles.myLogoBlueColor,
               Styles.myLogoVioletColor,
             ],
-          ),
+          ),*/
           const Spacer(),
           InkWell(
             onTap: () {
