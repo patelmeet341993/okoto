@@ -102,7 +102,6 @@ class _OtpScreenState extends State<OtpScreen> {
         });
       },
       verificationFailed: (FirebaseAuthException e) {
-        MyPrint.printOnConsole("Error in Automatic OTP Verification:${e.message!}");
         verificationId = null;
         changeMsg("Error in Automatic OTP Verification:${e.code}");
         isShowResendOtp = true;

@@ -7,6 +7,7 @@ class AnalyticsEvent{
 
   //region login/signup events
   static const String signup_started = "signup_started";
+  static const String phone_number_added_success = "phone_number_added_success";
   static const String signup_success = "signup_success";
   static const String login_success = "login_success";
   static const String user_gender = "user_gender";
@@ -47,7 +48,7 @@ class AnalyticsEvent{
   static const String subscriptionscreen_plan_expiry_alert = "subscriptionscreen_plan_expiry_alert";
   static const String subscriptionscreen_payment_started = "subscriptionscreen_payment_started";
   static const String subscriptionscreen_payment_success = "subscriptionscreen_payment_success";
-  static const String subscriptionscreen_plan_purchased_success = "subscriptionscreen_plan_purchased_success";
+  static const String subscriptionplan_purchased_success = "subscriptionplan_purchased_success";
   static const String subscriptionscreen_plan_purchased_success_gamelist = "subscriptionscreen_plan_purchased_success_gamelist";
   static const String subscriptionscreen_plan_added_games = "subscriptionscreen_plan_added_games";
   //endregion

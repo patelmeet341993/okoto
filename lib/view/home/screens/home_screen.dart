@@ -661,51 +661,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget getLetsPlayButton() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 55).copyWith(bottom: 20),
-      child: Container(
-       /* margin: EdgeInsets.all(3),
+      child: SliderWidgetPackage(
+        alignment: Alignment.bottomCenter,
+        sliderButtonIconPadding: 16,
+        outerColor: Colors.white,
+        submittedIcon: getSubmitIcon(),
+        borderRadius: 120,
         height: 65,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(120),
-        ),*/
-        child: SliderWidgetPackage(
-          alignment: Alignment.bottomCenter,
-          sliderButtonIconPadding: 16,
-          outerColor: Colors.white,
-          submittedIcon: getSubmitIcon(),
-          borderRadius: 120,
-          height: 65,
-          sliderButtonIcon: const Icon(Icons.person_outline),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              SizedBox(
-                width: 75,
+        sliderButtonIcon: const Icon(Icons.person_outline),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            SizedBox(
+              width: 75,
+            ),
+            Expanded(
+              child: CommonText(
+                text: 'Swipe to play game',
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 17,
               ),
-              Expanded(
-                child: CommonText(
-                  text: 'Swipe to play game',
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 17,
-                ),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-            ],
-          ),
-
-
-          onSubmit: () {
-            AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
-            AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
-            NavigationController.navigateToDevicesScreen(
-                navigationOperationParameters: NavigationOperationParameters(
-                  context: NavigationController.mainScreenNavigator.currentContext!,
-                  navigationType: NavigationType.pushNamed,
-                ));
-          },
+            ),
+            SizedBox(
+              width: 20,
+            ),
+          ],
         ),
+
+
+        onSubmit: () {
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
+          NavigationController.navigateToDevicesScreen(
+              navigationOperationParameters: NavigationOperationParameters(
+                context: NavigationController.mainScreenNavigator.currentContext!,
+                navigationType: NavigationType.pushNamed,
+              ));
+        },
       ),
     );
   }
@@ -715,7 +708,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       borderRadius: BorderRadius.circular(120),
       onTap: (){
         AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
-        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.my_games_screen});
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
         NavigationController.navigateToDevicesScreen(
             navigationOperationParameters: NavigationOperationParameters(
               context: NavigationController.mainScreenNavigator.currentContext!,

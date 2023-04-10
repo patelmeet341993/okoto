@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       // if all are valid then go to success screens
-
+      AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.phone_number_added_success);
       NavigationController.navigateToOtpScreen(
         navigationOperationParameters: NavigationOperationParameters(
           context: context,

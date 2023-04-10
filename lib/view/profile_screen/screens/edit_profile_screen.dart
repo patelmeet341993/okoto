@@ -128,6 +128,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       }
       newUserModel.name = nameController.text;
       newUserModel.userName = userNameController.text;
+      bool isNameUpdate = existingUserModel.name != nameController.text;
+      bool isUserNameUpdate = existingUserModel.userName != userNameController.text;
+      bool isImageUpdate = pickedImage != null;
+      MyPrint.printOnConsole('Info of name : $isNameUpdate $isUserNameUpdate $isImageUpdate');
+      MyPrint.printOnConsole('Info change existing: ${existingUserModel.name} new : ${nameController.text}');
+      AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.profile_screen_update_profile,parameters: {AnalyticsParameters.event_value: '${(isNameUpdate?'name ':'')}${(isUserNameUpdate?'username ':'')}${(isImageUpdate?'profile_picture':'')}'});
 
       bool isUpdated = await UserController(userProvider: userProvider).updateUserData(userModel: newUserModel);
       MyPrint.printOnConsole("isUpdated:$isUpdated");
@@ -136,10 +142,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       setState(() {});
 
       if(isUpdated) {
-        bool isNameUpdate = existingUserModel.name != newUserModel.name;
-        bool isUserNameUpdate = existingUserModel.userName != newUserModel.userName;
-        bool isImageUpdate = pickedImage != null;
-        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.profile_screen_update_profile,parameters: {AnalyticsParameters.event_value: '${(isNameUpdate?'name ':'')}${(isUserNameUpdate?'username ':'')}${(isImageUpdate?'profile_picture':'')}'});
         MyToast.showSuccess(context: context, msg: "Updated Successfully");
         userProvider.setUserModel(userModel: newUserModel, isNotify: false);
 
@@ -473,7 +475,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           validator: (val) {
             if (val == null || val.isEmpty) {
-              return "Username cannot be empty";
+              return "username cannot be empty";
             } else {
               return null;
             }
@@ -518,7 +520,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget submitButton() {
     return InkWell(
       onTap: () async {
-        if (_formKey.currentState!.validate()) {
+        if (_formKey.currentState?.validate() ?? false) {
           bool formValid = _formKey.currentState?.validate() ?? false;
           bool dobValid = dateOfBirth != null;
           bool genderValid = gender?.isNotEmpty ?? false;
@@ -526,7 +528,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
 
           if (formValid && dobValid && genderValid) {
+            if(isUpdatedValue()){
+               await updateUserData();
+            }
           } else if (!formValid) {
+            MyToast.showError(context: context, msg: "Please fill the required details");
           } else if (!dobValid) {
             MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
           } else if (!genderValid) {
@@ -534,7 +540,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           } else {
           }
         }
-        await updateUserData();
       },
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 13),
@@ -551,27 +556,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: CommonText(text: 'Update Profile',fontSize: 20),
       ),
     );
-    return CommonSubmitButton(
-        onTap: () async {
-          if (_formKey.currentState!.validate()) {
-            bool formValid = _formKey.currentState?.validate() ?? false;
-            bool dobValid = dateOfBirth != null;
-            bool genderValid = gender?.isNotEmpty ?? false;
-
-            MyPrint.printOnConsole("formValid:$formValid, dobValid:$dobValid, genderValid:$genderValid");
-
-            if (formValid && dobValid && genderValid) {
-            } else if (!formValid) {
-            } else if (!dobValid) {
-              MyToast.showError(context: context, msg: "Date Of Birth is Mandatory");
-            } else if (!genderValid) {
-              MyToast.showError(context: context, msg: "Gender is Mandatory");
-            } else {
-            }
-          }
-          await updateUserData();
-        },
-        text: "Update Profile");
   }
 
 

@@ -111,7 +111,7 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
           isNotify: true,
         );
         AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_payment_success,parameters: {AnalyticsParameters.event_value:subscriptionModel.name});
-        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_plan_purchased_success,parameters: {AnalyticsParameters.event_value:subscriptionModel.name});
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionplan_purchased_success,parameters: {AnalyticsParameters.event_value:subscriptionModel.name});
         AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_plan_purchased_success_gamelist,
             parameters: {AnalyticsParameters.event_value: '${subscriptionModel.name} : ${subscriptionModel.gamesList}'});
 
