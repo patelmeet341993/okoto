@@ -2,6 +2,9 @@
 
 class AnalyticsEvent{
 
+  static const String demo_call_dummy = "demo_call_dummy";
+
+
   //region login/signup events
   static const String signup_started = "signup_started";
   static const String signup_success = "signup_success";
@@ -20,7 +23,7 @@ class AnalyticsEvent{
   //endregion
 
   //region OtherScreens events
-  static const String user_any_screen_view = "user_screen_view";
+  static const String user_any_screen_view = "user_any_screen_view";
   static const String devicescreen_add_device = "devicescreen_add_device";
   static const String devicescreen_select_device = "devicescreen_select_device";
   static const String notificationscreen_notification_click = "notificationscreen_notification_click";

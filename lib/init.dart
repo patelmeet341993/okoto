@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -74,6 +75,7 @@ Future<void> initApp({bool isDev = false}) async {
           badge: true,
           sound: true,
         ),
+        FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true),
       ]);
     }
     catch(e, s) {
