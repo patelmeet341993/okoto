@@ -121,10 +121,6 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
 
   @override
   Widget build(BuildContext context) {
-    MyPrint.printOnConsole(
-        "widget.sliderButtonYOffset:${widget.sliderButtonYOffset}");
-    MyPrint.printOnConsole("_dx:$_dx");
-
     return Align(
       alignment: widget.alignment,
       child: Transform(

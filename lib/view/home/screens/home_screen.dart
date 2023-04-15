@@ -9,11 +9,9 @@ import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/utils/parsing_helper.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
-
+import 'dart:math' as math;
 import '../../../backend/analytics/analytics_controller.dart';
 import '../../../backend/analytics/analytics_event.dart';
-import '../../../backend/authentication/authentication_controller.dart';
 import '../../../backend/data/data_provider.dart';
 import '../../../configs/styles.dart';
 import '../../../model/user/user_model.dart';
@@ -22,6 +20,7 @@ import '../../../package/slider_widget_package.dart';
 import '../../../utils/my_print.dart';
 import '../../common/components/common_loader.dart';
 import '../../common/components/common_text.dart';
+import '../../common/components/gradient_trial.dart';
 import '../../common/components/image_slider.dart';
 import '../../common/components/modal_progress_hud.dart';
 import '../../common/components/my_profile_avatar.dart';
@@ -489,20 +488,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     required int totalDays,
     required int remainingDays,
   }) {
+    double indicatorValue = remainingDays/totalDays;
+    if(indicatorValue < 0.02){
+      indicatorValue = 0.02;
+    }
     return Stack(
       alignment: Alignment.center,
       children: [
-        SizedBox(
+        Container(
           height: 100,
           width: 100,
-          child: Transform.scale(
+          child:  Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationY(math.pi),
+            child: Transform.rotate(
+              angle: 5,
+              child: GradientTrialProgressIndicator(
+                radius: 100,
+                strokeWidth: 4.5,
+                value: indicatorValue,
+                gradientStops: const [
+                  0.2,
+                  0.55,
+                  1,
+                ],
+                gradientColors:  [
+                  Styles.circleColor2,
+                  Styles.circleColor3,
+                   Styles.circleColor1,
+                ],
+                child: Container(),
+              ),
+            ),
+          ),
+
+          /*Transform.scale(
             scaleX: -1,
             child: CircularProgressIndicator(
               value: remainingDays/totalDays,
               strokeWidth: 4.5,
               color: Styles.myLightVioletShade1,
             ),
-          ),
+          ),*/
+
         ),
         Container(
           padding: const EdgeInsets.only(bottom: 5),
