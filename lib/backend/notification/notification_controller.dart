@@ -77,11 +77,11 @@ class NotificationController {
     return notificationToken;
   }
 
-  Future<bool> getNotificationList() async {
+  Future<bool> getNotificationList({required String userId}) async {
     bool isFetched = false;
     List<NotificationModel> notificationList = <NotificationModel>[];
     try {
-      notificationList = await notificationRepository.getNotificationsList();
+      notificationList = await notificationRepository.getNotificationsList(userId: userId);
       notificationProvider.setNotificationModelList(notificationList);
       Map<String, String> notificationsMapWithMonthYear = getMapOfMonthYearFromList(notificationList);
       notificationProvider.setOrdersMapWithMonthYear(notificationsMapWithMonthYear, isClear: true, isNotify: true);
@@ -105,13 +105,13 @@ class NotificationController {
     return notificationsMapWithMonthYear;
   }
 
-  Future<bool> updateNotificationIsNotificationOpen({required NotificationModel model, required bool value}) async {
+  Future<bool> updateNotificationIsNotificationOpen({required NotificationModel model, required String loggedInUserId, required bool value}) async {
     bool isUpdated = false;
 
     try {
       isUpdated = await notificationRepository.updateNotificationValue(id: model.id, key: "isOpened", value: value);
       // notificationProvider.
-      getNotificationList();
+      getNotificationList(userId: loggedInUserId);
     } catch (e, s) {
       MyPrint.printOnConsole("Error in updateNotificationIsNotificationOpen $e");
       MyPrint.printOnConsole(s);
