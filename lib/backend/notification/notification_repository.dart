@@ -27,7 +27,7 @@ class NotificationRepository {
     return isCreated;
   }
 
-  Future<List<NotificationModel>> getNotificationsList() async {
+  Future<List<NotificationModel>> getNotificationsList({required String userId}) async {
     String tag = MyUtils.getUniqueIdFromUuid();
     List<NotificationModel> notificationModelList = <NotificationModel>[];
     MyPrint.printOnConsole("NotificationRepository().createNotification() called for notificationModel:", tag: tag);
@@ -35,7 +35,12 @@ class NotificationRepository {
     bool isCreated = false;
 
     try{
-      MyFirestoreQuerySnapshot querySnapshot = await FirebaseNodes.notificationsCollectionReference.get();
+      MyFirestoreQuerySnapshot querySnapshot = await FirebaseNodes.notificationsCollectionReference
+          .where("type", whereIn: [
+            userId,
+            NotificationTarget.announcement,
+          ])
+          .orderBy("createdTime", descending: false).get();
       if(querySnapshot.docs.isNotEmpty){
         for (MyFirestoreQueryDocumentSnapshot queryDocumentSnapshot in querySnapshot.docs) {
           if(queryDocumentSnapshot.data().isNotEmpty) {
