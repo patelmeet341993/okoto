@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:okoto/configs/constants.dart';
 import 'package:okoto/configs/typedefs.dart';
 import 'package:okoto/model/device/device_model.dart';
@@ -60,6 +61,29 @@ class DeviceRepository {
     }
 
     MyPrint.printOnConsole("Value of isUpdated:$isUpdated", tag: tag);
+
+    return isUpdated;
+  }
+
+  Future<bool> updateDeviceStatusDataInRealtimeDatabase({required String deviceId, required bool statusOn}) async {
+    MyPrint.printOnConsole("DeviceRepository().updateDeviceStatusDataInRealtimeDatabase() called with deviceId:'$deviceId' and statusOn:'$statusOn'");
+
+    bool isUpdated = false;
+
+    if(deviceId.isEmpty) {
+      return isUpdated;
+    }
+
+    try {
+      await FirebaseDatabase.instance.ref("devices/$deviceId/statusOn").set(statusOn);
+      isUpdated = true;
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in DeviceRepository().updateDeviceStatusDataInRealtimeDatabase():$e");
+      MyPrint.printOnConsole(s);
+    }
+
+    MyPrint.printOnConsole("DeviceRepository().updateDeviceStatusDataInRealtimeDatabase() isUpdated:$isUpdated");
 
     return isUpdated;
   }
