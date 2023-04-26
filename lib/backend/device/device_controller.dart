@@ -128,4 +128,46 @@ class DeviceController {
 
     return isRegistered;
   }
+
+  Future<bool> updateDeviceStatus({required String deviceId, DeviceModel? deviceModel, required bool statusOn}) async {
+    MyPrint.printOnConsole("DeviceController().updateDeviceStatus() called with deviceId:'$deviceId' and statusOn:'$statusOn'");
+
+    bool isUpdated = false;
+
+    if(deviceId.isEmpty) {
+      return isUpdated;
+    }
+
+    bool isUpdatedInRealtimeDatabase = false, isUpdatedInFirestore = false;
+
+    try {
+      await Future.wait([
+        _deviceRepository.updateDeviceStatusDataInRealtimeDatabase(deviceId: deviceId, statusOn: statusOn).then((value) {
+          isUpdatedInRealtimeDatabase = value;
+        }),
+        _deviceRepository.updateDeviceDataFromMap(deviceId: deviceId, data: {
+          "statusOn" : statusOn,
+        }).then((value) {
+          isUpdatedInFirestore = value;
+        }),
+      ]);
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in Updating Device Status in DeviceController().updateDeviceStatus():$e");
+      MyPrint.printOnConsole(s);
+    }
+
+    MyPrint.printOnConsole("DeviceController().updateDeviceStatus() isUpdatedInRealtimeDatabase:$isUpdatedInRealtimeDatabase");
+    MyPrint.printOnConsole("DeviceController().updateDeviceStatus() isUpdatedInFirestore:$isUpdatedInFirestore");
+
+    isUpdated = isUpdatedInRealtimeDatabase && isUpdatedInFirestore;
+
+    MyPrint.printOnConsole("DeviceController().updateDeviceStatusDataInRealtimeDatabase() isUpdated:$isUpdated");
+
+    if(isUpdated) {
+      deviceModel?.statusOn = statusOn;
+    }
+
+    return isUpdated;
+  }
 }
