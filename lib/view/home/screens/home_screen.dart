@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/utils/parsing_helper.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
-import 'dart:math' as math;
+
 import '../../../backend/analytics/analytics_controller.dart';
 import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/data/data_provider.dart';
@@ -45,17 +47,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   DecorationTween? decorationTween;
   DecorationTween? decorationActivatedTween;
 
-  AnimationController? _controller;
+  // AnimationController? _controller;
   AnimationController? _activatedPlanController;
   double animationBorderRadius = 120;
 
   void initializeBannerImages() {
-
     bannerImages = [];
 
-    if(dataProvider.propertyModel.bannerImages.isNotEmpty){
+    if (dataProvider.propertyModel.bannerImages.isNotEmpty) {
       bannerImages.addAll(dataProvider.propertyModel.bannerImages);
-    }else{
+    } else {
       String image = "https://res.cloudinary.com/dxegfkhzd/image/upload/v1677566819/pexels-sound-on-3761118_v4fec1.jpg";
       bannerImages.add(image);
     }
@@ -114,17 +115,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
 
-    _controller = AnimationController(
+    /*_controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
     _activatedPlanController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
+    )..repeat(reverse: true);*/
 
-
-    dataProvider =  Provider.of<DataProvider>(context,listen: false);
+    dataProvider = Provider.of<DataProvider>(context, listen: false);
     initializeBannerImages();
   }
 
@@ -135,61 +135,59 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       progressIndicator: const CommonLoader(),
-      child: Consumer<UserProvider>(builder: (BuildContext context, UserProvider userProvider, Widget? child) {
-        UserModel? userModel = userProvider.getUserModel();
-        if (userModel == null) {
-          return const SizedBox();
-        }
+      child: Consumer<UserProvider>(
+        builder: (BuildContext context, UserProvider userProvider, Widget? child) {
+          UserModel? userModel = userProvider.getUserModel();
+          if (userModel == null) {
+            return const SizedBox();
+          }
 
-        return Scaffold(
-          body: MyScreenBackground(
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          getMyAppBar(userProvider),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 0),
-                            child: getImageSlider(bannerImages: bannerImages),
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const CommonText(text: 'My Account', fontSize: 19, fontWeight: FontWeight.bold),
-                                const SizedBox(height: 25),
-                                getMyAccountCard(userModel),
-                                const SizedBox(height: 25),
-                                const CommonText(text: 'Explore', fontSize: 19, fontWeight: FontWeight.bold),
-                                const SizedBox(height: 25),
-                                getExploreWidget(),
-                                const SizedBox(height: 150),
-                              ],
+          return Scaffold(
+            body: MyScreenBackground(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            getMyAppBar(userProvider),
+                            const SizedBox(height: 15),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 0),
+                              child: getImageSlider(bannerImages: bannerImages),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 25),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const CommonText(text: 'My Account', fontSize: 19, fontWeight: FontWeight.bold),
+                                  const SizedBox(height: 25),
+                                  getMyAccountCard(userModel),
+                                  const SizedBox(height: 25),
+                                  const CommonText(text: 'Explore', fontSize: 19, fontWeight: FontWeight.bold),
+                                  const SizedBox(height: 25),
+                                  getExploreWidget(),
+                                  const SizedBox(height: 150),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          floatingActionButton: getLetsPlayButton(),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        );
-      }),
+            floatingActionButton: getLetsPlayButton(deviceIds: userModel.deviceIds),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          );
+        },
+      ),
     );
   }
 
@@ -228,12 +226,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           const Spacer(),
           InkWell(
             onTap: () {
-              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
+              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
               NavigationController.navigateToDevicesScreen(
-                  navigationOperationParameters: NavigationOperationParameters(
-                context: NavigationController.mainScreenNavigator.currentContext!,
-                navigationType: NavigationType.pushNamed,
-              ));
+                navigationOperationParameters: NavigationOperationParameters(
+                  context: NavigationController.mainScreenNavigator.currentContext!,
+                  navigationType: NavigationType.pushNamed,
+                ),
+              );
             },
             child: Image.asset(
               "assets/images/vr_icon.png",
@@ -242,15 +241,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(width: 14,),
+          const SizedBox(width: 14),
           InkWell(
-            onTap: (){
-              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.notification_screen});
+            onTap: () {
+              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.notification_screen});
               NavigationController.navigateToNotificationScreen(
                   navigationOperationParameters: NavigationOperationParameters(
-                    context: NavigationController.mainScreenNavigator.currentContext!,
-                    navigationType: NavigationType.pushNamed,
-                  ));
+                context: NavigationController.mainScreenNavigator.currentContext!,
+                navigationType: NavigationType.pushNamed,
+              ));
             },
             child: const Icon(
               MdiIcons.bell,
@@ -258,17 +257,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               size: 24,
             ),
           ),
-          const SizedBox(
-            width: 14,
-          ),
+          const SizedBox(width: 14),
           InkWell(
-              onTap: (){
-                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.profile_screen});
-                Navigator.pushNamed(context, ProfileScreen.routeName);
-              },
-              child: MyProfileAvatar()),
-          const SizedBox(width: 14,),
-
+            onTap: () {
+              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.profile_screen});
+              Navigator.pushNamed(context, ProfileScreen.routeName);
+            },
+            child: MyProfileAvatar(),
+          ),
+          const SizedBox(width: 14),
         ],
       ),
     );
@@ -340,13 +337,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
 
     int totalDays = userSubscriptionModel?.mySubscription?.validityInDays ?? 28, remainingDays = 20;
-    if(userSubscriptionModel?.activatedDate != null && userSubscriptionModel?.expiryDate != null) {
+    if (userSubscriptionModel?.activatedDate != null && userSubscriptionModel?.expiryDate != null) {
       // DateTime activatedDate = userSubscriptionModel!.activatedDate!.toDate();
       DateTime expiryDate = userSubscriptionModel!.expiryDate!.toDate();
       DateTime dateTime = DateTime.now();
 
       remainingDays = expiryDate.difference(dateTime).inDays;
-      if(remainingDays < 0 || remainingDays > totalDays) {
+      if (remainingDays < 0 || remainingDays > totalDays) {
         remainingDays = totalDays;
       }
     }
@@ -377,9 +374,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CommonText(text: mySubscriptionPlan.name, fontSize: 19, fontWeight: FontWeight.bold),
-                    const SizedBox(
-                      height: 12,
-                    ),
+                    const SizedBox(height: 12),
                     IntrinsicHeight(
                       child: Row(
                         children: [
@@ -425,9 +420,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         MyProfileAvatar(size: 23),
-        const SizedBox(
-          width: 8,
-        ),
+        const SizedBox(width: 8),
         CommonText(
           text: userName,
           fontSize: 14,
@@ -450,17 +443,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             )
           ]),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         showDetailsRichText(
           heading: 'Subscribed on',
-          mainText:
-              methodUserSubscriptionModel.activatedDate == null ? '-' : DateFormat("dd MMM yyyy").format(methodUserSubscriptionModel.activatedDate!.toDate()),
+          mainText: methodUserSubscriptionModel.activatedDate == null ? '-' : DateFormat("dd MMM yyyy").format(methodUserSubscriptionModel.activatedDate!.toDate()),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         showDetailsRichText(
           heading: 'Most played game',
           mainText: '--',
@@ -488,17 +476,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     required int totalDays,
     required int remainingDays,
   }) {
-    double indicatorValue = remainingDays/totalDays;
-    if(indicatorValue < 0.02){
+    double indicatorValue = remainingDays / totalDays;
+    if (indicatorValue < 0.02) {
       indicatorValue = 0.02;
     }
     return Stack(
       alignment: Alignment.center,
       children: [
-        Container(
+        SizedBox(
           height: 100,
           width: 100,
-          child:  Transform(
+          child: Transform(
             alignment: Alignment.center,
             transform: Matrix4.rotationY(math.pi),
             child: Transform.rotate(
@@ -512,10 +500,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   0.55,
                   1,
                 ],
-                gradientColors:  [
+                gradientColors: [
                   Styles.circleColor2,
                   Styles.circleColor3,
-                   Styles.circleColor1,
+                  Styles.circleColor1,
                 ],
                 child: Container(),
               ),
@@ -530,7 +518,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               color: Styles.myLightVioletShade1,
             ),
           ),*/
-
         ),
         Container(
           padding: const EdgeInsets.only(bottom: 5),
@@ -538,9 +525,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CommonText(text: '$remainingDays', fontWeight: FontWeight.bold, fontSize: 30),
-              const SizedBox(
-                height: 2,
-              ),
+              const SizedBox(height: 2),
               CommonText(text: 'Days left', fontSize: 11, color: Colors.white.withOpacity(.8), textAlign: TextAlign.center),
             ],
           ),
@@ -563,78 +548,83 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 imageUrl: 'assets/icons/device.png',
                 title: 'Device',
                 onTap: () {
-                  AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
+                  AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
                   NavigationController.navigateToDevicesScreen(
                       navigationOperationParameters: NavigationOperationParameters(
                     context: NavigationController.mainScreenNavigator.currentContext!,
                     navigationType: NavigationType.pushNamed,
                   ));
                 }),
-            SizedBox(
-              width: spacing,
-            ),
+            SizedBox(width: spacing),
             exploreBox(
               onTap: () {
-                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.subscription_plans_list_screen});
-                NavigationController.navigateToSubscriptionListScreen(navigationOperationParameters: NavigationOperationParameters(
-                  context: context,
-                  navigationType: NavigationType.pushNamed,
-                ));
+                AnalyticsController().fireEvent(
+                  analyticEvent: AnalyticsEvent.homescreen_screen_click,
+                  parameters: {
+                    AnalyticsParameters.event_value: AnalyticsParameterValue.subscription_plans_list_screen,
+                  },
+                );
+                NavigationController.navigateToSubscriptionListScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: context,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
               },
               imageUrl: 'assets/icons/subscriptions.png',
               title: 'Our All\nPlans',
             ),
-            SizedBox(
-              width: spacing,
-            ),
+            SizedBox(width: spacing),
             exploreBox(
               onTap: () {
-                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.payment_history_screen});
-                NavigationController.navigateToOrderListScreen(navigationOperationParameters: NavigationOperationParameters(
-                  context: context,
-                  navigationType: NavigationType.pushNamed,
-                ));
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.payment_history_screen});
+                NavigationController.navigateToOrderListScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: context,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
               },
               imageUrl: 'assets/icons/payment.png',
               title: 'Payment History',
             ),
           ],
         ),
-        SizedBox(
-          height: spacing,
-        ),
+        SizedBox(height: spacing),
         Row(
           children: [
             exploreBox(
-                imageUrl: 'assets/icons/my_games.png',
-                title: 'Our All\nGames',
-                onTap: (){
-                  AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.games_list_screen});
-                  NavigationController.navigateToGameListScreen(
-                      navigationOperationParameters: NavigationOperationParameters(
-                          context: NavigationController.mainScreenNavigator.currentContext!,
-                          navigationType: NavigationType.pushNamed)
-                  );
-                }
+              imageUrl: 'assets/icons/my_games.png',
+              title: 'Our All\nGames',
+              onTap: () {
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.games_list_screen});
+                NavigationController.navigateToGameListScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: NavigationController.mainScreenNavigator.currentContext!,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
+              },
             ),
-            SizedBox(
-              width: spacing,
+            SizedBox(width: spacing),
+            exploreBox(
+              imageUrl: 'assets/icons/myplans.png',
+              title: 'My games',
+              onTap: () {
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.my_games_screen});
+                NavigationController.navigateToMyGameListScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: NavigationController.mainScreenNavigator.currentContext!,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
+              },
             ),
-            exploreBox(imageUrl: 'assets/icons/myplans.png',
-                title: 'My games',
-                onTap: (){
-                  AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.my_games_screen});
-                  NavigationController.navigateToMyGameListScreen(
-                      navigationOperationParameters: NavigationOperationParameters(
-                          context: NavigationController.mainScreenNavigator.currentContext!,
-                          navigationType: NavigationType.pushNamed)
-                  );
-                }
+            SizedBox(width: spacing),
+            exploreBox(
+              imageUrl: 'assets/icons/recomended_plans.png',
+              title: 'Recommended Plans',
             ),
-            SizedBox(
-              width: spacing,
-            ),
-            exploreBox(imageUrl: 'assets/icons/recomended_plans.png', title: 'Recommended Plans'),
           ],
         )
       ],
@@ -673,10 +663,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 width: 23,
                 fit: BoxFit.fill,
               ),
-              const SizedBox(
-                height: 5,
+              const SizedBox(height: 5),
+              CommonText(
+                text: title,
+                textAlign: TextAlign.center,
+                fontSize: 12,
               ),
-              CommonText(text: title, textAlign: TextAlign.center, fontSize: 12),
             ],
           ),
         ),
@@ -686,7 +678,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   //endregion
 
-  Widget getLetsPlayButton() {
+  Widget? getLetsPlayButton({required List<String> deviceIds}) {
+    if (deviceIds.isEmpty) return null;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 55).copyWith(bottom: 20),
       child: SliderWidgetPackage(
@@ -700,9 +694,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            SizedBox(
-              width: 75,
-            ),
+            SizedBox(width: 75),
             Expanded(
               child: CommonText(
                 text: 'Swipe to play game',
@@ -711,21 +703,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 fontSize: 17,
               ),
             ),
-            SizedBox(
-              width: 20,
-            ),
+            SizedBox(width: 20),
           ],
         ),
-
-
         onSubmit: () {
           AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
-          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
           NavigationController.navigateToDevicesScreen(
-              navigationOperationParameters: NavigationOperationParameters(
-                context: NavigationController.mainScreenNavigator.currentContext!,
-                navigationType: NavigationType.pushNamed,
-              ));
+            navigationOperationParameters: NavigationOperationParameters(
+              context: NavigationController.mainScreenNavigator.currentContext!,
+              navigationType: NavigationType.pushNamed,
+            ),
+          );
         },
       ),
     );
@@ -734,14 +723,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget getSubmitIcon() {
     return InkWell(
       borderRadius: BorderRadius.circular(120),
-      onTap: (){
+      onTap: () {
         AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
-        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click,parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
         NavigationController.navigateToDevicesScreen(
-            navigationOperationParameters: NavigationOperationParameters(
-              context: NavigationController.mainScreenNavigator.currentContext!,
-              navigationType: NavigationType.pushNamed,
-            ));
+          navigationOperationParameters: NavigationOperationParameters(
+            context: NavigationController.mainScreenNavigator.currentContext!,
+            navigationType: NavigationType.pushNamed,
+          ),
+        );
       },
       child: DecoratedBoxTransition(
         position: DecorationPosition.background,
@@ -752,9 +742,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           width: double.maxFinite,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-              shape: BoxShape.circle,
-             border: Border.all(color: Styles.myDarkVioletColor.withOpacity(.8),width: .5)
-             /* gradient: LinearGradient(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Styles.myDarkVioletColor.withOpacity(.8),
+              width: .5,
+            ),
+            /* gradient: LinearGradient(
                 colors: [
                   Styles.gameButtonShade1,
                   Styles.gameButtonShade2,
@@ -774,7 +767,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 }
-
 
 /*
 
