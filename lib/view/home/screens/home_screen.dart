@@ -21,6 +21,7 @@ import '../../../model/user/user_subscription_model.dart';
 import '../../../package/slider_widget_package.dart';
 import '../../../utils/my_print.dart';
 import '../../common/components/common_loader.dart';
+import '../../common/components/common_popup.dart';
 import '../../common/components/common_text.dart';
 import '../../common/components/gradient_trial.dart';
 import '../../common/components/image_slider.dart';
@@ -44,12 +45,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool isLoading = false;
   TabController? tabController;
   List<String> bannerImages = <String>[];
-  DecorationTween? decorationTween;
-  DecorationTween? decorationActivatedTween;
+  late DecorationTween decorationTween;
+  late DecorationTween decorationActivatedTween;
 
   // AnimationController? _controller;
-  AnimationController? _activatedPlanController;
+  late AnimationController _activatedPlanController;
   double animationBorderRadius = 120;
+  GlobalKey<SliderWidgetPackageState> sliderButtonKey = GlobalKey<SliderWidgetPackageState>();
 
   void initializeBannerImages() {
     bannerImages = [];
@@ -115,14 +117,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
 
-    /*_controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
     _activatedPlanController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);*/
+    )..repeat(reverse: true);
 
     dataProvider = Provider.of<DataProvider>(context, listen: false);
     initializeBannerImages();
@@ -684,13 +682,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 55).copyWith(bottom: 20),
       child: SliderWidgetPackage(
+        key: sliderButtonKey,
         alignment: Alignment.bottomCenter,
         sliderButtonIconPadding: 16,
         outerColor: Colors.white,
-        submittedIcon: getSubmitIcon(),
+        submittedIcon: getSubmittedIcon(),
         borderRadius: 120,
         height: 65,
-        sliderButtonIcon: const Icon(Icons.person_outline),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -720,24 +718,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget getSubmitIcon() {
+  Widget getSubmittedIcon() {
     return InkWell(
       borderRadius: BorderRadius.circular(120),
-      onTap: () {
+      onTap: () async {
         AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
-        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
-        NavigationController.navigateToDevicesScreen(
+        AnalyticsController().fireEvent(
+          analyticEvent: AnalyticsEvent.homescreen_screen_click,
+          parameters: {
+            AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen,
+          },
+        );
+        /*NavigationController.navigateToDevicesScreen(
           navigationOperationParameters: NavigationOperationParameters(
             context: NavigationController.mainScreenNavigator.currentContext!,
             navigationType: NavigationType.pushNamed,
           ),
+        );*/
+
+        dynamic value = await showDialog(
+          context: context,
+          builder: (context) {
+            return CommonPopUp(
+              text: 'Are you sure you want to stop the game?',
+              rightText: 'Stop',
+              rightOnTap: () {
+                Navigator.pop(context, true);
+              },
+            );
+          },
         );
+
+        if (value == true) {
+          if(sliderButtonKey.currentState != null) {
+            sliderButtonKey.currentState!.reset();
+          }
+        }
       },
       child: DecoratedBoxTransition(
         position: DecorationPosition.background,
-        decoration: decorationActivatedTween!.animate(_activatedPlanController!),
+        decoration: decorationActivatedTween.animate(_activatedPlanController),
         child: Container(
-          margin: EdgeInsets.all(1),
+          margin: const EdgeInsets.all(1),
           height: double.maxFinite,
           width: double.maxFinite,
           padding: const EdgeInsets.all(16),
