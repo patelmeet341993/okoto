@@ -5,6 +5,8 @@ import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:okoto/backend/device/device_controller.dart';
+import 'package:okoto/backend/device/device_provider.dart';
 import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
@@ -20,6 +22,7 @@ import '../../../model/user/user_model.dart';
 import '../../../model/user/user_subscription_model.dart';
 import '../../../package/slider_widget_package.dart';
 import '../../../utils/my_print.dart';
+import '../../../utils/my_toast.dart';
 import '../../common/components/common_loader.dart';
 import '../../common/components/common_popup.dart';
 import '../../common/components/common_text.dart';
@@ -47,6 +50,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   List<String> bannerImages = <String>[];
   late DecorationTween decorationTween;
   late DecorationTween decorationActivatedTween;
+
+  late DeviceProvider deviceProvider;
+  late DeviceController deviceController;
 
   // AnimationController? _controller;
   late AnimationController _activatedPlanController;
@@ -123,6 +129,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     )..repeat(reverse: true);
 
     dataProvider = Provider.of<DataProvider>(context, listen: false);
+
+    deviceProvider = context.read<DeviceProvider>();
+    deviceController = DeviceController(deviceProvider: deviceProvider);
+
     initializeBannerImages();
   }
 
@@ -181,7 +191,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            floatingActionButton: getLetsPlayButton(deviceIds: userModel.deviceIds),
+            floatingActionButton: getLetsPlayButton(
+              deviceIds: userModel.deviceIds,
+              defaultDeviceId: userModel.defaultDeviceId,
+            ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           );
         },
@@ -676,7 +689,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   //endregion
 
-  Widget? getLetsPlayButton({required List<String> deviceIds}) {
+  Widget? getLetsPlayButton({
+    required List<String> deviceIds,
+    required String defaultDeviceId,
+  }) {
     if (deviceIds.isEmpty) return null;
 
     return Container(
@@ -686,7 +702,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         alignment: Alignment.bottomCenter,
         sliderButtonIconPadding: 16,
         outerColor: Colors.white,
-        submittedIcon: getSubmittedIcon(),
+        submittedIcon: getSubmittedIcon(defaultDeviceId: defaultDeviceId),
         borderRadius: 120,
         height: 65,
         child: Row(
@@ -704,21 +720,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             SizedBox(width: 20),
           ],
         ),
-        onSubmit: () {
+        onSubmit: () async {
           AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
           AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
-          NavigationController.navigateToDevicesScreen(
-            navigationOperationParameters: NavigationOperationParameters(
-              context: NavigationController.mainScreenNavigator.currentContext!,
-              navigationType: NavigationType.pushNamed,
-            ),
-          );
+
+          if(defaultDeviceId.isEmpty) {
+            NavigationController.navigateToDevicesScreen(
+              navigationOperationParameters: NavigationOperationParameters(
+                context: NavigationController.mainScreenNavigator.currentContext!,
+                navigationType: NavigationType.pushNamed,
+              ),
+            );
+
+            sliderButtonKey.currentState?.reset();
+          }
+          else {
+            isLoading = true;
+            setState(() {});
+
+            bool isStarted = await deviceController.startPlayingGame(deviceId: defaultDeviceId);
+
+            isLoading = false;
+            setState(() {});
+
+            if (isStarted && context.mounted) {
+              MyToast.showSuccess(context: context, msg: "Game Started");
+            }
+          }
         },
       ),
     );
   }
 
-  Widget getSubmittedIcon() {
+  Widget getSubmittedIcon({required String defaultDeviceId}) {
     return InkWell(
       borderRadius: BorderRadius.circular(120),
       onTap: () async {
@@ -729,12 +763,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen,
           },
         );
-        /*NavigationController.navigateToDevicesScreen(
-          navigationOperationParameters: NavigationOperationParameters(
-            context: NavigationController.mainScreenNavigator.currentContext!,
-            navigationType: NavigationType.pushNamed,
-          ),
-        );*/
 
         dynamic value = await showDialog(
           context: context,
@@ -750,8 +778,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         );
 
         if (value == true) {
-          if(sliderButtonKey.currentState != null) {
-            sliderButtonKey.currentState!.reset();
+          if (sliderButtonKey.currentState != null) {
+            isLoading = true;
+            setState(() {});
+
+            bool isUpdated = await deviceController.stopPlayingGame();
+
+            isLoading = false;
+            setState(() {});
+
+            if (isUpdated && context.mounted) {
+              MyToast.showSuccess(context: context, msg: "Game Stopped");
+
+              sliderButtonKey.currentState!.reset();
+            }
           }
         }
       },
