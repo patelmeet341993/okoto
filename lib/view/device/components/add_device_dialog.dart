@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:okoto/backend/device/device_controller.dart';
 import 'package:okoto/backend/user/user_provider.dart';
-import 'package:okoto/utils/extensions.dart';
 import 'package:okoto/utils/my_safe_state.dart';
 import 'package:okoto/utils/my_toast.dart';
 import 'package:okoto/utils/my_utils.dart';
-import 'package:okoto/view/common/components/common_textfield.dart';
 import 'package:provider/provider.dart';
 
 import '../../../configs/styles.dart';
 import '../../common/components/common_submit_button.dart';
-import '../../common/components/common_text.dart';
 import '../../common/components/my_common_textfield.dart';
 
 class AddDeviceDialog extends StatefulWidget {
@@ -27,16 +23,18 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
 
   bool isLoading = false;
 
+  late UserProvider userProvider;
+
   Future<void> addDevice({required String deviceId}) async {
     MyUtils.hideShowKeyboard(isHide: true);
 
-    if(isLoading) {
+    if (isLoading) {
       return;
     }
 
     UserProvider userProvider = context.read<UserProvider>();
     String userId = userProvider.getUserId();
-    if(userId.isEmpty) {
+    if (userId.isEmpty) {
       MyToast.showError(context: context, msg: "User Data not available");
       return;
     }
@@ -48,14 +46,21 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
       context: context,
       deviceId: deviceId,
       userId: userId,
+      userProvider: userProvider,
     );
 
     isLoading = false;
     mySetState();
 
-    if(isRegistered && context.mounted) {
+    if (isRegistered && context.mounted) {
       Navigator.pop(context, isRegistered);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    userProvider = context.read<UserProvider>();
   }
 
   @override
@@ -71,26 +76,34 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
         content: Form(
           key: _formKey,
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                 Row(
-                   crossAxisAlignment: CrossAxisAlignment.end,
-                   mainAxisAlignment: MainAxisAlignment.end,
-                   children: [
-                     InkWell(
-                         onTap: (){
-                           if(!isLoading) Navigator.pop(context);
-                         },
-                         child: Container(
-                             padding: EdgeInsets.symmetric(horizontal: 10,).copyWith(top: 5),
-                             child: Icon(Icons.close, color: Colors.white,size: 20,)))
-                   ],
-                 ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        if (!isLoading) Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                        ).copyWith(top: 5),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 //SizedBox(height: 15,),
                 getDeviceIdTextField(),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20),
                 CommonSubmitButton(
                   text: 'Add Device',
                   elevation: 20,
@@ -99,16 +112,18 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
                   verticalPadding: 8,
                   horizontalPadding: 20,
                   borderRadius: 5,
-                  icon: Icon(Icons.add,color: Colors.white,size: 18),
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                   onTap: () {
-                    if(_formKey.currentState?.validate() ?? false) {
-
+                    if (_formKey.currentState?.validate() ?? false) {
                       addDevice(deviceId: deviceIdController.text.trim());
                     }
                   },
                 ),
-                SizedBox(height: 10,),
-
+                const SizedBox(height: 10),
               ],
             ),
           ),
@@ -123,12 +138,15 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
       children: [
         const IconButton(
           onPressed: null,
-          icon: Icon(Icons.close, color: Colors.transparent,),
+          icon: Icon(
+            Icons.close,
+            color: Colors.transparent,
+          ),
         ),
         const Text("Add Device"),
         IconButton(
           onPressed: () {
-            if(!isLoading) Navigator.pop(context);
+            if (!isLoading) Navigator.pop(context);
           },
           icon: const Icon(Icons.close),
         ),
@@ -137,7 +155,7 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
   }
 
   Widget getDeviceIdTextField() {
-    return   MyCommonTextField(
+    return MyCommonTextField(
       controller: deviceIdController,
       labelText: 'Enter Device Id',
       cursorColor: Colors.white,
@@ -151,14 +169,12 @@ class _AddDeviceDialogState extends State<AddDeviceDialog> with MySafeState {
         ),
       ),
       validator: (val) {
-        if(val == null || val.isEmpty) {
+        if (val == null || val.isEmpty) {
           return "Device Id cannot be empty";
-        }
-        else {
+        } else {
           return null;
         }
       },
     );
-
   }
 }
