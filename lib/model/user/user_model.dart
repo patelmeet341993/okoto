@@ -5,7 +5,7 @@ import '../../utils/parsing_helper.dart';
 import 'user_subscription_model.dart';
 
 class UserModel {
-  String id = "", name = "", userName = "", gender = "", mobileNumber = "", notificationToken = "", profileImageUrl = "";
+  String id = "", name = "", userName = "", gender = "", mobileNumber = "", notificationToken = "", profileImageUrl = "", defaultDeviceId = "";
   Timestamp? createdDate, dateOfBirth;
   bool adminEnabled = true;
   UserSubscriptionModel? userSubscriptionModel;
@@ -16,6 +16,7 @@ class UserModel {
     this.name = "",
     this.userName = "",
     this.profileImageUrl = "",
+    this.defaultDeviceId = "",
     this.gender = "",
     this.mobileNumber = "",
     this.notificationToken = "",
@@ -39,6 +40,7 @@ class UserModel {
     id = ParsingHelper.parseStringMethod(map['id']);
     name = ParsingHelper.parseStringMethod(map['name']);
     profileImageUrl = ParsingHelper.parseStringMethod(map['profileImageUrl']);
+    defaultDeviceId = ParsingHelper.parseStringMethod(map['defaultDeviceId']);
     userName = ParsingHelper.parseStringMethod(map['userName']);
     gender = ParsingHelper.parseStringMethod(map['gender']);
     mobileNumber = ParsingHelper.parseStringMethod(map['mobileNumber']);
@@ -79,6 +81,7 @@ class UserModel {
       "userName" : userName,
       "gender" : gender,
       "profileImageUrl" : profileImageUrl,
+      "defaultDeviceId" : defaultDeviceId,
       "mobileNumber" : mobileNumber,
       "notificationToken" : notificationToken,
       "createdDate" : toJson ? createdDate?.toDate().toIso8601String() : createdDate,
