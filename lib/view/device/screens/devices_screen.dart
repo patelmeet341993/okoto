@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:okoto/backend/device/device_controller.dart';
+import 'package:okoto/backend/user/user_controller.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/model/device/device_model.dart';
+import 'package:okoto/utils/my_print.dart';
 import 'package:okoto/utils/my_toast.dart';
 import 'package:okoto/view/common/components/common_appbar.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
@@ -14,6 +16,7 @@ import '../../../backend/analytics/analytics_controller.dart';
 import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/device/device_provider.dart';
 import '../../../configs/styles.dart';
+import '../../common/components/common_popup.dart';
 import '../../common/components/common_text.dart';
 import '../../common/components/my_screen_background.dart';
 
@@ -101,7 +104,10 @@ class _DevicesScreenState extends State<DevicesScreen> {
                               children: [
                                 const CommonText(text: 'Linked Devices', fontSize: 19, fontWeight: FontWeight.bold),
                                 Expanded(
-                                  child: getMainBody(deviceProvider: deviceProvider),
+                                  child: getMainBody(
+                                    deviceProvider: deviceProvider,
+                                    userProvider: userProvider,
+                                  ),
                                 ),
                               ],
                             ),
@@ -132,12 +138,19 @@ class _DevicesScreenState extends State<DevicesScreen> {
           color: Styles.floatingButton,
           shape: BoxShape.circle,
         ),
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 32,
+        ),
       ),
     );
   }
 
-  Widget getMainBody({required DeviceProvider deviceProvider}) {
+  Widget getMainBody({
+    required DeviceProvider deviceProvider,
+    required UserProvider userProvider,
+  }) {
     if (deviceProvider.isUserDevicesLoading) {
       return const Center(
         child: CommonLoader(isCenter: true),
@@ -171,6 +184,7 @@ class _DevicesScreenState extends State<DevicesScreen> {
       );
     }
 
+    String defaultDeviceId = userProvider.getUserModel()?.defaultDeviceId ?? "";
     List<DeviceModel> devices = deviceProvider.getUserDevices(isNewInstance: false);
 
     return RefreshIndicator(
@@ -188,19 +202,51 @@ class _DevicesScreenState extends State<DevicesScreen> {
           DeviceModel deviceModel = devices[index];
 
           return getMySingleDeviceCard(
-            deviceModel,
+            deviceModel: deviceModel,
+            defaultDeviceId: defaultDeviceId,
             onTap: () async {
               AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.devicescreen_select_device);
+
+              if (userProvider.getUserModel()?.defaultDeviceId == deviceModel.id) {
+                MyPrint.printOnConsole("Device is already default");
+                return;
+              }
+
+              if(deviceProvider.runningDeviceId.get().isNotEmpty) {
+                MyPrint.printOnConsole("There is a device already running, cannot change default device");
+                MyToast.showError(context: context, msg: "There is a device already running, cannot change default device");
+                return;
+              }
+
+              dynamic value = await showDialog(
+                context: context,
+                builder: (context) {
+                  return CommonPopUp(
+                    text: 'Are you sure you want to make this device default?',
+                    rightText: 'Yes',
+                    rightOnTap: () {
+                      Navigator.pop(context, true);
+                    },
+                  );
+                },
+              );
+
+              if (value != true) {
+                MyPrint.printOnConsole("User denied to make the Device default");
+                return;
+              }
 
               isLoading = true;
               setState(() {});
 
-              bool isUpdated = await deviceController.updateDeviceStatus(deviceId: deviceModel.id, deviceModel: deviceModel, statusOn: !deviceModel.statusOn);
+              bool isUpdated = await UserController(userProvider: userProvider).updateDefaultDeviceId(
+                deviceId: deviceModel.id,
+              );
 
               isLoading = false;
               setState(() {});
 
-              if (isUpdated) {
+              if (isUpdated && context.mounted) {
                 MyToast.showSuccess(context: context, msg: "Updated");
               }
             },
@@ -210,7 +256,11 @@ class _DevicesScreenState extends State<DevicesScreen> {
     );
   }
 
-  Widget getMySingleDeviceCard(DeviceModel deviceModel, {Function()? onTap}) {
+  Widget getMySingleDeviceCard({
+    required DeviceModel deviceModel,
+    String defaultDeviceId = "",
+    Function()? onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -240,6 +290,13 @@ class _DevicesScreenState extends State<DevicesScreen> {
                     color: Colors.white.withOpacity(.9),
                   )
                 ],
+              ),
+            ),
+            if(defaultDeviceId.isNotEmpty && deviceModel.id == defaultDeviceId) Container(
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              child: Text(
+                "Default",
+                style: themeData.textTheme.labelMedium,
               ),
             ),
             const Icon(Icons.info_outline)
