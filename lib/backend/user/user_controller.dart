@@ -355,4 +355,68 @@ class UserController {
       await getUserDataAndStoreInProvider(userId: userId,);
     }
   }
+
+  Future<bool> addDeviceInDevicesList({required String deviceId}) async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+    MyPrint.printOnConsole("UserController().addDeviceInDevicesList() called with deviceId:'$deviceId'", tag: tag);
+
+    try {
+      String userId = userProvider.getUserId();
+      MyPrint.printOnConsole("userId:'$userId'", tag: tag);
+
+      if(deviceId.isEmpty && userId.isEmpty) {
+        MyPrint.printOnConsole("Returning from UserController().addDeviceInDevicesList() becasue UserId or DeviceId is empty", tag: tag);
+        return false;
+      }
+
+      Map<String, dynamic> data = {
+        "deviceIds" : FieldValue.arrayUnion([deviceId]),
+      };
+
+      UserModel? userModel = userProvider.getUserModel();
+      if(userModel?.defaultDeviceId.isEmpty ?? true) {
+        data['defaultDeviceId'] = deviceId;
+      }
+
+      bool isUpdated = await UserRepository().updateUserDataFromMap(
+        userId: userId,
+        data: data,
+      );
+
+      MyPrint.printOnConsole("isUpdated:$isUpdated", tag: tag);
+
+      return isUpdated;
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in UserController().updateDefaultDeviceId():'$e'", tag: tag);
+      MyPrint.printOnConsole(s, tag: tag);
+      return false;
+    }
+  }
+
+  Future<bool> updateDefaultDeviceId({required String deviceId}) async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+    MyPrint.printOnConsole("UserController().updateDefaultDeviceId() called with deviceId:'$deviceId'", tag: tag);
+
+    String userId = userProvider.getUserId();
+
+    if(deviceId.isEmpty || userId.isEmpty) {
+      return false;
+    }
+
+    try {
+      bool isUpdated = await userRepository.updateUserDataFromMap(userId: userId, data: {
+        "defaultDeviceId" : deviceId,
+      });
+
+      MyPrint.printOnConsole("isUpdated:$isUpdated", tag: tag);
+
+      return isUpdated;
+    }
+    catch(e, s) {
+      MyPrint.printOnConsole("Error in UserController().updateDefaultDeviceId():'$e'", tag: tag);
+      MyPrint.printOnConsole(s, tag: tag);
+      return false;
+    }
+  }
 }
