@@ -8,6 +8,8 @@ import 'package:okoto/view/common/components/common_submit_button.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/game/game_controller.dart';
 import '../../../backend/navigation/navigation_arguments.dart';
 import '../../../backend/navigation/navigation_controller.dart';
@@ -45,7 +47,7 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
 
     if (subscriptionModel != null) {
       SubscriptionModel model = subscriptionModel;
-
+      AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_plan_view,parameters: {AnalyticsParameters.event_value:subscriptionModel.name});
       gameModels = await GameController(gameProvider: null).gameRepository.getGameModelsListFromIdsList(idsList: model.gamesList);
     }
   }
@@ -53,6 +55,7 @@ class _SubscriptionDetailState extends State<SubscriptionDetail> {
   @override
   void initState() {
     super.initState();
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.subscription_plan_details_screen});
     getFuture = getGameData();
   }
 

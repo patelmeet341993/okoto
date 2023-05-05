@@ -1,25 +1,32 @@
+import 'dart:math' as math;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:okoto/backend/device/device_controller.dart';
+import 'package:okoto/backend/device/device_provider.dart';
 import 'package:okoto/backend/navigation/navigation.dart';
 import 'package:okoto/backend/user/user_provider.dart';
 import 'package:okoto/model/subscription/subscription_model.dart';
 import 'package:okoto/utils/parsing_helper.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 
-import '../../../backend/authentication/authentication_controller.dart';
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/data/data_provider.dart';
 import '../../../configs/styles.dart';
 import '../../../model/user/user_model.dart';
 import '../../../model/user/user_subscription_model.dart';
 import '../../../package/slider_widget_package.dart';
 import '../../../utils/my_print.dart';
+import '../../../utils/my_toast.dart';
 import '../../common/components/common_loader.dart';
+import '../../common/components/common_popup.dart';
 import '../../common/components/common_text.dart';
+import '../../common/components/gradient_trial.dart';
 import '../../common/components/image_slider.dart';
 import '../../common/components/modal_progress_hud.dart';
 import '../../common/components/my_profile_avatar.dart';
@@ -34,21 +41,30 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late ThemeData themeData;
   late DataProvider dataProvider;
   int screenSelected = 0;
   bool isLoading = false;
   TabController? tabController;
   List<String> bannerImages = <String>[];
+  late DecorationTween decorationTween;
+  late DecorationTween decorationActivatedTween;
+
+  late DeviceProvider deviceProvider;
+  late DeviceController deviceController;
+
+  // AnimationController? _controller;
+  late AnimationController _activatedPlanController;
+  double animationBorderRadius = 120;
+  GlobalKey<SliderWidgetPackageState> sliderButtonKey = GlobalKey<SliderWidgetPackageState>();
 
   void initializeBannerImages() {
-
     bannerImages = [];
 
-    if(dataProvider.propertyModel.bannerImages.isNotEmpty){
+    if (dataProvider.propertyModel.bannerImages.isNotEmpty) {
       bannerImages.addAll(dataProvider.propertyModel.bannerImages);
-    }else{
+    } else {
       String image = "https://res.cloudinary.com/dxegfkhzd/image/upload/v1677566819/pexels-sound-on-3761118_v4fec1.jpg";
       bannerImages.add(image);
     }
@@ -63,7 +79,60 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    dataProvider =  Provider.of<DataProvider>(context,listen: false);
+    decorationTween = DecorationTween(
+      begin: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Colors.white, Styles.myBackgroundShade3],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+      end: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            Styles.buttonPinkColor,
+            Styles.myLightPinkShade1,
+          ],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+    );
+    decorationActivatedTween = DecorationTween(
+      begin: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Styles.buttonVioletColor, Styles.myVioletColor],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+      end: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Styles.myBlueColor, Styles.myLightVioletShade1],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+    );
+
+    _activatedPlanController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+
+    dataProvider = Provider.of<DataProvider>(context, listen: false);
+
+    deviceProvider = context.read<DeviceProvider>();
+    deviceController = DeviceController(deviceProvider: deviceProvider);
+
     initializeBannerImages();
   }
 
@@ -74,61 +143,62 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return ModalProgressHUD(
       inAsyncCall: isLoading,
       progressIndicator: const CommonLoader(),
-      child: Consumer<UserProvider>(builder: (BuildContext context, UserProvider userProvider, Widget? child) {
-        UserModel? userModel = userProvider.getUserModel();
-        if (userModel == null) {
-          return const SizedBox();
-        }
+      child: Consumer<UserProvider>(
+        builder: (BuildContext context, UserProvider userProvider, Widget? child) {
+          UserModel? userModel = userProvider.getUserModel();
+          if (userModel == null) {
+            return const SizedBox();
+          }
 
-        return Scaffold(
-          body: MyScreenBackground(
-            child: SafeArea(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          getMyAppBar(userProvider),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 0),
-                            child: getImageSlider(bannerImages: bannerImages),
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const CommonText(text: 'My Account', fontSize: 19, fontWeight: FontWeight.bold),
-                                const SizedBox(height: 25),
-                                getMyAccountCard(userModel),
-                                const SizedBox(height: 25),
-                                const CommonText(text: 'Explore', fontSize: 19, fontWeight: FontWeight.bold),
-                                const SizedBox(height: 25),
-                                getExploreWidget(),
-                                const SizedBox(height: 150),
-                              ],
+          return Scaffold(
+            body: MyScreenBackground(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            getMyAppBar(userProvider),
+                            const SizedBox(height: 15),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 0),
+                              child: getImageSlider(bannerImages: bannerImages),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 25),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const CommonText(text: 'My Account', fontSize: 19, fontWeight: FontWeight.bold),
+                                  const SizedBox(height: 25),
+                                  getMyAccountCard(userModel),
+                                  const SizedBox(height: 25),
+                                  const CommonText(text: 'Explore', fontSize: 19, fontWeight: FontWeight.bold),
+                                  const SizedBox(height: 25),
+                                  getExploreWidget(),
+                                  const SizedBox(height: 150),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          floatingActionButton: getLetsPlayButton(),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        );
-      }),
+            floatingActionButton: getLetsPlayButton(
+              deviceIds: userModel.deviceIds,
+              defaultDeviceId: userModel.defaultDeviceId,
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          );
+        },
+      ),
     );
   }
 
@@ -143,6 +213,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Row(
         children: [
+          Image.asset(
+            'assets/images/logo_4.png',
+            height: 40,
+            width: 120,
+            fit: BoxFit.fill,
+          ),
+          /*
           GradientText(
             "Okoto",
             textAlign: TextAlign.start,
@@ -156,15 +233,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               Styles.myLogoBlueColor,
               Styles.myLogoVioletColor,
             ],
-          ),
+          ),*/
           const Spacer(),
           InkWell(
             onTap: () {
+              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
               NavigationController.navigateToDevicesScreen(
-                  navigationOperationParameters: NavigationOperationParameters(
-                context: NavigationController.mainScreenNavigator.currentContext!,
-                navigationType: NavigationType.pushNamed,
-              ));
+                navigationOperationParameters: NavigationOperationParameters(
+                  context: NavigationController.mainScreenNavigator.currentContext!,
+                  navigationType: NavigationType.pushNamed,
+                ),
+              );
             },
             child: Image.asset(
               "assets/images/vr_icon.png",
@@ -173,14 +252,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(width: 14,),
+          const SizedBox(width: 14),
           InkWell(
-            onTap: (){
+            onTap: () {
+              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.notification_screen});
               NavigationController.navigateToNotificationScreen(
                   navigationOperationParameters: NavigationOperationParameters(
-                    context: NavigationController.mainScreenNavigator.currentContext!,
-                    navigationType: NavigationType.pushNamed,
-                  ));
+                context: NavigationController.mainScreenNavigator.currentContext!,
+                navigationType: NavigationType.pushNamed,
+              ));
             },
             child: const Icon(
               MdiIcons.bell,
@@ -188,16 +268,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               size: 24,
             ),
           ),
-          const SizedBox(
-            width: 14,
-          ),
+          const SizedBox(width: 14),
           InkWell(
-              onTap: (){
-                Navigator.pushNamed(context, ProfileScreen.routeName);
-              },
-              child: MyProfileAvatar()),
-          const SizedBox(width: 14,),
-
+            onTap: () {
+              AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.profile_screen});
+              Navigator.pushNamed(context, ProfileScreen.routeName);
+            },
+            child: MyProfileAvatar(),
+          ),
+          const SizedBox(width: 14),
         ],
       ),
     );
@@ -269,13 +348,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
 
     int totalDays = userSubscriptionModel?.mySubscription?.validityInDays ?? 28, remainingDays = 20;
-    if(userSubscriptionModel?.activatedDate != null && userSubscriptionModel?.expiryDate != null) {
+    if (userSubscriptionModel?.activatedDate != null && userSubscriptionModel?.expiryDate != null) {
       // DateTime activatedDate = userSubscriptionModel!.activatedDate!.toDate();
       DateTime expiryDate = userSubscriptionModel!.expiryDate!.toDate();
       DateTime dateTime = DateTime.now();
 
       remainingDays = expiryDate.difference(dateTime).inDays;
-      if(remainingDays < 0 || remainingDays > totalDays) {
+      if (remainingDays < 0 || remainingDays > totalDays) {
         remainingDays = totalDays;
       }
     }
@@ -306,9 +385,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CommonText(text: mySubscriptionPlan.name, fontSize: 19, fontWeight: FontWeight.bold),
-                    const SizedBox(
-                      height: 12,
-                    ),
+                    const SizedBox(height: 12),
                     IntrinsicHeight(
                       child: Row(
                         children: [
@@ -354,9 +431,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         MyProfileAvatar(size: 23),
-        const SizedBox(
-          width: 8,
-        ),
+        const SizedBox(width: 8),
         CommonText(
           text: userName,
           fontSize: 14,
@@ -379,17 +454,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             )
           ]),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         showDetailsRichText(
           heading: 'Subscribed on',
-          mainText:
-              methodUserSubscriptionModel.activatedDate == null ? '-' : DateFormat("dd MMM yyyy").format(methodUserSubscriptionModel.activatedDate!.toDate()),
+          mainText: methodUserSubscriptionModel.activatedDate == null ? '-' : DateFormat("dd MMM yyyy").format(methodUserSubscriptionModel.activatedDate!.toDate()),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         showDetailsRichText(
           heading: 'Most played game',
           mainText: '--',
@@ -417,20 +487,48 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     required int totalDays,
     required int remainingDays,
   }) {
+    double indicatorValue = remainingDays / totalDays;
+    if (indicatorValue < 0.02) {
+      indicatorValue = 0.02;
+    }
     return Stack(
       alignment: Alignment.center,
       children: [
         SizedBox(
           height: 100,
           width: 100,
-          child: Transform.scale(
+          child: Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.rotationY(math.pi),
+            child: Transform.rotate(
+              angle: 5,
+              child: GradientTrialProgressIndicator(
+                radius: 100,
+                strokeWidth: 4.5,
+                value: indicatorValue,
+                gradientStops: const [
+                  0.2,
+                  0.55,
+                  1,
+                ],
+                gradientColors: [
+                  Styles.circleColor2,
+                  Styles.circleColor3,
+                  Styles.circleColor1,
+                ],
+                child: Container(),
+              ),
+            ),
+          ),
+
+          /*Transform.scale(
             scaleX: -1,
             child: CircularProgressIndicator(
               value: remainingDays/totalDays,
               strokeWidth: 4.5,
               color: Styles.myLightVioletShade1,
             ),
-          ),
+          ),*/
         ),
         Container(
           padding: const EdgeInsets.only(bottom: 5),
@@ -438,9 +536,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CommonText(text: '$remainingDays', fontWeight: FontWeight.bold, fontSize: 30),
-              const SizedBox(
-                height: 2,
-              ),
+              const SizedBox(height: 2),
               CommonText(text: 'Days left', fontSize: 11, color: Colors.white.withOpacity(.8), textAlign: TextAlign.center),
             ],
           ),
@@ -463,73 +559,83 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 imageUrl: 'assets/icons/device.png',
                 title: 'Device',
                 onTap: () {
+                  AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
                   NavigationController.navigateToDevicesScreen(
                       navigationOperationParameters: NavigationOperationParameters(
                     context: NavigationController.mainScreenNavigator.currentContext!,
                     navigationType: NavigationType.pushNamed,
                   ));
                 }),
-            SizedBox(
-              width: spacing,
-            ),
+            SizedBox(width: spacing),
             exploreBox(
               onTap: () {
-                NavigationController.navigateToSubscriptionListScreen(navigationOperationParameters: NavigationOperationParameters(
-                  context: context,
-                  navigationType: NavigationType.pushNamed,
-                ));
+                AnalyticsController().fireEvent(
+                  analyticEvent: AnalyticsEvent.homescreen_screen_click,
+                  parameters: {
+                    AnalyticsParameters.event_value: AnalyticsParameterValue.subscription_plans_list_screen,
+                  },
+                );
+                NavigationController.navigateToSubscriptionListScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: context,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
               },
               imageUrl: 'assets/icons/subscriptions.png',
               title: 'Our All\nPlans',
             ),
-            SizedBox(
-              width: spacing,
-            ),
+            SizedBox(width: spacing),
             exploreBox(
               onTap: () {
-                NavigationController.navigateToOrderListScreen(navigationOperationParameters: NavigationOperationParameters(
-                  context: context,
-                  navigationType: NavigationType.pushNamed,
-                ));
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.payment_history_screen});
+                NavigationController.navigateToOrderListScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: context,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
               },
               imageUrl: 'assets/icons/payment.png',
               title: 'Payment History',
             ),
           ],
         ),
-        SizedBox(
-          height: spacing,
-        ),
+        SizedBox(height: spacing),
         Row(
           children: [
             exploreBox(
-                imageUrl: 'assets/icons/my_games.png',
-                title: 'Our All\nGames',
-                onTap: (){
-                  NavigationController.navigateToGameListScreen(
-                      navigationOperationParameters: NavigationOperationParameters(
-                          context: NavigationController.mainScreenNavigator.currentContext!,
-                          navigationType: NavigationType.pushNamed)
-                  );
-                }
+              imageUrl: 'assets/icons/my_games.png',
+              title: 'Our All\nGames',
+              onTap: () {
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.games_list_screen});
+                NavigationController.navigateToGameListScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: NavigationController.mainScreenNavigator.currentContext!,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
+              },
             ),
-            SizedBox(
-              width: spacing,
+            SizedBox(width: spacing),
+            exploreBox(
+              imageUrl: 'assets/icons/myplans.png',
+              title: 'My games',
+              onTap: () {
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.my_games_screen});
+                NavigationController.navigateToMyGameListScreen(
+                  navigationOperationParameters: NavigationOperationParameters(
+                    context: NavigationController.mainScreenNavigator.currentContext!,
+                    navigationType: NavigationType.pushNamed,
+                  ),
+                );
+              },
             ),
-            exploreBox(imageUrl: 'assets/icons/myplans.png',
-                title: 'My games',
-                onTap: (){
-                  NavigationController.navigateToMyGameListScreen(
-                      navigationOperationParameters: NavigationOperationParameters(
-                          context: NavigationController.mainScreenNavigator.currentContext!,
-                          navigationType: NavigationType.pushNamed)
-                  );
-                }
+            SizedBox(width: spacing),
+            exploreBox(
+              imageUrl: 'assets/icons/recomended_plans.png',
+              title: 'Recommended Plans',
             ),
-            SizedBox(
-              width: spacing,
-            ),
-            exploreBox(imageUrl: 'assets/icons/recomended_plans.png', title: 'Recommended Plans'),
           ],
         )
       ],
@@ -568,10 +674,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 width: 23,
                 fit: BoxFit.fill,
               ),
-              const SizedBox(
-                height: 5,
+              const SizedBox(height: 5),
+              CommonText(
+                text: title,
+                textAlign: TextAlign.center,
+                fontSize: 12,
               ),
-              CommonText(text: title, textAlign: TextAlign.center, fontSize: 12),
             ],
           ),
         ),
@@ -581,80 +689,148 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   //endregion
 
-  Widget getLetsPlayButton() {
+  Widget? getLetsPlayButton({
+    required List<String> deviceIds,
+    required String defaultDeviceId,
+  }) {
+    if (deviceIds.isEmpty) return null;
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 60).copyWith(bottom: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 55).copyWith(bottom: 20),
       child: SliderWidgetPackage(
+        key: sliderButtonKey,
         alignment: Alignment.bottomCenter,
         sliderButtonIconPadding: 16,
         outerColor: Colors.white,
-        submittedIcon: getSubmitIcon(),
+        submittedIcon: getSubmittedIcon(defaultDeviceId: defaultDeviceId),
         borderRadius: 120,
         height: 65,
-        sliderButtonIcon: const Icon(Icons.person_outline),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            SizedBox(
-              width: 70,
-            ),
+            SizedBox(width: 75),
             Expanded(
               child: CommonText(
                 text: 'Swipe to play game',
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
-                fontSize: 18,
+                fontSize: 17,
               ),
             ),
-            SizedBox(
-              width: 20,
-            ),
+            SizedBox(width: 20),
           ],
         ),
+        onSubmit: () async {
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
+          AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_screen_click, parameters: {AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen});
 
-
-        onSubmit: () {
-          NavigationController.navigateToDevicesScreen(
+          if(defaultDeviceId.isEmpty) {
+            NavigationController.navigateToDevicesScreen(
               navigationOperationParameters: NavigationOperationParameters(
                 context: NavigationController.mainScreenNavigator.currentContext!,
                 navigationType: NavigationType.pushNamed,
-              ));
+              ),
+            );
+
+            sliderButtonKey.currentState?.reset();
+          }
+          else {
+            isLoading = true;
+            setState(() {});
+
+            bool isStarted = await deviceController.startPlayingGame(deviceId: defaultDeviceId);
+
+            isLoading = false;
+            setState(() {});
+
+            if (isStarted && context.mounted) {
+              MyToast.showSuccess(context: context, msg: "Game Started");
+            }
+          }
         },
       ),
     );
   }
 
-  Widget getSubmitIcon() {
+  Widget getSubmittedIcon({required String defaultDeviceId}) {
     return InkWell(
       borderRadius: BorderRadius.circular(120),
-      onTap: (){
-        NavigationController.navigateToDevicesScreen(
-            navigationOperationParameters: NavigationOperationParameters(
-              context: NavigationController.mainScreenNavigator.currentContext!,
-              navigationType: NavigationType.pushNamed,
-            ));
+      onTap: () async {
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.homescreen_playgame_slider);
+        AnalyticsController().fireEvent(
+          analyticEvent: AnalyticsEvent.homescreen_screen_click,
+          parameters: {
+            AnalyticsParameters.event_value: AnalyticsParameterValue.device_list_screen,
+          },
+        );
+
+        dynamic value = await showDialog(
+          context: context,
+          builder: (context) {
+            return CommonPopUp(
+              text: 'Are you sure you want to stop the game?',
+              rightText: 'Stop',
+              rightOnTap: () {
+                Navigator.pop(context, true);
+              },
+            );
+          },
+        );
+
+        if (value == true) {
+          if (sliderButtonKey.currentState != null) {
+            isLoading = true;
+            setState(() {});
+
+            bool isUpdated = await deviceController.stopPlayingGame();
+
+            isLoading = false;
+            setState(() {});
+
+            if (isUpdated && context.mounted) {
+              MyToast.showSuccess(context: context, msg: "Game Stopped");
+
+              sliderButtonKey.currentState!.reset();
+            }
+          }
+        }
       },
-      child: Container(
-        height: double.maxFinite,
-        width: double.maxFinite,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
+      child: DecoratedBoxTransition(
+        position: DecorationPosition.background,
+        decoration: decorationActivatedTween.animate(_activatedPlanController),
+        child: Container(
+          margin: const EdgeInsets.all(1),
+          height: double.maxFinite,
+          width: double.maxFinite,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [
-                Styles.gameButtonShade1,
-                Styles.gameButtonShade2,
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            )),
-        child: Image.asset(
-          'assets/icons/game_remote.png',
-          width: 38,
-          height: 27,
-          color: Colors.white,
+            border: Border.all(
+              color: Styles.myDarkVioletColor.withOpacity(.8),
+              width: .5,
+            ),
+            /* gradient: LinearGradient(
+                colors: [
+                  Styles.gameButtonShade1,
+                  Styles.gameButtonShade2,
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              )*/
+          ),
+          child: Image.asset(
+            'assets/icons/game_remote.png',
+            width: 38,
+            height: 27,
+            color: Colors.white,
+          ),
         ),
       ),
     );
   }
 }
+
+/*
+
+position: DecorationPosition.background,
+decoration: decorationActivatedTween!.animate(_activatedPlanController!),*/

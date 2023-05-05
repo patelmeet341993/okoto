@@ -101,6 +101,12 @@ class Styles {
   static Color iconCircleColor = const Color(0xff7F4EA1);
 
 
+  static Color circleColor1 = const Color(0xffD60FA8);
+  static Color circleColor2 = const Color(0xff290BDD);
+  static Color circleColor3 = const Color(0xff8E2AAE);
+
+
+
 
 
 

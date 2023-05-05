@@ -10,6 +10,8 @@ import 'package:okoto/view/common/components/my_profile_avatar.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/authentication/authentication_controller.dart';
 import '../../../backend/user/user_provider.dart';
 import '../../../configs/styles.dart';
@@ -36,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.profile_screen});
     userProvider = Provider.of<UserProvider>(context, listen: false);
   }
 
@@ -311,6 +314,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: "Logout",
               onTap: () {
                 AuthenticationController(userProvider: userProvider).logout(context: context, isShowConfirmDialog: true);
+                AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_logout);
               },
               assetPath: "assets/icons/logout.png",
             ),

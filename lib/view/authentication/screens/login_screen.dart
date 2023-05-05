@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:okoto/utils/parsing_helper.dart';
 import 'package:okoto/view/common/components/common_loader.dart';
 import 'package:okoto/view/common/components/common_submit_button.dart';
 import 'package:okoto/view/common/components/my_common_textfield.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/navigation/navigation.dart';
 import '../../../configs/styles.dart';
 import '../../../utils/my_print.dart';
@@ -31,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       // if all are valid then go to success screens
-
+      AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.phone_number_added_success);
       NavigationController.navigateToOtpScreen(
         navigationOperationParameters: NavigationOperationParameters(
           context: context,
@@ -47,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     mobileController = TextEditingController();
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.mobile_number_login_screen});
     super.initState();
   }
 

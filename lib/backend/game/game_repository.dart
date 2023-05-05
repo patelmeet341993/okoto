@@ -69,4 +69,37 @@ class GameRepository{
 
     return gameList;
   }
+
+
+
+  Future<GameModel?> getGameModelFromId({required String gameId}) async {
+    String tag = MyUtils.getUniqueIdFromUuid();
+
+    MyPrint.printOnConsole("GameRepository().getGameModelFromId() called with userId:'$gameId'", tag: tag);
+
+    if(gameId.isEmpty) {
+      return null;
+    }
+
+    try {
+      MyFirestoreDocumentSnapshot snapshot = await FirebaseNodes.gameDocumentReference(gameId: gameId).get();
+      MyPrint.printOnConsole("snapshot.exists:'${snapshot.exists}'", tag: tag);
+      MyPrint.printOnConsole("snapshot.data():'${snapshot.data()}'", tag: tag);
+
+      if(snapshot.exists && (snapshot.data()?.isNotEmpty ?? false)) {
+        return GameModel.fromMap(snapshot.data()!);
+      }
+      else {
+        return null;
+      }
+    }
+    catch(e,s) {
+      MyPrint.printOnConsole("Error in GameRepository().getGameModelFromId():'$e'", tag: tag);
+      MyPrint.printOnConsole(s ,tag: tag);
+      return null;
+    }
+  }
+
+
+
 }

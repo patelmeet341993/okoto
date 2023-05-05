@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:okoto/backend/analytics/analytics_controller.dart';
 import 'package:okoto/backend/notification/notification_provider.dart';
 import 'package:okoto/view/common/components/common_text.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
@@ -56,6 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
     UserController userController = UserController(userProvider: userProvider,);
 
     bool isUserLoggedIn = await AuthenticationController(userProvider: userProvider).isUserLoggedIn(initializeUserid: true);
+    AnalyticsController().setUserid();
 
     if(isUserLoggedIn) {
       String userId = userProvider.getUserId();

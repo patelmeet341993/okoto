@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "435102304565",
+    "firebase_url": "https://okoto-dev-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "okoto-dev",
     "storage_bucket": "okoto-dev.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:435102304565:android:5ecca3f028cda5a7a2a47c",
+        "mobilesdk_app_id": "1:435102304565:android:653426a9ca0a0aa7a2a47c",
         "android_client_info": {
-          "package_name": "com.okoto.okoto_dev"
+          "package_name": "com.hybriona.paintballshootervr"
         }
       },
       "oauth_client": [
@@ -31,10 +32,62 @@
               "client_type": 3
             },
             {
-              "client_id": "435102304565-9toaqg2if8lrrut11jsdttht64sk3jpb.apps.googleusercontent.com",
+              "client_id": "435102304565-0ke02j6vingd0kn4umqp9p02u71ha46i.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.okoto.okotoDev"
+                "bundle_id": "com.example.okotoAdminPanel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435102304565:android:5ecca3f028cda5a7a2a47c",
+        "android_client_info": {
+          "package_name": "com.okoto.okoto_dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435102304565-mj2mfo3b6e0299t1fr2q10hhlrks40ce.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.okoto.okoto_dev",
+            "certificate_hash": "3f5b7442d25e2c4035ed5a9faa5662b08d106533"
+          }
+        },
+        {
+          "client_id": "435102304565-sha07v31ebarnf6c1a1ikadnpq235csa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.okoto.okoto_dev",
+            "certificate_hash": "bb3ae935f3fa6397fed040409f662742580bb25e"
+          }
+        },
+        {
+          "client_id": "435102304565-3bp10v76qlhrnpvthjkvia0ee0pjf5sh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbxPylZNDZMFrTbALxVI_H72Yv_6zkKew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435102304565-3bp10v76qlhrnpvthjkvia0ee0pjf5sh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "435102304565-0ke02j6vingd0kn4umqp9p02u71ha46i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.okotoAdminPanel"
               }
             }
           ]

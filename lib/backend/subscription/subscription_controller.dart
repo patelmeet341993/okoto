@@ -15,6 +15,8 @@ import 'package:okoto/view/common/components/common_popup.dart';
 import '../../model/common/new_document_data_model.dart';
 import '../../utils/my_print.dart';
 import '../../utils/my_utils.dart';
+import '../analytics/analytics_controller.dart';
+import '../analytics/analytics_event.dart';
 
 class SubscriptionController {
   late SubscriptionProvider _subscriptionProvider;
@@ -179,9 +181,11 @@ class SubscriptionController {
                   rightText: "Yes",
                   leftText: "No",
                   rightOnTap: () {
+                    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_plan_expiry_alert,parameters: {AnalyticsParameters.event_value:'Yes'});
                     Navigator.pop(context, true);
                   },
                   leftOnTap: () {
+                    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_plan_expiry_alert,parameters: {AnalyticsParameters.event_value:'No'});
                     Navigator.pop(context, false);
                   },
                 );

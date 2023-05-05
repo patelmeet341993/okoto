@@ -5,7 +5,7 @@ import '../../utils/parsing_helper.dart';
 
 class DeviceModel {
   String id = "", productId = "", productOrderId = "";
-  bool adminEnabled = true, isMultiUserAccessEnabled = false;
+  bool adminEnabled = true, isMultiUserAccessEnabled = false, statusOn = false;
   List<String> accessibleUsers = <String>[];
   Timestamp? createdTime, updatedTime;
 
@@ -15,6 +15,7 @@ class DeviceModel {
     this.productOrderId = "",
     this.adminEnabled = true,
     this.isMultiUserAccessEnabled = false,
+    this.statusOn = false,
     List<String>? accessibleUsers,
     this.createdTime,
     this.updatedTime,
@@ -36,6 +37,7 @@ class DeviceModel {
     productOrderId = ParsingHelper.parseStringMethod(map['productOrderId']);
     adminEnabled = ParsingHelper.parseBoolMethod(map['adminEnabled'], defaultValue: true);
     isMultiUserAccessEnabled = ParsingHelper.parseBoolMethod(map['isMultiUserAccessEnabled'], defaultValue: false);
+    statusOn = ParsingHelper.parseBoolMethod(map['isMultiUserAccessEnabled'], defaultValue: false);
     accessibleUsers = ParsingHelper.parseListMethod<dynamic, String>(map['accessibleUsers']);
     createdTime = ParsingHelper.parseTimestampMethod(map['createdTime']);
     updatedTime = ParsingHelper.parseTimestampMethod(map['updatedTime']);
@@ -48,6 +50,7 @@ class DeviceModel {
       "productOrderId" : productOrderId,
       "adminEnabled" : adminEnabled,
       "isMultiUserAccessEnabled" : isMultiUserAccessEnabled,
+      "statusOn" : statusOn,
       "accessibleUsers" : accessibleUsers,
       "createdTime" : toJson ? createdTime?.millisecondsSinceEpoch : createdTime,
       "updatedTime" : toJson ? updatedTime?.millisecondsSinceEpoch : updatedTime,

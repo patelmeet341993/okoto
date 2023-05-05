@@ -3,7 +3,6 @@ library flutterslidetoact;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:okoto/utils/my_print.dart';
 
 import '../configs/styles.dart';
 
@@ -33,7 +32,7 @@ class SliderWidgetPackage extends StatefulWidget {
 
   /// The color of the external area and of the arrow icon.
   /// If not set, this attribute defaults to accentColor from your theme.
-   Color? outerColor;
+  Color? outerColor;
 
   /// The text showed in the default Text widget
   final String? text;
@@ -69,7 +68,7 @@ class SliderWidgetPackage extends StatefulWidget {
   final Alignment alignment;
 
   /// Create a new instance of the widget
-   SliderWidgetPackage({
+  SliderWidgetPackage({
     Key? key,
     this.sliderButtonIconSize = 24,
     this.sliderButtonIconPadding = 16,
@@ -90,175 +89,30 @@ class SliderWidgetPackage extends StatefulWidget {
     this.textStyle,
     this.sliderButtonIcon,
   }) : super(key: key);
+
   @override
   SliderWidgetPackageState createState() => SliderWidgetPackageState();
 }
 
 /// Use a GlobalKey to access the state. This is the only way to call [SliderWidgetPackageState.reset]
-class SliderWidgetPackageState extends State<SliderWidgetPackage>
-    with TickerProviderStateMixin {
+class SliderWidgetPackageState extends State<SliderWidgetPackage> with TickerProviderStateMixin {
   final GlobalKey _containerKey = GlobalKey();
   final GlobalKey _sliderKey = GlobalKey();
   double _dx = 0;
   double _maxDx = 0;
+
   double get _progress => _dx == 0 ? 0 : _dx / _maxDx;
   double _endDx = 0;
   double _dz = 1;
   double? _initialContainerWidth, _containerWidth;
   double _checkAnimationDx = 0;
   bool submitted = false;
-  late AnimationController _checkAnimationController,
-      _shrinkAnimationController,
-      _resizeAnimationController,
-      _cancelAnimationController;
-
-  @override
-  Widget build(BuildContext context) {
-    MyPrint.printOnConsole("widget.sliderButtonYOffset:${widget.sliderButtonYOffset}");
-    MyPrint.printOnConsole("_dx:$_dx");
-
-    return Align(
-      alignment: widget.alignment,
-      child: Transform(
-        alignment: Alignment.center,
-        transform: Matrix4.rotationY(widget.reversed ? pi : 0),
-        child: Container(
-          key: _containerKey,
-          height: widget.height,
-          width: _containerWidth,
-          constraints: _containerWidth != null
-              ? null
-              : BoxConstraints.expand(height: widget.height),
-          child: Material(
-            elevation: widget.elevation,
-            color: widget.outerColor ?? Theme.of(context).accentColor,
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            child: submitted
-                ? Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.rotationY(widget.reversed ? pi : 0),
-              child: Center(
-                child: Stack(
-                  clipBehavior: Clip.antiAlias,
-                  children: <Widget>[
-                    widget.submittedIcon ??
-
-                        Icon(
-                          Icons.done,
-                          color: widget.innerColor ??
-                              Theme.of(context).primaryIconTheme.color,
-                        ),
-                    Positioned.fill(
-                      right: 0,
-                      child: Transform(
-                        transform: Matrix4.rotationY(
-                            _checkAnimationDx * (pi / 2)),
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          color: widget.outerColor ??
-                              Theme.of(context).accentColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-                : Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              fit: StackFit.loose,
-              children: <Widget>[
-                Opacity(
-                  opacity: 1 - 1 * _progress,
-                  child: Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.rotationY(widget.reversed ? pi : 0),
-                    child: widget.child,
-                  ),
-                ),
-                Positioned(
-                  left: widget.sliderButtonYOffset,
-                  child: Transform.scale(
-                    scale: _dz,
-                    origin: Offset(_dx, 0),
-                    child: Transform.translate(
-                      offset: Offset(_dx, 0),
-                      child: Container(
-                        key: _sliderKey,
-                        child: GestureDetector(
-                          onTap: (){
-                            //MyPrint.printOnConsole('Abe Saaleee');
-                          },
-                          onHorizontalDragUpdate: onHorizontalDragUpdate,
-                          onHorizontalDragEnd: (details) async {
-                            _endDx = _dx;
-                            if (_progress <= 0.8 || widget.onSubmit == null) {
-                              _cancelAnimation();
-
-                            }
-                            else {
-                              setState(() {
-                                widget.outerColor = Styles.gameButtonShade1;
-                              });
-
-                              setState(() {
-                                _dz = 0;
-                              });
-
-                              _checkAnimationDx=1;
-
-                              await _shrinkAnimation();
-
-                              //await _resizeAnimation();
-
-
-
-                              //await _checkAnimation();
-
-                              setState(() {
-                                widget.outerColor = Colors.white;
-                              });
-                              widget.onSubmit!();
-                            }
-                          },
-                          child: Transform.rotate(
-                            angle: widget.sliderRotate
-                                ? -pi * _progress
-                                : 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Styles.gameButtonShade1,
-                                      Styles.gameButtonShade2,
-                                    ],
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                  )
-                              ),
-                              child: Image.asset(
-                                'assets/icons/game_remote.png',
-                                width: 33,
-                                height: 33,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  late AnimationController _checkAnimationController, _shrinkAnimationController, _resizeAnimationController, _cancelAnimationController;
+  DecorationTween? decorationTween;
+  DecorationTween? decorationActivatedTween;
+  double animationBorderRadius = 120;
+  // AnimationController? _controller;
+  AnimationController? _activatedPlanController;
 
   void onHorizontalDragUpdate(DragUpdateDetails details) {
     setState(() {
@@ -271,34 +125,13 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
     await _checkAnimationController.reverse().orCancel;
 
     submitted = false;
+    _dz = 1;
 
     await _shrinkAnimationController.reverse().orCancel;
 
     await _resizeAnimationController.reverse().orCancel;
 
     await _cancelAnimation();
-  }
-
-  Future _checkAnimation() async {
-    _checkAnimationController.reset();
-
-    final animation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _checkAnimationController,
-     // curve: Curves.slowMiddle,
-      curve: Curves.bounceOut,
-    ));
-
-    animation.addListener(() {
-      if (mounted) {
-        setState(() {
-          _checkAnimationDx = animation.value;
-        });
-      }
-    });
-    await _checkAnimationController.forward().orCancel;
   }
 
   Future _shrinkAnimation() async {
@@ -308,12 +141,10 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
     final animation = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(
-        CurvedAnimation(
+    ).animate(CurvedAnimation(
       parent: _shrinkAnimationController,
       curve: Curves.easeOutCirc,
-      )
-    );
+    ));
 
     animation.addListener(() {
       if (mounted) {
@@ -329,7 +160,27 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
     await _shrinkAnimationController.forward().orCancel;
   }
 
-  Future _resizeAnimation() async {
+  Future _cancelAnimation() async {
+    _cancelAnimationController.reset();
+    final animation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(
+      parent: _cancelAnimationController,
+      curve: Curves.fastOutSlowIn,
+    ));
+
+    animation.addListener(() {
+      if (mounted) {
+        setState(() {
+          _dx = (_endDx - (_endDx * animation.value));
+        });
+      }
+    });
+    _cancelAnimationController.forward().orCancel;
+  }
+
+  /*Future _resizeAnimation() async {
     _resizeAnimationController.reset();
 
     final animation = Tween<double>(
@@ -351,30 +202,84 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
     await _resizeAnimationController.forward().orCancel;
   }
 
-  Future _cancelAnimation() async {
-    _cancelAnimationController.reset();
+  Future _checkAnimation() async {
+    _checkAnimationController.reset();
+
     final animation = Tween<double>(
       begin: 0,
       end: 1,
     ).animate(CurvedAnimation(
-      parent: _cancelAnimationController,
-      curve: Curves.fastOutSlowIn,
-
+      parent: _checkAnimationController,
+      // curve: Curves.slowMiddle,
+      curve: Curves.bounceOut,
     ));
 
     animation.addListener(() {
       if (mounted) {
         setState(() {
-          _dx = (_endDx - (_endDx * animation.value));
+          _checkAnimationDx = animation.value;
         });
       }
     });
-    _cancelAnimationController.forward().orCancel;
-  }
+    await _checkAnimationController.forward().orCancel;
+  }*/
 
   @override
   void initState() {
     super.initState();
+
+    decorationTween = DecorationTween(
+      begin: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Colors.white, Styles.myBackgroundShade3],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+      end: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            Styles.buttonPinkColor,
+            Styles.myLightPinkShade1,
+          ],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+    );
+    decorationActivatedTween = DecorationTween(
+      begin: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Styles.buttonPinkColor, Styles.myLightPinkShade],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+      end: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(animationBorderRadius)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[Styles.myBlueColor, Styles.myLightVioletShade1],
+          tileMode: TileMode.repeated,
+        ),
+      ),
+    );
+
+    /*_controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);*/
+    _activatedPlanController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
 
     _cancelAnimationController = AnimationController(
       vsync: this,
@@ -394,20 +299,15 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
       duration: widget.animationDuration,
     );
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      final RenderBox containerBox =
-      _containerKey.currentContext!.findRenderObject() as RenderBox;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final RenderBox containerBox = _containerKey.currentContext!.findRenderObject() as RenderBox;
       _containerWidth = containerBox.size.width;
       _initialContainerWidth = _containerWidth;
 
-      final RenderBox sliderBox =
-      _sliderKey.currentContext!.findRenderObject() as RenderBox;
+      final RenderBox sliderBox = _sliderKey.currentContext!.findRenderObject() as RenderBox;
       final sliderWidth = sliderBox.size.width;
 
-      _maxDx = _containerWidth! -
-          (sliderWidth / 2) -
-          40 -
-          widget.sliderButtonYOffset;
+      _maxDx = _containerWidth! - (sliderWidth / 2) - 32.5 - widget.sliderButtonYOffset;
     });
   }
 
@@ -418,5 +318,141 @@ class SliderWidgetPackageState extends State<SliderWidgetPackage>
     _shrinkAnimationController.dispose();
     _resizeAnimationController.dispose();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: widget.alignment,
+      child: Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.rotationY(widget.reversed ? pi : 0),
+        child: Container(
+          key: _containerKey,
+          height: widget.height,
+          width: _containerWidth,
+          constraints: _containerWidth != null ? null : BoxConstraints.expand(height: widget.height),
+          child: Material(
+            elevation: widget.elevation,
+            color: widget.outerColor ?? Theme.of(context).colorScheme.secondary,
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+            child: submitted
+                ? Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.rotationY(widget.reversed ? pi : 0),
+                    child: Center(
+                      child: Stack(
+                        clipBehavior: Clip.antiAlias,
+                        children: <Widget>[
+                          widget.submittedIcon ??
+                              Icon(
+                                Icons.done,
+                                color: widget.innerColor ?? Theme.of(context).primaryIconTheme.color,
+                              ),
+                          Positioned.fill(
+                            right: 0,
+                            child: Transform(
+                              transform: Matrix4.rotationY(_checkAnimationDx * (pi / 2)),
+                              alignment: Alignment.centerRight,
+                              child: Container(
+                                color: widget.outerColor ?? Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : DecoratedBoxTransition(
+                    position: DecorationPosition.background,
+                    decoration: decorationActivatedTween!.animate(_activatedPlanController!),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      fit: StackFit.loose,
+                      children: <Widget>[
+                        Opacity(
+                          opacity: 1 - 1 * _progress,
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.rotationY(widget.reversed ? pi : 0),
+                            child: widget.child,
+                          ),
+                        ),
+                        Positioned(
+                          // left: widget.sliderButtonYOffset,
+                          left: 0,
+                          child: Transform.scale(
+                            scale: _dz,
+                            // scale: 1,
+                            origin: Offset(_dx, 0),
+                            child: Transform.translate(
+                              offset: Offset(_dx, 0),
+                              child: Container(
+                                key: _sliderKey,
+                                child: GestureDetector(
+                                  onTap: () {},
+                                  onHorizontalDragUpdate: onHorizontalDragUpdate,
+                                  onHorizontalDragEnd: (details) async {
+                                    _endDx = _dx;
+                                    if (_progress <= 0.8 || widget.onSubmit == null) {
+                                      _cancelAnimation();
+                                    } else {
+                                      setState(() {
+                                        widget.outerColor = Styles.gameButtonShade1;
+                                      });
+
+                                      setState(() {
+                                        _dz = 0;
+                                      });
+
+                                      _checkAnimationDx = 1;
+
+                                      await _shrinkAnimation();
+
+                                      //await _resizeAnimation();
+
+                                      //await _checkAnimation();
+
+                                      setState(() {
+                                        widget.outerColor = Colors.white;
+                                      });
+                                      widget.onSubmit!();
+                                    }
+                                  },
+                                  child: Transform.rotate(
+                                    angle: widget.sliderRotate ? -pi * _progress : 0,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Styles.gameButtonShade1,
+                                              Styles.gameButtonShade2,
+                                            ],
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                          )),
+                                      child: Image.asset(
+                                        'assets/icons/game_remote.png',
+                                        width: 33,
+                                        height: 33,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+          ),
+        ),
+      ),
+    );
   }
 }

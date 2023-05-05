@@ -11,6 +11,8 @@ import 'package:okoto/view/common/components/common_submit_button.dart';
 import 'package:okoto/view/common/components/my_screen_background.dart';
 import 'package:provider/provider.dart';
 
+import '../../../backend/analytics/analytics_controller.dart';
+import '../../../backend/analytics/analytics_event.dart';
 import '../../../backend/user/user_provider.dart';
 import '../../../configs/styles.dart';
 import '../../../utils/my_toast.dart';
@@ -88,7 +90,7 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
     setState(() {
       isLoading = true;
     });
-
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_payment_started,parameters: {AnalyticsParameters.event_value:subscriptionModel.name});
     bool isSubscriptionBuySuccessful = await subscriptionController.buySubscription(
       context: context,
       userId: userId,
@@ -108,6 +110,18 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
           isRefresh: true,
           isNotify: true,
         );
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_payment_success,parameters: {AnalyticsParameters.event_value:subscriptionModel.name});
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionplan_purchased_success,parameters: {AnalyticsParameters.event_value:subscriptionModel.name});
+        AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_plan_purchased_success_gamelist,
+            parameters: {AnalyticsParameters.event_value: '${subscriptionModel.name} : ${subscriptionModel.gamesList}'});
+
+        if(subscriptionModel.gamesList.isNotEmpty){
+          subscriptionModel.gamesList.forEach((game) {
+            AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.subscriptionscreen_plan_added_games,
+                parameters: {AnalyticsParameters.event_value: game});
+          });
+        }
+
         NavigationController.navigateToOrderListScreen(
           navigationOperationParameters: NavigationOperationParameters(
             context: context,
@@ -125,6 +139,7 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
   @override
   void initState() {
     super.initState();
+    AnalyticsController().fireEvent(analyticEvent: AnalyticsEvent.user_any_screen_view,parameters: {AnalyticsParameters.event_value:AnalyticsParameterValue.check_out_screen});
     initialize();
   }
 
@@ -348,6 +363,7 @@ class _SubscriptionCheckoutScreenState extends State<SubscriptionCheckoutScreen>
                   verticalPadding: 14,
                   onTap: () {
                     if (isBuyValid) {
+
                       buySubscription(subscriptionModel: subscriptionModel);
                     }
                   },

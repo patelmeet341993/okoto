@@ -6,6 +6,8 @@
 	<string>672137981746-p5kvatk3sspvqpdr8ark9fjacf4glk79.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.672137981746-p5kvatk3sspvqpdr8ark9fjacf4glk79</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>672137981746-e5466r32mn3nposdjc2v08bb1lhnfgav.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDa8lCsQSKWAlsFO9MsoDR5XyGFX7InM8U</string>
 	<key>GCM_SENDER_ID</key>
@@ -19,16 +21,18 @@
 	<key>STORAGE_BUCKET</key>
 	<string>okoto-32015.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false />
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false />
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true />
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true />
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true />
 	<key>GOOGLE_APP_ID</key>
 	<string>1:672137981746:ios:a0064f987711271520712b</string>
+	<key>DATABASE_URL</key>
+	<string>https://okoto-32015-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>
 </plist>

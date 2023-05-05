@@ -1,5 +1,6 @@
 import 'package:okoto/model/order/order_model.dart';
 
+import '../../model/game/game_model.dart';
 import '../../model/subscription/subscription_model.dart';
 
 class NavigationArguments {
@@ -58,5 +59,15 @@ class PaymentDetailScreenNavigationArguments extends NavigationArguments {
   const PaymentDetailScreenNavigationArguments({
     required this.orderId,
     this.orderModel,
+  });
+}
+
+class GameDetailsScreenNavigationArguments extends NavigationArguments {
+  final String gameId;
+  final GameModel? gameModel;
+
+  const GameDetailsScreenNavigationArguments({
+    required this.gameId,
+    this.gameModel,
   });
 }
